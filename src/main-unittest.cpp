@@ -4,19 +4,19 @@
 // STL
 #include <iostream>
 
-#include <unordered_map>
+#include <vector>
 #include <string>
 #include <functional>
 
 // own
 #include "globals.hpp"
-#include "unittests/gfxsystem-base-unittest.hpp"
+#include "unittests/globals-unittest.hpp"
 #include "unittests/window-unittest.hpp"
 
 // ========================================================================== //
 // convenience macro
 
-#define ADD_UNITTEST(func) {unittests.emplace(#func, func);}
+#define ADD_UNITTEST(func) {unittests.emplace_back(std::make_pair(#func, func));}
 
 // ========================================================================== //
 
@@ -24,7 +24,7 @@ int main() {
     RetrogameBase::initAll();
     std::cout << "UNIT TEST MAIN" << std::endl;
 
-    std::unordered_map<std::string, std::function<bool()>> unittests;
+    std::vector<std::pair<std::string, std::function<bool()>>> unittests;
     std::vector<std::string> failedTests;
 
     // ...................................................................... //

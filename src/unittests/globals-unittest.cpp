@@ -1,9 +1,17 @@
+// ========================================================================== //
+// Depenencies
+
+// STL
 #include <iostream>
 
+// own
 #include "../globals.hpp"
-#include "gfxsystem-base-unittest.hpp"
+#include "globals-unittest.hpp"
 
 using namespace RetrogameBase;
+
+// ========================================================================== //
+// tests
 
 bool unittest_loadFont() {
     std::cout << "TESTING FONT ENGINE" << std::endl;
