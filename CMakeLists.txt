@@ -23,7 +23,7 @@ include_directories(${SDL2_INCLUDE_DIRS})
 add_executable(Retrogame-base
     src/main.cpp
     src/globals.hpp src/globals.cpp
-    src/window.hpp  src/window.cpp
+    src/gfxSystem/window.hpp src/gfxSystem/window.cpp
     )
 
 target_link_libraries(Retrogame-base ${SDL2_LIBRARIES})
@@ -34,7 +34,9 @@ target_link_libraries(Retrogame-base ${SDL2_LIBRARIES})
 add_executable(Retrogame-base-unittest
     src/main-unittest.cpp
     src/globals.hpp src/globals.cpp
-    src/window.hpp  src/window.cpp
+    src/gfxSystem/window.hpp src/gfxSystem/window.cpp
+    src/unittests/window-unittest.hpp src/unittests/window-unittest.cpp
+    src/unittests/gfxsystem-base-unittest.hpp src/unittests/gfxsystem-base-unittest.cpp
     )
 
 target_link_libraries(Retrogame-base-unittest ${SDL2_LIBRARIES})
