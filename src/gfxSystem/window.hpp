@@ -27,14 +27,11 @@ namespace RetrogameBase {
             // CTor, DTor
 
             Window() = delete;
-            Window(const char*        title, int width = 800, int height = 600, Uint32 render_flags = SDL_RENDERER_ACCELERATED);
-            Window(const std::string& title, int width = 800, int height = 600, Uint32 render_flags = SDL_RENDERER_ACCELERATED);
+            Window(const char* title, int width = 800, int height = 600, Uint32 render_flags = SDL_RENDERER_ACCELERATED);
             ~Window();
 
             // ---------------------------------------------------------------------- //
             // getters
-
-            bool isReady() const;
 
             const char* getTitle() const;
 
