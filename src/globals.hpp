@@ -19,10 +19,12 @@ namespace RetrogameBase {
 // ========================================================================== //
 // proc
 
-    void initAll ();
+    void initAll();
 
     void initGlobals();
     void freeGlobals();
+
+    void loadFont(const std::string& alias, const std::string& filename, int size);
 
 // ========================================================================== //
 // colors
