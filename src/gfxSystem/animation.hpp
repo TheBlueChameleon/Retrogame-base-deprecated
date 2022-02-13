@@ -43,7 +43,7 @@ namespace RetrogameBase
             size_t size() const;
 
             const std::pair<int, int>& getDimension() const;
-            const std::vector<size_t>& getFrames() const;
+            const std::vector<size_t>& getFrameIDs() const;
 
             size_t       getCurrentPhase() const;
             size_t       getCurrentFrameID() const;

@@ -53,7 +53,7 @@ namespace RetrogameBase
         return dimension;
     }
 
-    const std::vector<size_t>& Animation::getFrames() const
+    const std::vector<size_t>& Animation::getFrameIDs() const
     {
         return frames;
     }
@@ -70,7 +70,7 @@ namespace RetrogameBase
 
     SDL_Texture* Animation::getCurrentFrameTexture() const
     {
-        return textureStore.getTexture(currentPhase);
+        return textureStore.getTexture(frames[currentPhase]);
     }
 
 // ========================================================================== //
