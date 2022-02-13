@@ -16,7 +16,7 @@ using namespace RetrogameBase;
 // tests
 
 
-bool unittest_window_CTorDTor() {
+bool unittest_window_CTor() {
     std::cout << "TESTING WINDOW CTors" << std::endl;
     bool result = true;
     bool last = true;

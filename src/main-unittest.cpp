@@ -32,7 +32,7 @@ int main() {
     std::cout << "REGISTERING UNIT TESTS ... " << std::flush;
 
     ADD_UNITTEST(unittest_loadFont);
-    ADD_UNITTEST(unittest_window_CTorDTor);
+    ADD_UNITTEST(unittest_window_CTor);
 
     std::cout << "DONE" << std::endl << std::endl;
 
