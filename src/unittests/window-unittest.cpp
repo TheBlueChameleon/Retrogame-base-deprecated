@@ -17,7 +17,7 @@ using namespace RetrogameBase;
 
 bool unittest_window_CTor()
 {
-    std::cout << "TESTING WINDOW CTors" << std::endl;
+    std::cout << "TESTING WINDOW CTORS" << std::endl;
     bool result = true;
     bool last = true;
     // ...................................................................... //
@@ -135,6 +135,16 @@ bool unittest_window_CTor()
         std::cout << "  failed to throw on set up window with all flags" << std::endl;
     }
     result &= last;
+    // ...................................................................... //
 
+    return result;
+}
+
+bool unittest_window_Stores()
+{
+    std::cout << "TESTING WINDOW STORE INTERFACE" << std::endl;
+    bool result = true;
+    bool last = true;
+    // ...................................................................... //
     return result;
 }

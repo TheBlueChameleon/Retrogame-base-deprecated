@@ -12,6 +12,7 @@
 #include "globals.hpp"
 #include "unittests/globals-unittest.hpp"
 #include "unittests/window-unittest.hpp"
+#include "unittests/texturestore-unittest.hpp"
 
 // ========================================================================== //
 // convenience macro
@@ -20,7 +21,8 @@
 
 // ========================================================================== //
 
-int main() {
+int main()
+{
     RetrogameBase::initAll();
     std::cout << "UNIT TEST MAIN" << std::endl;
 
@@ -33,18 +35,24 @@ int main() {
 
     ADD_UNITTEST(unittest_loadFont);
     ADD_UNITTEST(unittest_window_CTor);
+    ADD_UNITTEST(unittest_window_Stores);
+    ADD_UNITTEST(unittest_TextureStore_addReset);
 
     std::cout << "DONE" << std::endl << std::endl;
 
     // ...................................................................... //
 
     std::cout << "ABOUT TO RUN UNIT TESTS" << std::endl;
-    for (auto & [name, func] : unittests) {
+    for (auto & [name, func] : unittests)
+    {
         std::cout << "### STARTING TEST '" << name << "' ..." << std::endl;
-        if (! func()) {
+        if (! func())
+        {
             failedTests.push_back(name);
             std::cout << "~~~ FAILED!" << std::endl;
-        } else {
+        }
+        else
+        {
             std::cout << "~~~ PASSED!" << std::endl;
         }
     }
@@ -54,9 +62,11 @@ int main() {
 
     std::cout << "UNIT TESTS SUMMARY" << std::endl;
     std::cout << "Passed " << unittests.size() - failedTests.size() << "/" << unittests.size() << " tests"  << std::endl;
-    if (!failedTests.empty()) {
+    if (!failedTests.empty())
+    {
         std::cout << "Failed Tests:" << std::endl;
-        for (auto& name : failedTests) {
+        for (auto& name : failedTests)
+        {
             std::cout << "~~~ " << name << std::endl;
         }
     }
