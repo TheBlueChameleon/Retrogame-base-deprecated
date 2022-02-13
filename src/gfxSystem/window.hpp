@@ -20,10 +20,12 @@
 // ========================================================================== //
 // Class
 
-namespace RetrogameBase {
+namespace RetrogameBase
+{
     class TextureStore;
 
-    class Window {
+    class Window
+    {
         private:
             SDL_Window*   hwin         = nullptr;
             SDL_Renderer* win_renderer = nullptr;
@@ -92,7 +94,8 @@ namespace RetrogameBase {
             // ---------------------------------------------------------------------- //
             // fadeouts
 
-            enum class FadeoutType {
+            enum class FadeoutType
+            {
                 Stripes,
                 Pixelate,
                 Desatify

@@ -17,10 +17,12 @@
 // ========================================================================== //
 // Class
 
-namespace RetrogameBase {
+namespace RetrogameBase
+{
     class Window;
 
-    class TextureStore {
+    class TextureStore
+    {
         private:
             Window& win;
 

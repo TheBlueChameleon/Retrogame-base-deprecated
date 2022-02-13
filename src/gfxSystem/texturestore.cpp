@@ -38,7 +38,8 @@ namespace fs = std::filesystem;
 // ========================================================================== //
 // namespace
 
-namespace RetrogameBase {
+namespace RetrogameBase
+{
 
 // ========================================================================== //
 // CTor, DTor
@@ -46,15 +47,18 @@ namespace RetrogameBase {
     TextureStore::TextureStore(Window& win) :
         win(win) {}
 
-    TextureStore::~TextureStore() {
+    TextureStore::~TextureStore()
+    {
         reset();
     }
 
 // ========================================================================== //
 // private methods
 
-    void TextureStore::reset_private() {
-        for (auto& tex : textures) {
+    void TextureStore::reset_private()
+    {
+        for (auto& tex : textures)
+        {
             SDL_DestroyTexture(tex);
         }
     }
@@ -62,36 +66,45 @@ namespace RetrogameBase {
 // ========================================================================== //
 // getters
 
-    const Window& TextureStore::getWin() const {
+    const Window& TextureStore::getWin() const
+    {
         return win;
     }
 
-    size_t TextureStore::size() const {
+    size_t TextureStore::size() const
+    {
         return textures.size();
     }
 
-    SDL_Texture* TextureStore::getTexture(size_t ID) const {
+    SDL_Texture* TextureStore::getTexture(size_t ID) const
+    {
         CHECK_GFX_INDEX(ID);
         return textures[ID];
     }
 
-    const std::string& TextureStore::getFilename(const int ID) const {
+    const std::string& TextureStore::getFilename(const int ID) const
+    {
         CHECK_GFX_INDEX(ID);
         return filenames[ID];
     }
 
-    std::pair<int, int> TextureStore::getImageDimensions(const int ID) const {
+    std::pair<int, int> TextureStore::getImageDimensions(const int ID) const
+    {
         CHECK_GFX_INDEX(ID);
         return dimensions[ID];
     }
 
-    size_t TextureStore::findByFilename(const std::string& filename) const {
+    size_t TextureStore::findByFilename(const std::string& filename) const
+    {
         auto searchIterator = std::find(filenames.begin(),
                                         filenames.end(),
                                         filename);
-        if (searchIterator != filenames.end()) {
+        if (searchIterator != filenames.end())
+        {
             return std::distance(filenames.begin(), searchIterator);
-        } else {
+        }
+        else
+        {
             return NOINDEX;
         }
     }
@@ -99,22 +112,26 @@ namespace RetrogameBase {
 // ========================================================================== //
 // setters/modifiers
 
-    void TextureStore::reset() {
+    void TextureStore::reset()
+    {
         win.resetStores();
     }
 
-    size_t TextureStore::addFrame(const std::string& filename) {
+    size_t TextureStore::addFrame(const std::string& filename)
+    {
         CHECK_FILE_EXISTS(filename);
 
         auto index = findByFilename(filename);
 
-        if (index != NOINDEX) {
+        if (index != NOINDEX)
+        {
             return index;
         }
 
         SDL_Surface* loadedSurface = IMG_Load( filename.c_str() );
 
-        if( loadedSurface == NULL ) {
+        if( loadedSurface == NULL )
+        {
             throw std::runtime_error(THROWTEXT(
                                          "Unable to load image " + filename + "!\n"
                                          "\tSDL_image Error: " + IMG_GetError()
@@ -123,7 +140,8 @@ namespace RetrogameBase {
 
         SDL_Texture* newTexture = SDL_CreateTextureFromSurface(win.getRenderer(),
                                   loadedSurface);
-        if(!newTexture) {
+        if(!newTexture)
+        {
             throw std::runtime_error(THROWTEXT(
                                          "Unable to create texture from image " + filename + "!\n"
                                          "\tSDL_image Error: " + IMG_GetError()
@@ -142,7 +160,8 @@ namespace RetrogameBase {
 // ========================================================================== //
 // display
 
-    void TextureStore::put(int ID, int x, int y) {
+    void TextureStore::put(int ID, int x, int y)
+    {
         CHECK_GFX_INDEX(ID);
 
         SDL_Rect dest = {x, y, dimensions[ID].first, dimensions[ID].second};

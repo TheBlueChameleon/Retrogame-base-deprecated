@@ -15,87 +15,123 @@ using namespace RetrogameBase;
 // ========================================================================== //
 // tests
 
-
-bool unittest_window_CTor() {
+bool unittest_window_CTor()
+{
     std::cout << "TESTING WINDOW CTors" << std::endl;
     bool result = true;
     bool last = true;
     // ...................................................................... //
 
-    try {
+    try
+    {
         Window win("valid window");
-    }  catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error& e)
+    {
         last = false;
     }
-    if (last) {
+    if (last)
+    {
         std::cout << "  succeeded to set up default window" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "  failed to set up default window" << std::endl;
     }
     result &= last;
     // ...................................................................... //
 
-    try {
+    try
+    {
         Window win("");
-    }  catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error& e)
+    {
         last = false;
     }
-    if (last) {
+    if (last)
+    {
         std::cout << "  succeeded to set up window with empty string as title" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "  failed to set up window with empty string as title" << std::endl;
     }
     result &= last;
     // ...................................................................... //
 
-    try {
+    try
+    {
         Window win(nullptr);
-    }  catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error& e)
+    {
         last = false;
     }
-    if (last) {
+    if (last)
+    {
         std::cout << "  succeeded to set up window with nullptr as title" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "  failed to set up window with nullptr as title" << std::endl;
     }
     result &= last;
     // ...................................................................... //
 
-    try {
+    try
+    {
         Window win("null size", 0, 0);
-    }  catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error& e)
+    {
         last = false;
     }
-    if (last) {
+    if (last)
+    {
         std::cout << "  succeeded to set up window with null size" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "  failed to set up window with null size" << std::endl;
     }
     result &= last;
     // ...................................................................... //
 
-    try {
+    try
+    {
         Window win("null size", -1, -1);
-    }  catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error& e)
+    {
         last = false;
     }
-    if (last) {
+    if (last)
+    {
         std::cout << "  succeeded to set up window with negative size" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "  failed to set up window with negative size" << std::endl;
     }
     result &= last;
     // ...................................................................... //
 
-    try {
+    try
+    {
         Window win("null size", 80, 60, -1);
         last = false;
-    }  catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error& e)
+    {
         last = true;
     }
-    if (last) {
+    if (last)
+    {
         std::cout << "  succeeded to throw on set up window with all flags" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cout << "  failed to throw on set up window with all flags" << std::endl;
     }
     result &= last;
