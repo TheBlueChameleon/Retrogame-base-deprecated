@@ -38,6 +38,7 @@ namespace RetrogameBase
 
             // -------------------------------------------------------------- //
             // CTor, DTor
+
             TextureStore() = delete;
             TextureStore(Window& win);
             ~TextureStore();
@@ -51,7 +52,7 @@ namespace RetrogameBase
 
             SDL_Texture*        getTexture(size_t ID) const;
             const std::string&  getFilename(const int ID) const;
-            std::pair<int, int> getImageDimensions(const int ID) const;
+            std::pair<int, int> getImageDimension(const int ID) const;
 
             size_t findByFilename(const std::string& filename) const;         // returns NOINDEX if image not in store
 

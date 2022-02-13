@@ -88,7 +88,7 @@ namespace RetrogameBase
         return filenames[ID];
     }
 
-    std::pair<int, int> TextureStore::getImageDimensions(const int ID) const
+    std::pair<int, int> TextureStore::getImageDimension(const int ID) const
     {
         CHECK_GFX_INDEX(ID);
         return dimensions[ID];
