@@ -16,7 +16,7 @@ using namespace RetrogameBase;
 // ========================================================================== //
 // tests
 
-bool unittest_window_CTor()
+bool unittest_Window_CTor()
 {
     std::cout << "TESTING WINDOW CTORS" << std::endl;
 
@@ -69,7 +69,7 @@ bool unittest_window_CTor()
     UNITTEST_FINALIZE;
 }
 
-bool unittest_window_Stores()
+bool unittest_Window_Stores()
 {
     std::cout << "TESTING WINDOW STORE INTERFACE" << std::endl;
 

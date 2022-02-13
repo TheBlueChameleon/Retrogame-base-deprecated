@@ -12,7 +12,6 @@ namespace fs = std::filesystem;
 
 // own
 #include "unittest-macros.hpp"
-#include "../globals.hpp"
 #include "../gfxSystem/window.hpp"
 #include "../gfxSystem/texturestore.hpp"
 #include "texturestore-unittest.hpp"
@@ -30,8 +29,8 @@ bool unittest_TextureStore_addReset()
     UNITTEST_VARS;
     size_t ID;
 
-    constexpr auto testfile_1 = "../gfx/sea01.png";
-    constexpr auto testfile_2 = "../gfx/sea02.png";
+    constexpr auto testfile_1 = "../unittest-gfx/sea01.png";
+    constexpr auto testfile_2 = "../unittest-gfx/sea02.png";
 
     constexpr auto dimensions_1 = std::make_pair(50, 50);
     constexpr auto dimensions_2 = std::make_pair(50, 50);
@@ -43,15 +42,13 @@ bool unittest_TextureStore_addReset()
 
     UNITTEST_ASSERT(
         tex.size() == 0,
-        "set up empty gfx store by default"
+        "set up empty texture store by default"
     );
-
-    // ...................................................................... //
 
     tex.reset();
     UNITTEST_ASSERT(
         tex.size() == 0,
-        "reset empty gfx store by default"
+        "reset empty texture store by default"
     );
 
     // ...................................................................... //

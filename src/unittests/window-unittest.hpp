@@ -1,7 +1,7 @@
 #ifndef WINDOWUNITTEST_HPP
 #define WINDOWUNITTEST_HPP
 
-bool unittest_window_CTor();
-bool unittest_window_Stores();
+bool unittest_Window_CTor();
+bool unittest_Window_Stores();
 
 #endif // WINDOWUNITTEST_HPP
