@@ -5,6 +5,7 @@
 #include <iostream>
 
 // own
+#include "unittest-macros.hpp"
 #include "../globals.hpp"
 #include "globals-unittest.hpp"
 
@@ -17,36 +18,24 @@ bool unittest_loadFont()
 {
     std::cout << "TESTING FONT ENGINE" << std::endl;
 
-    bool result = true;
-    bool last;
+    UNITTEST_VARS;
 
-    last = (fonts.size() == 3);
-    if (last)
-    {
-        std::cout << "  three fonts prepared by default" << std::endl;
-    }
-    else
-    {
-        std::cout << "  unexpected count of default fonts, found " << fonts.size() << std::endl;
-    }
-    result &= last;
+    // ...................................................................... //
 
-    last = true;
+    UNITTEST_ASSERT(
+        fonts.size() == 3,
+        "prepare three fonts by default"
+    );
+
     for (auto & [name, fontPtr] : fonts)
     {
-        std::cout << "  font with alias '" << name << "' ";
-        if (static_cast<bool>(fontPtr))
-        {
-            std::cout << "loaded correctly" << std::endl;
-        }
-        else
-        {
-            std::cout << "failed to load correctly" << std::endl;
-            last = false;
-        }
+        UNITTEST_ASSERT(
+            static_cast<bool>(fontPtr),
+            "load font with alias '" << name << "' correctly"
+        );
     }
-    result &= last;
 
+    // ...................................................................... //
 
-    return result;
+    UNITTEST_FINALIZE;
 }

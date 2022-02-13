@@ -11,6 +11,7 @@ namespace fs = std::filesystem;
 #include <utility>
 
 // own
+#include "unittest-macros.hpp"
 #include "../globals.hpp"
 #include "../gfxSystem/window.hpp"
 #include "../gfxSystem/texturestore.hpp"
@@ -26,8 +27,7 @@ bool unittest_TextureStore_addReset()
 {
     std::cout << "TESTING TEXTURESTORE ADD AND RESET METHODS" << std::endl;
 
-    bool result = true;
-    bool last = true;
+    UNITTEST_VARS;
     size_t ID;
 
     constexpr auto testfile_1 = "../gfx/sea01.png";
@@ -41,189 +41,102 @@ bool unittest_TextureStore_addReset()
 
     // ...................................................................... //
 
-    last = tex.size() == 0;
-    if (last)
-    {
-        std::cout << "  succeeded to set up empty gfx store by default" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed to set up empty gfx store by default" << std::endl;
-    }
-    result &= last;
+    UNITTEST_ASSERT(
+        tex.size() == 0,
+        "set up empty gfx store by default"
+    );
 
     // ...................................................................... //
 
     tex.reset();
-    last = tex.size() == 0;
-    if (last)
-    {
-        std::cout << "  succeeded to reset empty gfx store by default" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed to reset empty gfx store by default" << std::endl;
-    }
-    result &= last;
+    UNITTEST_ASSERT(
+        tex.size() == 0,
+        "reset empty gfx store by default"
+    );
 
     // ...................................................................... //
 
-    last = fs::exists(testfile_1) && fs::exists(testfile_2);
-    if (last)
-    {
-        std::cout << "  found test files on disk" << std::endl;
-    }
-    else
-    {
-        std::cout << "  either or both of test files '" << testfile_1 << "' and "
-                  << "'" << testfile_2 << "' were not found." << std::endl;
-        return false;
-    }
+    UNITTEST_ASSERT(
+        fs::exists(testfile_1) && fs::exists(testfile_2),
+        "find test files on disk"
+    );
+    UNITTEST_CRITICAL_BARRIER;
 
     // ...................................................................... //
 
-    try
-    {
-        ID = tex.addFrame(testfile_1);
-        last = true;
-    }
-    catch (const std::runtime_error& e)
-    {
-        last = false;
-    }
-    if (last)
-    {
-        std::cout << "  succeeded to load existing file" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed to load existing file" << std::endl;
-    }
-    result &= last;
+    UNITTEST_DOESNT_THROW(
+        ID = tex.addFrame(testfile_1),
+        std::exception,
+        "load existing file"
+    );
+
+    UNITTEST_ASSERT(
+        ID == 0,
+        "return correct index for first texture"
+    );
 
     // ...................................................................... //
 
-    last = ID == 0;
-    if (last)
-    {
-        std::cout << "  succeeded to return correct index for first texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed to return correct index for first texture" << std::endl;
-    }
-    result &= last;
+    UNITTEST_THROWS(
+        ID = tex.addFrame("a file that does not exist"),
+        std::runtime_error,
+        "throw std::runtime_error on loading non-existent file"
+    );
 
     // ...................................................................... //
 
-    try
-    {
-        ID = tex.addFrame(testfile_1);
-        last = ID == 0;
-    }
-    catch (const std::runtime_error& e)
-    {
-        last = false;
-    }
+    UNITTEST_DOESNT_THROW(
+        ID = tex.addFrame(testfile_1),
+        std::exception,
+        "enter addFrame on previously loaded file"
+    );
 
-    if (last)
-    {
-        std::cout << "  succeeded in preventing loading same file twice" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed in preventing loading same file twice" << std::endl;
-    }
-    result &= last;
+    UNITTEST_ASSERT(
+        ID == 0,
+        "prevent actually loading same file twice"
+    );
 
     // ...................................................................... //
 
-    try
-    {
-        ID = tex.addFrame(testfile_2);
-        last = ID == 1;
-    }
-    catch (const std::runtime_error& e)
-    {
-        last = false;
-    }
+    UNITTEST_DOESNT_THROW(
+        ID = tex.addFrame(testfile_2),
+        std::exception,
+        "load a second file"
+    );
 
-    if (last)
-    {
-        std::cout << "  succeeded in loading a second file" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed in loading a second file" << std::endl;
-    }
-    result &= last;
+    UNITTEST_ASSERT(
+        ID == 1,
+        "load second file"
+    );
+
+    UNITTEST_ASSERT(
+        tex.size() == 2,
+        "record size correctly after adding textures"
+    );
 
     // ...................................................................... //
 
-    last = tex.size() == 2;
-    if (last)
-    {
-        std::cout << "  succeeded to record size correctly after adding textures" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed to record size correctly after adding textures" << std::endl;
-    }
-    result &= last;
+    UNITTEST_ASSERT(
+        (tex.getTexture(0) != nullptr) && (tex.getTexture(1) != nullptr),
+        "obtain valid texture ptrs"
+    );
+
+    UNITTEST_ASSERT(
+        (tex.getImageDimensions(0) == dimensions_1) && (tex.getImageDimensions(1) == dimensions_2),
+        "retrieve correct dimensions"
+    );
+
+    UNITTEST_ASSERT(
+        (tex.getFilename(0) == testfile_1) && (tex.getFilename(1) == testfile_2),
+        "record filenames"
+    );
+
+    UNITTEST_ASSERT(
+        (tex.findByFilename(testfile_1) == 0) && (tex.findByFilename(testfile_2) == 1),
+        "retrieve items by filename"
+    );
 
     // ...................................................................... //
 
-    last = (tex.getTexture(0) != nullptr) && (tex.getTexture(1) != nullptr);
-    if (last)
-    {
-        std::cout << "  succeeded in obtaining valid texture ptr" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed in obtaining valid texture ptr" << std::endl;
-    }
-    result &= last;
-
-    // ...................................................................... //
-
-    last = (tex.getImageDimensions(0) == dimensions_1) && (tex.getImageDimensions(1) == dimensions_2);
-    if (last)
-    {
-        std::cout << "  succeeded in retrieving correct dimensions" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed in retrieving correct dimensions" << std::endl;
-    }
-    result &= last;
-
-    // ...................................................................... //
-
-    last = (tex.getFilename(0) == testfile_1) && (tex.getFilename(1) == testfile_2);
-    if (last)
-    {
-        std::cout << "  succeeded in recording filenames" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed in recording filenames" << std::endl;
-    }
-    result &= last;
-
-    // ...................................................................... //
-
-    last = (tex.findByFilename(testfile_1) == 0) && (tex.findByFilename(testfile_2) == 1);
-    if (last)
-    {
-        std::cout << "  succeeded in retrieving items by filename" << std::endl;
-    }
-    else
-    {
-        std::cout << "  failed in retrieving items by filename" << std::endl;
-    }
-    result &= last;
-
-    // ...................................................................... //
-
-    return result;
+    UNITTEST_FINALIZE;
 }

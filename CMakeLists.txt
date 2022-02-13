@@ -39,11 +39,13 @@ target_link_libraries(Retrogame-base ${SDL2_LIBRARIES})
 
 add_executable(Retrogame-base-unittest
     src/main-unittest.cpp
+    src/unittests/unittest-macros.hpp
     src/globals.hpp src/globals.cpp
     src/gfxSystem/window.hpp src/gfxSystem/window.cpp
     src/gfxSystem/texturestore.hpp src/gfxSystem/texturestore.cpp
     src/unittests/window-unittest.hpp src/unittests/window-unittest.cpp
     src/unittests/globals-unittest.hpp src/unittests/globals-unittest.cpp
+    src/unittests/texturestore-unittest.hpp src/unittests/texturestore-unittest.cpp
     )
 
 target_link_libraries(Retrogame-base-unittest ${SDL2_LIBRARIES})
