@@ -16,7 +16,8 @@ namespace RetrogameBase {
 // ========================================================================== //
 // CTor, DTor
 
-    Window::Window(const char* title, int width, int height, Uint32 render_flags) {
+    Window::Window(const char* title, int width, int height, Uint32 render_flags) :
+        textureStore(*this) {
         hwin = SDL_CreateWindow(title,
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,     // x, y
                                 width, height,

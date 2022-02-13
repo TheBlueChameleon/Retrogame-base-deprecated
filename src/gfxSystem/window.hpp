@@ -15,15 +15,20 @@
 
 // own
 #include "../globals.hpp"
+#include "texturestore.hpp"
 
 // ========================================================================== //
 // Class
 
 namespace RetrogameBase {
+    class TextureStore;
+
     class Window {
         private:
             SDL_Window*   hwin         = nullptr;
             SDL_Renderer* win_renderer = nullptr;
+
+            TextureStore textureStore;
 
         public:
             // ---------------------------------------------------------------------- //

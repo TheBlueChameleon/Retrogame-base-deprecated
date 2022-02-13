@@ -8,7 +8,8 @@ using namespace std::string_literals;
 #include <filesystem>
 namespace fs = std::filesystem;
 
-// local
+// own
+#include "window.hpp"
 #include "texturestore.hpp"
 
 // ========================================================================== //
@@ -42,7 +43,7 @@ namespace RetrogameBase {
 // ========================================================================== //
 // CTor, DTor
 
-    TextureStore::TextureStore(const Window* win) :
+    TextureStore::TextureStore(const Window& win) :
         win(win) {}
 
     TextureStore::~TextureStore() {
@@ -53,7 +54,7 @@ namespace RetrogameBase {
 // getters
 
     const Window& TextureStore::getWin() const {
-        return *win;
+        return win;
     }
 
     size_t TextureStore::size() const {
@@ -113,7 +114,7 @@ namespace RetrogameBase {
                                      ));
         }
 
-        SDL_Texture* newTexture = SDL_CreateTextureFromSurface(win->getRenderer(),
+        SDL_Texture* newTexture = SDL_CreateTextureFromSurface(win.getRenderer(),
                                   loadedSurface);
         if(!newTexture) {
             throw std::runtime_error(THROWTEXT(
@@ -139,7 +140,7 @@ namespace RetrogameBase {
 
         SDL_Rect dest = {x, y, dimensions[ID].first, dimensions[ID].second};
 
-        SDL_RenderCopy(win->getRenderer(), textures[ID], NULL, &dest);
+        SDL_RenderCopy(win.getRenderer(), textures[ID], NULL, &dest);
     }
 
 // ========================================================================== //

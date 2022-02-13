@@ -14,16 +14,15 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-// own
-#include "window.hpp"
-
 // ========================================================================== //
 // Class
 
 namespace RetrogameBase {
+    class Window;
+
     class TextureStore {
         private:
-            const Window* win;
+            const Window& win;
 
             std::vector<SDL_Texture*>        textures;
             std::vector<std::string>         filenames;
@@ -35,7 +34,7 @@ namespace RetrogameBase {
             // -------------------------------------------------------------- //
             // CTor, DTor
             TextureStore() = delete;
-            TextureStore(const Window* win);
+            TextureStore(const Window& win);
             ~TextureStore();
 
             // -------------------------------------------------------------- //
