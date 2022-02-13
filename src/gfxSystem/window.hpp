@@ -13,6 +13,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+// own
+#include "../globals.hpp"
+
 // ========================================================================== //
 // Class
 
@@ -50,22 +53,45 @@ namespace RetrogameBase {
             // ---------------------------------------------------------------------- //
             // place, hide and show
 
-            void setTitle(const char* title);
-            void setTitle(const std::string& title);
+            void setTitle(const char* title) const;
+            void setTitle(const std::string& title) const;
 
-            void setDimension(const int w, const int h);
-            void setPosition(const int x, const int y);
+            void setDimension(const int w, const int h) const;
+            void setPosition(const int x, const int y) const;
 
-            void hide();
-            void show();
+            void hide() const;
+            void show() const;
 
-            void minimize();
-            void maximize();
-            void restore();
+            void minimize() const;
+            void maximize() const;
+            void restore() const;
 
-            void update();
+            void update() const;
 
+            // ---------------------------------------------------------------------- //
+            // drawing primitives
 
+            void clear(SDL_Color color = color_black);
+
+            void pset(int  x, int  y,                 SDL_Color color = color_white);
+            void line(int x1, int y1, int x2, int y2, SDL_Color color = color_white);
+            void  box(int  x, int  y, int  w, int  h, SDL_Color color = color_white);
+            void fbox(int  x, int  y, int  w, int  h, SDL_Color color = color_white);
+
+            void print(const char* text,
+                       const int x, const int y,
+                       int width = -1, int height = -1,
+                       SDL_Color color = color_white,
+                       TTF_Font* font = nullptr);
+
+            // ---------------------------------------------------------------------- //
+            // fadeouts
+
+            enum class FadeoutType {
+                Stripes,
+                Pixelate,
+                Desatify
+            };
     };
 
 }

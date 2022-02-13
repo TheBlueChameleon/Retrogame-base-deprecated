@@ -82,47 +82,104 @@ namespace RetrogameBase {
         return win_renderer;
     }
 
-    // ========================================================================== //
-    // place, hide and show
+// ========================================================================== //
+// place, hide and show
 
-    void Window::setTitle(const char* title) {
+    void Window::setTitle(const char* title) const {
         SDL_SetWindowTitle(hwin, title);
     }
 
-    void Window::setTitle(const std::string& title) {
+    void Window::setTitle(const std::string& title) const {
         setTitle(title.c_str());
     }
 
-    void Window::setDimension(const int w, const int h) {
+    void Window::setDimension(const int w, const int h) const {
         SDL_SetWindowSize(hwin, w, h);
     }
 
-    void Window::setPosition(const int x, const int y) {
+    void Window::setPosition(const int x, const int y) const {
         SDL_SetWindowPosition(hwin, x, y);
     }
 
-    void Window::hide() {
+    void Window::hide() const {
         SDL_HideWindow(hwin);
     }
 
-    void Window::show() {
+    void Window::show() const {
         SDL_ShowWindow(hwin);
     }
 
-    void Window::minimize() {
+    void Window::minimize() const {
         SDL_MinimizeWindow(hwin);
     }
 
-    void Window::maximize() {
+    void Window::maximize() const {
         SDL_MaximizeWindow(hwin);
     }
 
-    void Window::restore() {
+    void Window::restore() const {
         SDL_RestoreWindow(hwin);
     }
 
-    void Window::update() {
+    void Window::update() const {
         SDL_RenderPresent(win_renderer);
+    }
+
+// ========================================================================== //
+// drawing primitives
+
+    void Window::clear(SDL_Color color) {
+        SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
+        SDL_RenderClear       ( win_renderer );
+    }
+
+    void Window::pset(int x, int y, SDL_Color color) {
+        SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
+        SDL_RenderDrawPoint( win_renderer, x, y);
+    }
+
+    void Window::line(int x1, int y1, int x2, int y2, SDL_Color color) {
+        SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
+        SDL_RenderDrawLine(win_renderer, x1, y1, x2, y2);
+    }
+
+    void Window::box(int x, int y, int w, int h, SDL_Color color) {
+        SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
+        SDL_Rect rect = { x, y, w, h };
+        SDL_RenderDrawRect(win_renderer, &rect);
+    }
+
+    void Window::fbox(int x, int y, int w, int h, SDL_Color color) {
+        SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
+        SDL_Rect rect = { x, y, w, h };
+        SDL_RenderFillRect(win_renderer, &rect);
+    }
+
+    void Window::print(const char* text, const int x, const int y, int width, int height, SDL_Color color, TTF_Font* font) {
+        if (!text) {
+            return;
+        }
+
+        if ( !font ) {
+            font = fonts["fixed-small"];
+        }
+
+        SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, color);
+        SDL_Texture* msg = SDL_CreateTextureFromSurface(win_renderer, surfaceMessage);
+
+        if (width  == -1) {
+            width = surfaceMessage->w;
+        }
+        if (height == -1) {
+            height = surfaceMessage->h;
+        }
+
+        SDL_Rect msg_rect = {x, y, width, height};
+
+        SDL_RenderCopy(win_renderer, msg, NULL, &msg_rect);
+
+        SDL_FreeSurface(surfaceMessage);
+        SDL_DestroyTexture(msg);
     }
 
 
