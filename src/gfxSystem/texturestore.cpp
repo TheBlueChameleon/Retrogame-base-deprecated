@@ -43,11 +43,20 @@ namespace RetrogameBase {
 // ========================================================================== //
 // CTor, DTor
 
-    TextureStore::TextureStore(const Window& win) :
+    TextureStore::TextureStore(Window& win) :
         win(win) {}
 
     TextureStore::~TextureStore() {
         reset();
+    }
+
+// ========================================================================== //
+// private methods
+
+    void TextureStore::reset_private() {
+        for (auto& tex : textures) {
+            SDL_DestroyTexture(tex);
+        }
     }
 
 // ========================================================================== //
@@ -91,9 +100,7 @@ namespace RetrogameBase {
 // setters/modifiers
 
     void TextureStore::reset() {
-        for (auto& tex : textures) {
-            SDL_DestroyTexture(tex);
-        }
+        win.resetStores();
     }
 
     size_t TextureStore::addFrame(const std::string& filename) {

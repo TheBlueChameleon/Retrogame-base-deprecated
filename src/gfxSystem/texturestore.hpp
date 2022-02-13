@@ -22,19 +22,22 @@ namespace RetrogameBase {
 
     class TextureStore {
         private:
-            const Window& win;
+            Window& win;
 
             std::vector<SDL_Texture*>        textures;
             std::vector<std::string>         filenames;
             std::vector<std::pair<int, int>> dimensions;
 
+            void reset_private();
+
         public:
             static const size_t NOINDEX = std::numeric_limits<size_t>::max();
+            friend class Window;
 
             // -------------------------------------------------------------- //
             // CTor, DTor
             TextureStore() = delete;
-            TextureStore(const Window& win);
+            TextureStore(Window& win);
             ~TextureStore();
 
             // -------------------------------------------------------------- //

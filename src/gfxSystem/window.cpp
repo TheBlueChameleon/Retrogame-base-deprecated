@@ -183,6 +183,20 @@ namespace RetrogameBase {
         SDL_DestroyTexture(msg);
     }
 
+// ========================================================================== //
+// fadeouts
+
+// ========================================================================== //
+// storage access
+
+    TextureStore& Window::getTextureStore() {
+        return textureStore;
+    }
+
+    void Window::resetStores() {
+        textureStore.reset_private();
+    }
+
 
 // ========================================================================== //
 // namespace

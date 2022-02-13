@@ -97,7 +97,13 @@ namespace RetrogameBase {
                 Pixelate,
                 Desatify
             };
-    };
 
+            // ---------------------------------------------------------------------- //
+            // storage access
+
+            TextureStore& getTextureStore();
+
+            void resetStores();
+    };
 }
 #endif // WINDOW_HPP
