@@ -48,6 +48,7 @@ add_executable(Retrogame-base-unittest
     src/unittests/window-unittest.hpp src/unittests/window-unittest.cpp
     src/unittests/globals-unittest.hpp src/unittests/globals-unittest.cpp
     src/unittests/texturestore-unittest.hpp src/unittests/texturestore-unittest.cpp
+    src/unittests/animation-unittest.hpp src/unittests/animation-unittest.cpp
     )
 
 target_link_libraries(Retrogame-base-unittest ${SDL2_LIBRARIES})
