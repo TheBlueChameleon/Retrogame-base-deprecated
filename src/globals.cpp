@@ -12,10 +12,7 @@
 
 using namespace std::string_literals;
 
-
-// SDL
-
-// local
+// own
 #include "globals.hpp"
 
 // ========================================================================== //
@@ -91,7 +88,6 @@ namespace RetrogameBase
             throw std::runtime_error("Font '"s + filename + "' already in font store");
         }
     }
-
 
 // ========================================================================== //
 // namespace

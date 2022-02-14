@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Retrogame-base">
+  <version>
+    <major value="1" />
+    <minor value="1" />
+  </version>
+  
+  <content value="animation" />
+
+  <animation>
+    <!-- error tests -->
+    <frame file="nonexistent file will not throw an error due to implicit repeat=0" repeat="" />
+    <frame file="../unittest-gfx/frame06.png" file="this should be ignored" />
+    <new meaning="This is to test whether the system is tolerant towards unforseen tags in the list" />
+    <!-- /error tests -->
+
+    <frame file="../unittest-gfx/frame01.png" />
+    <frame file="../unittest-gfx/frame02.png" />
+    <frame file="../unittest-gfx/frame03.png" />
+    <frame file="../unittest-gfx/frame04.png" />
+    <frame file="../unittest-gfx/frame05.png" />
+    <frame file="../unittest-gfx/frame07.png" />
+    <frame file="../unittest-gfx/frame08.png" />
+    <frame file="../unittest-gfx/frame09.png" />
+    <frame file="../unittest-gfx/frame10.png" repeat="10" />
+  </animation>
+</project>

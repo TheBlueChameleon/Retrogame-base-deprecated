@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <description>
+    This file is here to test and illistrate how the XML parser acts when there is no root named project.
+  </description>
+</root>

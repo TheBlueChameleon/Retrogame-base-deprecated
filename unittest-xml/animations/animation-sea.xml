@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Retrogame-base">
+  <version>
+    <major value="1" />
+    <minor value="1" />
+  </version>
+  
+  <content value="animation" />
+
+  <animation>
+    <frame file="../unittest-gfx/sea01.png" />
+    <frame file="../unittest-gfx/sea02.png" />
+    <frame file="../unittest-gfx/sea03.png" />
+    <frame file="../unittest-gfx/sea04.png" />
+    <frame file="../unittest-gfx/sea05.png" />
+  </animation>
+</project>
