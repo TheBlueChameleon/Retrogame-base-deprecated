@@ -46,13 +46,13 @@ namespace RetrogameBase
             // -------------------------------------------------------------- //
             // getters
 
-            const Window& getWin () const;
+            const Window& getWindow () const;
 
             size_t size() const;
 
             SDL_Texture*        getTexture(size_t ID) const;
             const std::string&  getFilename(const int ID) const;
-            std::pair<int, int> getImageDimension(const int ID) const;
+            std::pair<int, int> getTextureDimension(const int ID) const;
 
             size_t findByFilename(const std::string& filename) const;         // returns NOINDEX if image not in store
 

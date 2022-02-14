@@ -66,7 +66,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // getters
 
-    const Window& TextureStore::getWin() const
+    const Window& TextureStore::getWindow() const
     {
         return win;
     }
@@ -88,7 +88,7 @@ namespace RetrogameBase
         return filenames[ID];
     }
 
-    std::pair<int, int> TextureStore::getImageDimension(const int ID) const
+    std::pair<int, int> TextureStore::getTextureDimension(const int ID) const
     {
         CHECK_GFX_INDEX(ID);
         return dimensions[ID];

@@ -56,6 +56,7 @@ namespace RetrogameBase
             Uint32 GetWindowFlags() const;
 
             SDL_Renderer* getRenderer() const;
+            TextureStore& getTextureStore() const;
 
             // ---------------------------------------------------------------------- //
             // place, hide and show

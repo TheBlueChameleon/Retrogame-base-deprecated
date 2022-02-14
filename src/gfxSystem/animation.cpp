@@ -92,17 +92,17 @@ namespace RetrogameBase
 
         if (dimension == NODIMENSION)
         {
-            dimension = textureStore.getImageDimension(ID);
+            dimension = textureStore.getTextureDimension(ID);
         }
         else
         {
-            if (dimension != textureStore.getImageDimension(ID))
+            if (dimension != textureStore.getTextureDimension(ID))
             {
                 throw std::runtime_error(THROWTEXT("  Invalid frame size!\n"
                                                    "  Expected: "s +
                                                    DIMENSIONSTRING(dimension) + "\n"
                                                    "  Found: " +
-                                                   DIMENSIONSTRING(textureStore.getImageDimension(ID))
+                                                   DIMENSIONSTRING(textureStore.getTextureDimension(ID))
                                                   ));
             }
         }

@@ -119,7 +119,7 @@ bool unittest_TextureStore_addReset()
     );
 
     UNITTEST_ASSERT(
-        (tex.getImageDimension(0) == dimensions_1) && (tex.getImageDimension(1) == dimensions_2),
+        (tex.getTextureDimension(0) == dimensions_1) && (tex.getTextureDimension(1) == dimensions_2),
         "retrieve correct dimensions"
     );
 
