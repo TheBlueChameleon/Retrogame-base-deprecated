@@ -27,7 +27,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // proc
 
-    pugi::xml_document XMLload(const std::string& filename, const std::string& expectedContent)
+    pugi::xml_document XmlLoad(const std::string& filename, const std::string& expectedContent)
     {
         /* Loads the document specified by <filename>
          * Performs project and version check
@@ -166,7 +166,7 @@ namespace RetrogameBase
         return doc;
     }
 
-    XmlSimpleGroup XmlExtractAttributeList(pugi::xml_node& node)
+    XmlSimpleGroup XmlExtractSimpleGroup(pugi::xml_node& node)
     {
         std::string                 tag, attrib, value;
         XmlTagElement               element;

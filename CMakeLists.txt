@@ -17,7 +17,7 @@ endif(${CMAKE_BUILD_TYPE} MATCHES "Debug")
 
 add_definitions(-DPROJECT_NAME="Retrogame-base")
 add_definitions(-DCODEVERSION_MAJOR=1)
-add_definitions(-DCODEVERSION_MINOR=0)
+add_definitions(-DCODEVERSION_MINOR=1)
 
 # ============================================================================ #
 # load SDL2

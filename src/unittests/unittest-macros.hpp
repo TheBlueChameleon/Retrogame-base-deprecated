@@ -26,9 +26,11 @@ bool unittest_foobar()
 #ifndef UNITTESTMACROS_HPP
 #define UNITTESTMACROS_HPP
 
+#include <stdexcept>
+
 #define UNITTEST_VARS bool unittest_result = true, unittest_last_result = true;
 #define UNITTEST_FINALIZE return unittest_result;
-#define UNITTEST_CRITICAL_BARRIER if (!unittest_last_result) {return unittest_result;}
+#define UNITTEST_CRITICAL_BARRIER if (!unittest_last_result) { throw std::runtime_error("Inconsistent state of the unittest framework"); }
 
 #define UNITTEST_ASSERT(expr, taskDescription) {\
         unittest_last_result = expr; \

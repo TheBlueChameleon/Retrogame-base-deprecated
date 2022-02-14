@@ -23,7 +23,7 @@ namespace RetrogameBase
 #ifdef PROJECT_NAME
     constexpr auto projectName = PROJECT_NAME;
 #else
-    constexpr auto projectName = "Retrogame";
+    constexpr auto projectName = "Retrogame-base";
 #endif
 
 #ifdef CODEVERSION_MAJOR
@@ -40,7 +40,7 @@ namespace RetrogameBase
 
 // ========================================================================== //
 // proc
-    pugi::xml_document XMLload(const std::string& filename, const std::string& expectedContent = "");
+    pugi::xml_document XmlLoad(const std::string& filename, const std::string& expectedContent = "");
 
     /* a simple xml tag has the following structure:
      * <tag attribute=value attribute=value ... />
@@ -59,7 +59,7 @@ namespace RetrogameBase
     using XmlSimpleTag   = std::pair<std::string, std::vector<XmlTagElement>>;   // (tag, elements)
     using XmlSimpleGroup = std::vector<XmlSimpleTag>;
 
-    XmlSimpleGroup XmlExtractAttributeList (pugi::xml_node& node);
+    XmlSimpleGroup XmlExtractSimpleGroup (pugi::xml_node& node);
 
 // ========================================================================== //
 // namespace

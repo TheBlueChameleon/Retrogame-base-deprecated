@@ -41,7 +41,7 @@ int main()
 //    ADD_UNITTEST(unittest_TextureStore_addReset);
 //    ADD_UNITTEST(unittest_Animation_addReset);
     ADD_UNITTEST(unittest_xmlSystem_load);
-    ADD_UNITTEST(unittest_xmlSystem_extractAttributeList);
+    ADD_UNITTEST(unittest_xmlSystem_XmlExtractSimpleGroup);
 
     std::cout << "DONE" << std::endl << std::endl;
 
