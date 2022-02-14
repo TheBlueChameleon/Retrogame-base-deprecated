@@ -6,6 +6,7 @@
 
 // own
 #include "animationstore.hpp"
+#include "window.hpp"
 #include "texturestore.hpp"
 
 // ========================================================================== //
@@ -21,8 +22,9 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    AnimationStore::AnimationStore(TextureStore& textureStore) :
-        textureStore(textureStore)
+    AnimationStore::AnimationStore(Window& window) :
+        window(window),
+        textureStore(window.getTextureStore())
     {}
 
 // ========================================================================== //

@@ -10,17 +10,21 @@
 #include <vector>
 #include <string>
 
-// own
-#include "texturestore.hpp"
+// SDL
+#include <SDL2/SDL.h>
 
 // ========================================================================== //
 // Class
 
 namespace RetrogameBase
 {
+    class Window;
+    class TextureStore;
+
     class Animation
     {
         private:
+            Window& window;
             TextureStore& textureStore;
 
             std::vector<size_t> frames;
@@ -35,7 +39,7 @@ namespace RetrogameBase
             // CTor, DTor
 
             Animation() = delete;
-            Animation(TextureStore& textureStore);
+            Animation(Window& window);
 
             // -------------------------------------------------------------- //
             // getters
@@ -54,10 +58,12 @@ namespace RetrogameBase
 
             void reset();
 
+            void advanceFrame();
+
             void addFrame (size_t ID);
             void addFrame (const std::string& filename);
 
-            void advanceFrame();
+            void loadXML (const std::string& filename);
 
             // -------------------------------------------------------------- //
             // display

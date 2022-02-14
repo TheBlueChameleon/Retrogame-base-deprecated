@@ -8,6 +8,9 @@ using namespace std::string_literals;
 #include <filesystem>
 namespace fs = std::filesystem;
 
+// SDL
+#include <SDL2/SDL_image.h>
+
 // own
 #include "window.hpp"
 #include "texturestore.hpp"
@@ -44,8 +47,8 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    TextureStore::TextureStore(Window& win) :
-        win(win) {}
+    TextureStore::TextureStore(Window& window) :
+        window(window) {}
 
     TextureStore::~TextureStore()
     {
@@ -68,7 +71,7 @@ namespace RetrogameBase
 
     const Window& TextureStore::getWindow() const
     {
-        return win;
+        return window;
     }
 
     size_t TextureStore::size() const
@@ -114,7 +117,7 @@ namespace RetrogameBase
 
     void TextureStore::reset()
     {
-        win.resetStores();
+        window.resetStores();
     }
 
     size_t TextureStore::addFrame(const std::string& filename)
@@ -138,7 +141,7 @@ namespace RetrogameBase
                                      ));
         }
 
-        SDL_Texture* newTexture = SDL_CreateTextureFromSurface(win.getRenderer(),
+        SDL_Texture* newTexture = SDL_CreateTextureFromSurface(window.getRenderer(),
                                   loadedSurface);
         if(!newTexture)
         {
@@ -166,7 +169,7 @@ namespace RetrogameBase
 
         SDL_Rect dest = {x, y, dimensions[ID].first, dimensions[ID].second};
 
-        SDL_RenderCopy(win.getRenderer(), textures[ID], NULL, &dest);
+        SDL_RenderCopy(window.getRenderer(), textures[ID], NULL, &dest);
     }
 
 // ========================================================================== //

@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 
-// own
+#include "animation.hpp"
 
 // ========================================================================== //
 // Class
@@ -24,7 +24,7 @@ namespace RetrogameBase
     class AnimationStore
     {
         private:
-            Window& win;
+            Window& window;
             TextureStore& textureStore;
 
             std::vector<std::string> filenames;
@@ -39,7 +39,7 @@ namespace RetrogameBase
             // -------------------------------------------------------------- //
             // CTor, DTor
 
-            AnimationStore(Window& win);
+            AnimationStore(Window& window);
 
             // -------------------------------------------------------------- //
             // getters
@@ -61,6 +61,8 @@ namespace RetrogameBase
             void reset();
 
             size_t addAnimation (const std::string& filename);                    // returns index of loaded image in store. Prevents double loading
+
+            void advanceAll();
 
     };
 }

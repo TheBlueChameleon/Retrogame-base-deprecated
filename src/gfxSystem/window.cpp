@@ -96,11 +96,6 @@ namespace RetrogameBase
         return win_renderer;
     }
 
-    TextureStore& Window::getTextureStore() const
-    {
-        return textureStore;
-    }
-
 // ========================================================================== //
 // place, hide and show
 

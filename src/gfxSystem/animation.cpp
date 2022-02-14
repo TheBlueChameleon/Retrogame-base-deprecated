@@ -9,6 +9,7 @@ using namespace std::string_literals;
 namespace fs = std::filesystem;
 
 // own
+#include "window.hpp"
 #include "texturestore.hpp"
 #include "animation.hpp"
 
@@ -34,10 +35,9 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-
-
-    Animation::Animation(TextureStore& textureStore) :
-        textureStore(textureStore)
+    Animation::Animation(Window& window) :
+        window(window),
+        textureStore(window.getTextureStore())
     {}
 
 // ========================================================================== //
@@ -83,6 +83,12 @@ namespace RetrogameBase
         dimension = {-1, -1};
     }
 
+    void Animation::advanceFrame()
+    {
+        ++currentPhase;
+        currentPhase -= (currentPhase == frames.size()) * frames.size();
+    }
+
     void Animation::addFrame(size_t ID)
     {
         if ( (ID >= textureStore.size()) )
@@ -113,11 +119,5 @@ namespace RetrogameBase
     void Animation::addFrame(const std::string& filename)
     {
         addFrame( textureStore.addFrame(filename) );
-    }
-
-    void Animation::advanceFrame()
-    {
-        ++currentPhase;
-        currentPhase -= (currentPhase == frames.size()) * frames.size();
     }
 }

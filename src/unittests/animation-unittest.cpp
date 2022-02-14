@@ -33,7 +33,7 @@ bool unittest_Animation_addReset()
 
     Window win("test window");
     TextureStore& tex = win.getTextureStore();
-    Animation ani(tex);
+    Animation ani(win);
 
     // ...................................................................... //
 
