@@ -189,7 +189,8 @@ bool unittest_Animation_loadXml()
     TextureStore& tex = win.getTextureStore();
     Animation ani(win);
 
-    auto testfile = "../unittest-xml/animations/animation-pure.xml";
+    const auto testfile    = "../unittest-xml/animations/animation-pure.xml";
+    const auto dir_invalidFiles = "../unittest-xml/animations-invalid";
 
     const std::vector<size_t> expectedFrameIDs = {0,1,2,3,4,5,6,7,8,9,9,9,9,9,9,9,9,9,9};
     const std::vector<std::string> expectedFilenames =
@@ -244,6 +245,19 @@ bool unittest_Animation_loadXml()
     );
     UNITTEST_CRITICAL_BARRIER;
 
+
+    UNITTEST_ASSERT(
+        fs::is_directory(dir_invalidFiles),
+        "find directory with invalid files"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    UNITTEST_ASSERT(
+        !fs::is_empty(dir_invalidFiles),
+        "find files in directory with invalid files"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
     // ...................................................................... //
 
     UNITTEST_DOESNT_THROW(
@@ -272,6 +286,19 @@ bool unittest_Animation_loadXml()
         UNITTEST_ASSERT(
             tex.getFilename(expectedFrameIDs[i]) ==expectedFilenames[i],
             "read file " << i << " in correct order"
+        );
+    }
+
+    // ...................................................................... //
+
+    fs::directory_iterator invalidFiles(dir_invalidFiles);
+    for (const auto& file : invalidFiles)
+    {
+        const std::string& filename = file.path().string();
+        UNITTEST_THROWS(
+            ani.loadXML(filename),
+            std::runtime_error,
+            "throw on loading file '" << filename << "'"
         );
     }
 

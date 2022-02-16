@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Retrogame-base">
+  <version>
+    <major value="1" />
+    <minor value="1" />
+  </version>
+  
+  <content value="animation" />
+
+  <animation>
+    <frame file="file does not exist" />
+  </animation>
+</project>

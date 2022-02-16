@@ -25,7 +25,7 @@ bool unittest_xmlSystem_load()
     std::cout << "TESTING XML LOAD CONVENIENCE FUNCTION" << std::endl;
 
     UNITTEST_VARS;
-    auto dir_invalidFiles = "../unittest-xml/invalid/";
+    auto dir_invalidFiles = "../unittest-xml/xml-invalid/";
     auto dir_animations   = "../unittest-xml/animations/";
 
     // ...................................................................... //
