@@ -134,7 +134,7 @@ namespace RetrogameBase
         auto root = doc.child("project");
         auto nodeAnimation = root.child("animation");
 
-        if (nodeAnimation.empty())
+        if (!nodeAnimation)
         {
             throw std::runtime_error(THROWTEXT("  Could not find tag 'animation' in file '"s + filename + "'"));
         }
