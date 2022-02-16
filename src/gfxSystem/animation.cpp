@@ -44,6 +44,13 @@ namespace RetrogameBase
         textureStore(window.getTextureStore())
     {}
 
+    Animation::Animation(Window& window, const std::string& filename) :
+        window(window),
+        textureStore(window.getTextureStore())
+    {
+        loadXML(filename);
+    }
+
 // ========================================================================== //
 // getters
 

@@ -43,6 +43,7 @@ namespace RetrogameBase
 
             Animation() = delete;
             Animation(Window& window);
+            Animation(Window& window, const std::string& filename);
 
             // -------------------------------------------------------------- //
             // getters
