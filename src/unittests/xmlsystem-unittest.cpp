@@ -125,11 +125,6 @@ bool unittest_xmlSystem_XmlExtractSimpleGroup()
     {
         {
             "frame", {
-                {"file", "nonexistent file will not throw an error due to implicit repeat=0"},
-                {"repeat", ""}
-            }
-        }, {
-            "frame", {
                 {"file", "../unittest-gfx/frame06.png"},
                 {"file", "this should be ignored"}
             }
