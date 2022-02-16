@@ -227,9 +227,18 @@ namespace RetrogameBase
         return textureStore;
     }
 
-    void Window::resetStores()
+    void Window::resetStores(ResetStoresDepth depth)
     {
-        textureStore.reset_private();
+        switch (depth)
+        {
+            case ResetStoresDepth::Textures:
+                textureStore.reset_private();
+                [[fallthrough]];
+            case ResetStoresDepth::Animations:
+                [[fallthrough]];
+            case ResetStoresDepth::Layers:
+                break;
+        }
     }
 
 

@@ -106,7 +106,14 @@ namespace RetrogameBase
 
             TextureStore& getTextureStore();
 
-            void resetStores();
+            enum class ResetStoresDepth
+            {
+                Textures,
+                Animations,
+                Layers
+            };
+
+            void resetStores(ResetStoresDepth depth);
     };
 }
 #endif // WINDOW_HPP

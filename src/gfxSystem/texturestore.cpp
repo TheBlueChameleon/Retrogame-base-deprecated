@@ -64,6 +64,10 @@ namespace RetrogameBase
         {
             SDL_DestroyTexture(tex);
         }
+
+        textures.clear();
+        filenames.clear();
+        dimensions.clear();
     }
 
 // ========================================================================== //
@@ -117,7 +121,7 @@ namespace RetrogameBase
 
     void TextureStore::reset()
     {
-        window.resetStores();
+        window.resetStores(Window::ResetStoresDepth::Textures);
     }
 
     size_t TextureStore::addFrame(const std::string& filename)
