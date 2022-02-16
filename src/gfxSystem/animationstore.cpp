@@ -11,8 +11,8 @@ using namespace std::string_literals;
 namespace fs = std::filesystem;
 
 // own
-#include "animationstore.hpp"
 #include "window.hpp"
+#include "animationstore.hpp"
 #include "texturestore.hpp"
 
 // ========================================================================== //
@@ -27,7 +27,7 @@ namespace fs = std::filesystem;
         } \
     }
 #else
-#define CHECK_GFX_INDEX(ID) {}
+#define CHECK_ANIMATION_INDEX(ID) {}
 #endif
 
 #define CHECK_FILE_EXISTS(filename) {\

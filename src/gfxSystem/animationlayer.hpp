@@ -34,7 +34,6 @@ namespace RetrogameBase
             std::vector<Element> elements;
 
         public:
-
             // -------------------------------------------------------------- //
             // CTor, DTor
             AnimationLayer(RetrogameBase::Window& window);
@@ -54,8 +53,15 @@ namespace RetrogameBase
 
             void reset();
 
-            void addElement(const Element& element);
-            void removeElement(const int index);
+            void addElement    (                 const Element& element);
+            void replaceElement(const int index, const Element& element);
+            void replaceElement(const int index, const int      animationID);
+            void removeElement (const int index);
+            void moveElement   (const int index, const Coordinate& coordinate);
+
+            void loadXML (const std::string& filename);
+        private:
+        public:
 
             // -------------------------------------------------------------- //
             // display
