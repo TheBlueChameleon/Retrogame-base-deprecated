@@ -30,7 +30,7 @@ bool unittest_Animation_addReset()
     constexpr auto dimensions_1 = std::make_pair(50, 50);
     constexpr auto dimensions_X = std::make_pair(10, 10);
 
-    std::vector<size_t> frameIDs = {0, 1, 0};
+    std::vector<size_t> frameIDs = {0, 1, 0, 1, 1, 1};
 
     Window win("test window");
     TextureStore& tex = win.getTextureStore();
@@ -113,8 +113,14 @@ bool unittest_Animation_addReset()
         "add frames from filled store with zero repetition"
     );
 
+    UNITTEST_DOESNT_THROW(
+        ani.addFrame(1, 3),
+        std::exception,
+        "add frames from filled store with repetition"
+    );
+
     UNITTEST_ASSERT(
-        ani.size() == 3,
+        ani.size() == 6,
         "correctly report frame count after multiple added frames"
     );
 
