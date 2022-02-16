@@ -1,7 +1,9 @@
 
 // STL
-#include <iostream>
 #include <stdexcept>
+
+#include <iostream>
+#include <sstream>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -182,11 +184,48 @@ bool unittest_Animation_loadXml()
     std::cout << "TESTING ANIMATION CLASS: LOAD XML METHOD" << std::endl;
 
     UNITTEST_VARS;
-    auto testfile = "../unittest-xml/animations/animation-pure.xml";
 
     Window win("Test Window");
     TextureStore& tex = win.getTextureStore();
     Animation ani(win);
+
+    auto testfile = "../unittest-xml/animations/animation-pure.xml";
+
+    const std::vector<size_t> expectedFrameIDs = {0,1,2,3,4,5,6,7,8,9,9,9,9,9,9,9,9,9,9};
+    const std::vector<std::string> expectedFilenames =
+    {
+        "../unittest-gfx/frame06.png",
+
+        "../unittest-gfx/frame01.png",
+        "../unittest-gfx/frame02.png",
+        "../unittest-gfx/frame03.png",
+        "../unittest-gfx/frame04.png",
+        "../unittest-gfx/frame05.png",
+        "../unittest-gfx/frame07.png",
+        "../unittest-gfx/frame08.png",
+        "../unittest-gfx/frame09.png",
+
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png",
+        "../unittest-gfx/frame10.png"
+    };
+
+    // redirect stderr to local buffer to check warings
+    std::stringstream cerrBuffer;
+    std::streambuf* originalCerr = std::cerr.rdbuf(cerrBuffer.rdbuf());
+
+    std::string expectedWarnings = "Warning: duplicate definition of filename\n"
+                                   "  Animation Definition    : ../unittest-xml/animations/animation-pure.xml\n"
+                                   "  Previous Frame Reference: ../unittest-gfx/frame06.png\n"
+                                   "  New Frame Reference     : this should be ignored (ignored)\n"
+                                   "Warning: invalid tag in Animation Definition ../unittest-xml/animations/animation-pure.xml\n";
 
     // ...................................................................... //
 
@@ -207,9 +246,37 @@ bool unittest_Animation_loadXml()
 
     // ...................................................................... //
 
-    ani.loadXML(testfile);
+    UNITTEST_DOESNT_THROW(
+        ani.loadXML(testfile),
+        std::exception,
+        "load without throw"
+    );
+
+    UNITTEST_ASSERT(
+        cerrBuffer.str() == expectedWarnings,
+        "utter expected warnings"
+    );
+
+    UNITTEST_ASSERT(
+        ani.size() == expectedFrameIDs.size(),
+        "load correct number of frames"
+    );
+
+    UNITTEST_ASSERT(
+        ani.getFrameIDs() == expectedFrameIDs,
+        "construct expected frame IDs"
+    );
+
+    for (auto i = 0u; i < expectedFrameIDs.size(); ++i)
+    {
+        UNITTEST_ASSERT(
+            tex.getFilename(expectedFrameIDs[i]) ==expectedFilenames[i],
+            "read file " << i << " in correct order"
+        );
+    }
 
     // ...................................................................... //
 
+    std::cerr.rdbuf( originalCerr );
     UNITTEST_FINALIZE;
 }
