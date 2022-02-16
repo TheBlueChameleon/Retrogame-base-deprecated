@@ -10,7 +10,6 @@
 
   <animation>
     <!-- error tests -->
-    <frame file="nonexistent file will not throw an error due to implicit repeat=0" repeat="" />
     <frame file="../unittest-gfx/frame06.png" file="this should be ignored" />
     <new meaning="This is to test whether the system is tolerant towards unforseen tags in the list" />
     <!-- /error tests -->
