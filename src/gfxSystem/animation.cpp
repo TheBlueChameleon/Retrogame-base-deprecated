@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <cstring>
 #include <string>
 using namespace std::string_literals;
 
@@ -147,11 +148,9 @@ namespace RetrogameBase
         }
 
         reset();
-        const auto animationTags = XmlExtractSimpleGroup(nodeAnimation);
-
-        for (auto& tag : animationTags)
+        for (auto subNode = nodeAnimation.first_child(); subNode; subNode = subNode.next_sibling())
         {
-            const auto data = getFilenameAndRepetitionFromTag(tag, filename);
+            const auto data = getFilenameAndRepetitionFromTag(subNode, filename);
 
             if (data == INVALID_TAG)
             {
@@ -168,67 +167,15 @@ namespace RetrogameBase
 
     const std::pair<std::string, int> Animation::INVALID_TAG  = {"<--*invalid*-->", -1};
 
-    std::pair<std::string, int> Animation::getFilenameAndRepetitionFromTag(XmlSimpleTag tag, const std::string& filename)
+    std::pair<std::string, int> Animation::getFilenameAndRepetitionFromTag(pugi::xml_node& node, const std::string& filename)
     {
-        if (!(tag.first == "frame"))
+        if (std::strcmp(node.name(), "frame"))
         {
             return INVALID_TAG;
         }
 
-        std::string frameFile;
-        int         repeat = 1;
-
-        bool hasFilename = false;
-        bool hasRepeat   = false;
-
-        for (auto& property : tag.second)
-        {
-            if (property.first == "file")
-            {
-                if (hasFilename)
-                {
-                    std::cerr << "Warning: duplicate definition of filename\n"
-                              << "  Animation Definition    : " << filename << "\n"
-                              << "  Previous Frame Reference: " << frameFile << "\n"
-                              << "  New Frame Reference     : " << property.second << " (ignored)"
-                              << std::endl;
-                    continue;
-                }
-                hasFilename = true;
-                frameFile = property.second;
-
-            }
-            else if (property.first == "repeat")
-            {
-                if (hasRepeat)
-                {
-                    std::cerr << "Warning: duplicate definition of frame repetition\n"
-                              << "  Animation Definition    : " << filename << "\n"
-                              << "  Previous Frame Reference: " << repeat << "\n"
-                              << "  New Frame Reference     : " << property.second << " (ignored)"
-                              << std::endl;
-                    continue;
-                }
-                try
-                {
-                    repeat = std::stoi(property.second);
-                }
-                catch (const std::invalid_argument& e)
-                {
-                    std::cerr << "Warning: invalid definition of frame repetition\n"
-                              << "  Animation Definition: " << filename << "\n"
-                              << "  Repetition Value    : " << property.second << " (ignored)"
-                              << std::endl;
-                    continue;
-                }
-                hasRepeat = true;
-            }
-        }
-
-        if (!hasFilename)
-        {
-            return INVALID_TAG;
-        }
+        std::string frameFile = node.attribute("file").value();
+        int         repeat    = node.attribute("repeat").as_int(1);
 
         return std::make_pair(frameFile, repeat);
     }
