@@ -56,21 +56,6 @@ namespace RetrogameBase
     }
 
 // ========================================================================== //
-// private methods
-
-    void TextureStore::reset_private()
-    {
-        for (auto& tex : textures)
-        {
-            SDL_DestroyTexture(tex);
-        }
-
-        textures.clear();
-        filenames.clear();
-        dimensions.clear();
-    }
-
-// ========================================================================== //
 // getters
 
     const Window& TextureStore::getWindow() const
@@ -162,6 +147,18 @@ namespace RetrogameBase
         SDL_FreeSurface( loadedSurface );
 
         return textures.size() - 1;
+    }
+
+    void TextureStore::reset_private()
+    {
+        for (auto& tex : textures)
+        {
+            SDL_DestroyTexture(tex);
+        }
+
+        textures.clear();
+        filenames.clear();
+        dimensions.clear();
     }
 
 // ========================================================================== //

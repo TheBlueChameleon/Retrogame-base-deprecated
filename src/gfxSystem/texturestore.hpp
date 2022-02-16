@@ -29,8 +29,6 @@ namespace RetrogameBase
             std::vector<std::string>         filenames;
             std::vector<std::pair<int, int>> dimensions;
 
-            void reset_private();
-
         public:
             static const size_t NOINDEX = std::numeric_limits<size_t>::max();
             friend class Window;
@@ -59,6 +57,9 @@ namespace RetrogameBase
             // setters/modifiers
 
             void reset();
+        private:
+            void reset_private();
+        public:
 
             size_t addFrame (const std::string& filename);                    // returns index of loaded image in store. Prevents double loading
 
