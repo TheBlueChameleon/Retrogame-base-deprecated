@@ -52,7 +52,7 @@ namespace RetrogameBase
 
     TextureStore::~TextureStore()
     {
-        reset();
+        reset_private();
     }
 
 // ========================================================================== //
