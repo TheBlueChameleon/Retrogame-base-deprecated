@@ -62,11 +62,12 @@ add_executable(Retrogame-base-unittest
     src/xmlSystem/pugixml.hpp src/xmlSystem/pugiconfig.hpp src/xmlSystem/pugixml.cpp
     src/xmlSystem/xmlwrapper.hpp src/xmlSystem/xmlwrapper.cpp
     #
-    src/unittests/window-unittest.hpp src/unittests/window-unittest.cpp
     src/unittests/globals-unittest.hpp src/unittests/globals-unittest.cpp
+    src/unittests/xmlsystem-unittest.hpp src/unittests/xmlsystem-unittest.cpp
+    src/unittests/window-unittest.hpp src/unittests/window-unittest.cpp
     src/unittests/texturestore-unittest.hpp src/unittests/texturestore-unittest.cpp
     src/unittests/animation-unittest.hpp src/unittests/animation-unittest.cpp
-    src/unittests/xmlsystem-unittest.hpp src/unittests/xmlsystem-unittest.cpp
+    src/unittests/animationstore-unittest.hpp src/unittests/animationstore-unittest.cpp
 )
 
 target_link_libraries(Retrogame-base-unittest ${SDL2_LIBRARIES})
