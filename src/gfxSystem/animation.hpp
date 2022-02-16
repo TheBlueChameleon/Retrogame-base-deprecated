@@ -70,7 +70,7 @@ namespace RetrogameBase
             void loadXML (const std::string& filename);
         private:
             static const std::pair<std::string, int> INVALID_TAG;
-            std::pair<std::string, int> getFilenameAndRepetitionFromTag(pugi::xml_node& node, const std::string& filename);
+            std::pair<std::string, int> getFilenameAndRepetitionFromTag(pugi::xml_node& node, const std::string& filename) const;
 
         public:
 

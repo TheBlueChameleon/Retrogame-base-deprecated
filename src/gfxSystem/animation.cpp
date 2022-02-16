@@ -165,9 +165,9 @@ namespace RetrogameBase
         }
     }
 
-    const std::pair<std::string, int> Animation::INVALID_TAG  = {"<--*invalid*-->", -1};
+    const std::pair<std::string, int> Animation::INVALID_TAG  = {"<-*-invalid-*->", -1};
 
-    std::pair<std::string, int> Animation::getFilenameAndRepetitionFromTag(pugi::xml_node& node, const std::string& filename)
+    std::pair<std::string, int> Animation::getFilenameAndRepetitionFromTag(pugi::xml_node& node, const std::string& filename) const
     {
         if (std::strcmp(node.name(), "frame"))
         {
