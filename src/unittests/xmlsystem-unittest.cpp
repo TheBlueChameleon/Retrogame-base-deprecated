@@ -110,8 +110,6 @@ bool unittest_xmlSystem_load()
         );
     }
 
-
-
     // ...................................................................... //
 
     UNITTEST_FINALIZE;
@@ -125,6 +123,24 @@ bool unittest_xmlSystem_XmlExtractSimpleGroup()
     auto testfile = "../unittest-xml/animations/animation-pure.xml";
 
     // ...................................................................... //
+
+    UNITTEST_ASSERT(
+        !std::strcmp(projectName, "Retrogame-base"),
+        "fetch project name from definitions"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    UNITTEST_ASSERT(
+        codeVersion_major == 1,
+        "fetch project version major"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    UNITTEST_ASSERT(
+        codeVersion_minor == 1,
+        "fetch project version minor"
+    );
+    UNITTEST_CRITICAL_BARRIER;
 
     auto doc = XmlLoad(testfile);
     auto root = doc.child("project");
@@ -210,15 +226,6 @@ bool unittest_xmlSystem_XmlExtractSimpleGroup()
         attributeList == expected,
         "reconstruct expected structure"
     );
-
-//    for (auto& x : attributeList)
-//    {
-//        std::cout << x.first << std::endl;
-//        for (auto& y : x.second)
-//        {
-//            std::cout << "\t" << y.first << " = " << y.second << std::endl;
-//        }
-//    }
 
     // ...................................................................... //
 
