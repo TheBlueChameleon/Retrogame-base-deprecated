@@ -11,13 +11,14 @@ namespace fs = std::filesystem;
 #include "../gfxSystem/window.hpp"
 #include "../gfxSystem/texturestore.hpp"
 #include "../gfxSystem/animation.hpp"
+#include "../xmlSystem/xmlwrapper.hpp"
 #include "animation-unittest.hpp"
 
 using namespace RetrogameBase;
 
 bool unittest_Animation_addReset()
 {
-    std::cout << "TESTING ANIMATION CLASS" << std::endl;
+    std::cout << "TESTING ANIMATION CLASS: ADD AND RESET METHODS" << std::endl;
 
     UNITTEST_VARS;
     size_t ID;
@@ -152,6 +153,43 @@ bool unittest_Animation_addReset()
         ani.size() == 0,
         "reset filled animation store"
     );
+
+    // ...................................................................... //
+
+    UNITTEST_FINALIZE;
+}
+
+bool unittest_Animation_loadXml()
+{
+    std::cout << "TESTING ANIMATION CLASS: LOAD XML METHOD" << std::endl;
+
+    UNITTEST_VARS;
+    auto testfile = "../unittest-xml/animations/animation-pure.xml";
+
+    Window win("Test Window");
+    TextureStore& tex = win.getTextureStore();
+    Animation ani(win);
+
+    // ...................................................................... //
+
+    UNITTEST_ASSERT(
+        fs::exists(testfile),
+        "find testfile"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    auto doc = XmlLoad(testfile);
+    auto root = doc.child("project");
+    auto nodeAnimation = root.child("animation");
+    UNITTEST_ASSERT(
+        !nodeAnimation.empty(),
+        "find the animation node in the testfile"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    // ...................................................................... //
+
+    ani.loadXML(testfile);
 
     // ...................................................................... //
 
