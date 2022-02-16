@@ -220,16 +220,6 @@ bool unittest_Animation_loadXml()
         "../unittest-gfx/frame10.png"
     };
 
-    // redirect stderr to local buffer to check warings
-    std::stringstream cerrBuffer;
-    std::streambuf* originalCerr = std::cerr.rdbuf(cerrBuffer.rdbuf());
-
-    std::string expectedWarnings = "Warning: duplicate definition of filename\n"
-                                   "  Animation Definition    : ../unittest-xml/animations/animation-pure.xml\n"
-                                   "  Previous Frame Reference: ../unittest-gfx/frame06.png\n"
-                                   "  New Frame Reference     : this should be ignored (ignored)\n"
-                                   "Warning: invalid tag in Animation Definition ../unittest-xml/animations/animation-pure.xml\n";
-
     // ...................................................................... //
 
     UNITTEST_ASSERT(
@@ -269,11 +259,6 @@ bool unittest_Animation_loadXml()
     );
 
     UNITTEST_ASSERT(
-        cerrBuffer.str() == expectedWarnings,
-        "utter expected warnings"
-    );
-
-    UNITTEST_ASSERT(
         ani.size() == expectedFrameIDs.size(),
         "load correct number of frames"
     );
@@ -286,7 +271,7 @@ bool unittest_Animation_loadXml()
     for (auto i = 0u; i < expectedFrameIDs.size(); ++i)
     {
         UNITTEST_ASSERT(
-            tex.getFilename(expectedFrameIDs[i]) ==expectedFilenames[i],
+            tex.getFilename(expectedFrameIDs[i]) == expectedFilenames[i],
             "read file " << i << " in correct order"
         );
     }
@@ -306,6 +291,5 @@ bool unittest_Animation_loadXml()
 
     // ...................................................................... //
 
-    std::cerr.rdbuf( originalCerr );
     UNITTEST_FINALIZE;
 }
