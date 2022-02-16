@@ -39,6 +39,7 @@ add_executable(Retrogame-base
     src/gfxSystem/texturestore.hpp src/gfxSystem/texturestore.cpp
     src/gfxSystem/animation.hpp src/gfxSystem/animation.cpp
     src/gfxSystem/animationstore.hpp src/gfxSystem/animationstore.cpp
+    src/gfxSystem/animationlayer.hpp src/gfxSystem/animationlayer.cpp
     #
     src/xmlSystem/pugixml.hpp src/xmlSystem/pugiconfig.hpp src/xmlSystem/pugixml.cpp
     src/xmlSystem/xmlwrapper.hpp src/xmlSystem/xmlwrapper.cpp
