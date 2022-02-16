@@ -10,7 +10,8 @@
 #include <vector>
 #include <tuple>
 
-// own
+// Pugi
+#include "../xmlSystem/pugixml.hpp"
 
 // ========================================================================== //
 // Class
@@ -24,7 +25,7 @@ namespace RetrogameBase
     class AnimationLayer
     {
         public:
-            using Coordinate = std::pair<int, int>;
+            using Coordinate = std::tuple<int, int, double>;        // x, y, angle
             using Element    = std::pair<int, Coordinate>;
 
         private:
@@ -61,6 +62,8 @@ namespace RetrogameBase
 
             void loadXML (const std::string& filename);
         private:
+            static constexpr auto INVALID_TAG = "<-*-invalid-*->";
+            std::vector<std::string> getPaletteEntries(pugi::xml_node node) const;
         public:
 
             // -------------------------------------------------------------- //

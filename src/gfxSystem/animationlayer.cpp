@@ -2,13 +2,18 @@
 // Depenencies
 
 // STL
+#include <iostream>
 #include <stdexcept>
 
+#include <cstring>
 #include <string>
 using namespace std::string_literals;
 
 #include <filesystem>
 namespace fs = std::filesystem;
+
+// Pugi
+#include "../xmlSystem/pugixml.hpp"
 
 // own
 #include "window.hpp"
@@ -116,18 +121,61 @@ namespace RetrogameBase
     void AnimationLayer::loadXML(const std::string& filename)
     {
         auto doc = XmlLoad(filename, "animationlayer");
-        auto root = doc.child("project");
-        auto nodePalette = root.child("palette");
-        auto nodeAnimationLayer = root.child("animationlayer");
+        auto root         = doc.child("project");
+        auto nodePalette  = root.child("palette");
+        auto nodeElements = root.child("elements");
 
-        if (nodePalette) {}
+        reset();
 
-        if (!nodeAnimationLayer)
+        std::vector<int> paletteIndexToStoreIndex;
+        if (nodePalette)
         {
-            throw std::runtime_error(THROWTEXT("  Could not find tag 'animationlayer' in file '"s + filename + "'"));
+            auto paletteFiles = getPaletteEntries(nodePalette);
+
+            for (const auto& file : paletteFiles)
+            {
+                std::cout << file << std::endl;
+                paletteIndexToStoreIndex.push_back( animationStore.addAnimation(file) );
+            }
         }
 
+        if (!nodeElements)
+        {
+            throw std::runtime_error(THROWTEXT("  Could not find tag 'elements' in file '"s + filename + "'"));
+        }
 
+        std::cout << "pal:" << std::endl;
+        for (const auto& x : paletteIndexToStoreIndex)
+        {
+            std::cout << "  " << x << std::endl;
+        }
+    }
+
+    std::vector<std::string> AnimationLayer::getPaletteEntries(pugi::xml_node parent) const
+    {
+        decltype(getPaletteEntries(parent)) reVal;
+
+        for (auto node = parent.first_child(); node; node = node.next_sibling())
+        {
+            if (std::strcmp(node.name(), "animation"))
+            {
+                reVal.push_back(INVALID_TAG);
+            }
+            else
+            {
+                auto attributeFile = node.attribute("file");
+                if (attributeFile.hash_value())
+                {
+                    reVal.push_back(attributeFile.value());
+                }
+                else
+                {
+                    reVal.push_back(INVALID_TAG);
+                }
+            }
+        }
+
+        return reVal;
     }
 
 // ========================================================================== //
