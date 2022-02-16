@@ -13,6 +13,9 @@
 // SDL
 #include <SDL2/SDL.h>
 
+// own
+#include "../xmlSystem/xmlwrapper.hpp"
+
 // ========================================================================== //
 // Class
 
@@ -60,14 +63,18 @@ namespace RetrogameBase
 
             void advanceFrame();
 
-            void addFrame (size_t ID);
-            void addFrame (const std::string& filename);
+            void addFrame (size_t ID, size_t repetitions);
+            void addFrame (const std::string& filename, size_t repetitions);
 
             void loadXML (const std::string& filename);
+        private:
+            static const std::pair<std::string, int> INVALID_TAG;
+            std::pair<std::string, int> getFilenameAndRepetitionFromTag(XmlSimpleTag tag, const std::string& filename);
+
+        public:
 
             // -------------------------------------------------------------- //
             // display
-
     };
 }
 #endif // ANIMATION_HPP

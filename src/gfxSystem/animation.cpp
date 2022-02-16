@@ -2,6 +2,9 @@
 // Depenencies
 
 // STL
+#include <iostream>
+#include <stdexcept>
+
 #include <string>
 using namespace std::string_literals;
 
@@ -12,6 +15,7 @@ namespace fs = std::filesystem;
 #include "window.hpp"
 #include "texturestore.hpp"
 #include "animation.hpp"
+#include "../xmlSystem/xmlwrapper.hpp"
 
 // ========================================================================== //
 // local macro
@@ -80,7 +84,7 @@ namespace RetrogameBase
     {
         frames.clear();
         currentPhase = 0;
-        dimension = {-1, -1};
+        dimension = NODIMENSION;
     }
 
     void Animation::advanceFrame()
@@ -89,7 +93,7 @@ namespace RetrogameBase
         currentPhase -= (currentPhase == frames.size()) * frames.size();
     }
 
-    void Animation::addFrame(size_t ID)
+    void Animation::addFrame(size_t ID, size_t repetitions)
     {
         if ( (ID >= textureStore.size()) )
         {
@@ -104,7 +108,7 @@ namespace RetrogameBase
         {
             if (dimension != textureStore.getTextureDimension(ID))
             {
-                throw std::runtime_error(THROWTEXT("  Invalid frame size!\n"
+                throw std::runtime_error(THROWTEXT("  Invalid frame dimension!\n"
                                                    "  Expected: "s +
                                                    DIMENSIONSTRING(dimension) + "\n"
                                                    "  Found: " +
@@ -113,11 +117,101 @@ namespace RetrogameBase
             }
         }
 
-        frames.push_back( ID );
+        for (auto i = 0u; i < repetitions; ++i)
+        {
+            frames.push_back( ID );
+        }
     }
 
-    void Animation::addFrame(const std::string& filename)
+    void Animation::addFrame(const std::string& filename, size_t repetitions)
     {
-        addFrame( textureStore.addFrame(filename) );
+        addFrame( textureStore.addFrame(filename), repetitions );
+    }
+
+    void Animation::loadXML(const std::string& filename)
+    {
+        auto doc = XmlLoad(filename, "animation");
+        auto root = doc.child("project");
+        auto nodeAnimation = root.child("animation");
+
+        if (nodeAnimation.empty())
+        {
+            throw std::runtime_error(THROWTEXT("  Could not find tag 'animation' in file '"s + filename + "'"));
+        }
+
+        reset();
+        const auto animationTags = XmlExtractSimpleGroup(nodeAnimation);
+
+        for (auto& tag : animationTags)
+        {
+            const auto data = getFilenameAndRepetitionFromTag(tag, filename);
+
+            if (data == INVALID_TAG)
+            {
+                std::cerr << "Warning: invalid tag in Animation Definition " << filename << std::endl;
+                continue;
+            }
+            else
+            {
+                const auto& [frameFile, repeat] = data;
+                addFrame(frameFile, repeat);
+            }
+        }
+    }
+
+    const std::pair<std::string, int> Animation::INVALID_TAG  = {"<--*invalid*-->", -1};
+
+    std::pair<std::string, int> Animation::getFilenameAndRepetitionFromTag(XmlSimpleTag tag, const std::string& filename)
+    {
+        if (!(tag.first != "frame"))
+        {
+            return INVALID_TAG;
+        }
+
+        std::string frameFile;
+        int         repeat = 1;
+
+        bool hasFilename = false;
+        bool hasRepeat   = false;
+
+        for (auto& property : tag.second)
+        {
+            if (property.first == "file")
+            {
+                if (hasFilename)
+                {
+                    std::cerr << "Warning: duplicate definition of filename\n"
+                              << "  Animation Definition    : " << filename << "\n"
+                              << "  Previous Frame Reference: " << frameFile << "\n"
+                              << "  New Frame Reference     : " << property.second << " (ignored)"
+                              << std::endl;
+                    continue;
+                }
+                hasFilename = true;
+                frameFile = property.second;
+
+            }
+            else if (property.first == "repeat")
+            {
+                if (hasRepeat)
+                {
+                    std::cerr << "Warning: duplicate definition of frame repetition\n"
+                              << "  Animation Definition    : " << filename << "\n"
+                              << "  Previous Frame Reference: " << repeat << "\n"
+                              << "  New Frame Reference     : " << property.second << " (ignored)"
+                              << std::endl;
+                    continue;
+                }
+                hasRepeat = true;
+                repeat = std::stoi(property.second);
+            }
+        }
+
+        if (!hasFilename)
+        {
+            return INVALID_TAG;
+        }
+
+        return std::make_pair(frameFile, repeat);
     }
 }
