@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Retrogame-base">
+    <version>
+        <major value="1" />
+        <minor value="1" />
+    </version>
+
+    <content value="animationlayer" />
+
+    <palette>
+        <animation file="../unittest-xml/animations/animation-pure.xml" />
+        <animation file="../unittest-xml/animations/animation-sea.xml" />
+        <animation file="../unittest-xml/animations/animation-valid-deprecated.xml" />
+    </palette>
+
+    <elements>
+        <grid spacing_x="50" spacing_y="50">0 0 0 1 1 1 2 2 2
+            0 0 0 1 1 1 2 2 2
+            0 0 0 1 1 1 2 2 2</grid>
+
+        <grid offset_x="0" offset_y="150">1 1 1 2 2 2 0 0 0
+            1 1 1 2 2 2 0 0 0
+            1 1 1 2 2 2 0 0 0</grid>
+
+        <element file="../unittest-xml/animation-valid-deprecated.xml" offset_x="500" offset_y="25" />
+        <element id="0" offset_x="500" offset_y="50" />
+    </elements>
+</project>
