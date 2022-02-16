@@ -2,6 +2,8 @@
 // Depenencies
 
 // STL
+#include <iostream>
+
 #include <string>
 using namespace std::string_literals;
 
@@ -120,14 +122,13 @@ namespace RetrogameBase
         CHECK_FILE_EXISTS(filename);
 
         auto index = findByFilename(filename);
-
         if (index != NOINDEX)
         {
             return index;
         }
 
-        auto& newAnimation = animations.emplace_back(this->window);
-        newAnimation.loadXML(filename);
+        auto& newAnimation = animations.emplace_back(this->window, filename);
+        filenames.push_back(filename);
 
         return animations.size() - 1;
     }
