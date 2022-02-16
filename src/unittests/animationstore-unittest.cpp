@@ -31,18 +31,6 @@ bool unittest_Animationstore_addReset()
     Window win("test window");
     AnimationStore aniStore(win);
 
-    //
-
-    // redirect stderr to local buffer to check warings
-    std::stringstream cerrBuffer;
-    std::streambuf* originalCerr = std::cerr.rdbuf(cerrBuffer.rdbuf());
-
-    std::string expectedWarnings = "Warning: duplicate definition of filename\n"
-                                   "  Animation Definition    : ../unittest-xml/animations/animation-pure.xml\n"
-                                   "  Previous Frame Reference: ../unittest-gfx/frame06.png\n"
-                                   "  New Frame Reference     : this should be ignored (ignored)\n"
-                                   "Warning: invalid tag in Animation Definition ../unittest-xml/animations/animation-pure.xml\n";
-
     // ...................................................................... //
 
     UNITTEST_ASSERT(
@@ -70,32 +58,17 @@ bool unittest_Animationstore_addReset()
         "initialize empty AnimationStore"
     );
 
-
     UNITTEST_DOESNT_THROW(
         aniStore.addAnimation(testfile_1),
         std::exception,
         "load first valid file"
     );
 
-    UNITTEST_ASSERT(
-        cerrBuffer.str() == expectedWarnings,
-        "utter expected warnings"
-    );
-    cerrBuffer.str("");
-
-
     UNITTEST_DOESNT_THROW(
         aniStore.addAnimation(testfile_1),
         std::exception,
         "load first valid file a second time"
     );
-
-    UNITTEST_ASSERT(
-        cerrBuffer.str() == "",
-        "get no warnings on prevented load"
-    );
-    cerrBuffer.str("");
-
 
     UNITTEST_DOESNT_THROW(
         aniStore.addAnimation(testfile_2),
@@ -118,7 +91,6 @@ bool unittest_Animationstore_addReset()
 
     // ...................................................................... //
 
-    std::cerr.rdbuf( originalCerr );
     UNITTEST_FINALIZE;
 }
 
