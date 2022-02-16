@@ -16,21 +16,21 @@
 // own
 #include "../globals.hpp"
 #include "texturestore.hpp"
+#include "animationstore.hpp"
 
 // ========================================================================== //
 // Class
 
 namespace RetrogameBase
 {
-    class TextureStore;
-
     class Window
     {
         private:
             SDL_Window*   hwin         = nullptr;
             SDL_Renderer* win_renderer = nullptr;
 
-            TextureStore textureStore;
+            TextureStore   textureStore;
+            AnimationStore animationStore;
 
         public:
             // ---------------------------------------------------------------------- //
@@ -105,6 +105,7 @@ namespace RetrogameBase
             // storage access
 
             TextureStore& getTextureStore();
+            AnimationStore& getAnimationStore();
 
             enum class ResetStoresDepth
             {

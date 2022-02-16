@@ -18,7 +18,8 @@ namespace RetrogameBase
 // CTor, DTor
 
     Window::Window(const char* title, int width, int height, Uint32 render_flags) :
-        textureStore(*this)
+        textureStore(*this),
+        animationStore(*this)
     {
         hwin = SDL_CreateWindow(title,
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,     // x, y
@@ -227,6 +228,11 @@ namespace RetrogameBase
         return textureStore;
     }
 
+    AnimationStore& Window::getAnimationStore()
+    {
+        return animationStore;
+    }
+
     void Window::resetStores(ResetStoresDepth depth)
     {
         switch (depth)
@@ -235,6 +241,7 @@ namespace RetrogameBase
                 textureStore.reset_private();
                 [[fallthrough]];
             case ResetStoresDepth::Animations:
+                animationStore.reset_private();
                 [[fallthrough]];
             case ResetStoresDepth::Layers:
                 break;
