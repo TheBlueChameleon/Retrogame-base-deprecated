@@ -59,7 +59,7 @@ namespace RetrogameBase
     using XmlSimpleTag   = std::pair<std::string, std::vector<XmlTagElement>>;   // (tag, elements)
     using XmlSimpleGroup = std::vector<XmlSimpleTag>;
 
-    XmlSimpleGroup XmlExtractSimpleGroup (pugi::xml_node& node);
+    XmlSimpleGroup XmlExtractSimpleGroup (const pugi::xml_node& node);
 
 // ========================================================================== //
 // namespace

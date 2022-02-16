@@ -166,7 +166,7 @@ namespace RetrogameBase
         return doc;
     }
 
-    XmlSimpleGroup XmlExtractSimpleGroup(pugi::xml_node& node)
+    XmlSimpleGroup XmlExtractSimpleGroup(const pugi::xml_node& node)
     {
         std::string                 tag, attrib, value;
         XmlTagElement               element;
