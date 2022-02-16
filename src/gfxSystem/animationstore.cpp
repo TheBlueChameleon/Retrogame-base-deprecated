@@ -117,7 +117,19 @@ namespace RetrogameBase
 
     size_t AnimationStore::addAnimation(const std::string& filename)
     {
+        CHECK_FILE_EXISTS(filename);
 
+        auto index = findByFilename(filename);
+
+        if (index != NOINDEX)
+        {
+            return index;
+        }
+
+        auto& newAnimation = animations.emplace_back(this->window);
+        newAnimation.loadXML(filename);
+
+        return animations.size() - 1;
     }
 
     void AnimationStore::advanceAll()
