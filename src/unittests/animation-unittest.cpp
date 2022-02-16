@@ -52,9 +52,15 @@ bool unittest_Animation_addReset()
     // ...................................................................... //
 
     UNITTEST_THROWS(
-        ani.addFrame(0),
+        ani.addFrame(0, 1),
         std::out_of_range,
         "throw when adding frames while underlying texture store is empty"
+    );
+
+    UNITTEST_THROWS(
+        ani.addFrame(0, 0),
+        std::out_of_range,
+        "throw when adding zero repetition frames while underlying texture store is empty"
     );
 
     // ...................................................................... //
@@ -72,33 +78,39 @@ bool unittest_Animation_addReset()
     // ...................................................................... //
 
     UNITTEST_DOESNT_THROW(
-        ani.addFrame(0),
+        ani.addFrame(0, 1),
         std::exception,
         "add frames from filled store"
     );
 
     UNITTEST_DOESNT_THROW(
-        ani.addFrame(1),
+        ani.addFrame(1, 1),
         std::exception,
         "add frames from filled store"
     );
 
     UNITTEST_THROWS(
-        ani.addFrame(3),
+        ani.addFrame(3, 1),
         std::out_of_range,
         "throw when adding non-existing frames from filled store"
     );
 
     UNITTEST_THROWS(
-        ani.addFrame(2),
+        ani.addFrame(2, 1),
         std::runtime_error,
         "throw when adding frame with non-matching dimension frames from filled store"
     );
 
     UNITTEST_DOESNT_THROW(
-        ani.addFrame(0),
+        ani.addFrame(0, 1),
         std::exception,
         "repeatedly add same frame from filled store"
+    );
+
+    UNITTEST_DOESNT_THROW(
+        ani.addFrame(0, 0),
+        std::exception,
+        "add frames from filled store with zero repetition"
     );
 
     UNITTEST_ASSERT(
