@@ -163,7 +163,7 @@ namespace RetrogameBase
 
     std::pair<std::string, int> Animation::getFilenameAndRepetitionFromTag(XmlSimpleTag tag, const std::string& filename)
     {
-        if (!(tag.first != "frame"))
+        if (!(tag.first == "frame"))
         {
             return INVALID_TAG;
         }
@@ -202,8 +202,19 @@ namespace RetrogameBase
                               << std::endl;
                     continue;
                 }
+                try
+                {
+                    repeat = std::stoi(property.second);
+                }
+                catch (const std::invalid_argument& e)
+                {
+                    std::cerr << "Warning: invalid definition of frame repetition\n"
+                              << "  Animation Definition: " << filename << "\n"
+                              << "  Repetition Value    : " << property.second << " (ignored)"
+                              << std::endl;
+                    continue;
+                }
                 hasRepeat = true;
-                repeat = std::stoi(property.second);
             }
         }
 
