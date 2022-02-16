@@ -121,46 +121,6 @@ bool unittest_xmlSystem_XmlExtractSimpleGroup()
 
     UNITTEST_VARS;
     auto testfile = "../unittest-xml/animations/animation-pure.xml";
-
-    // ...................................................................... //
-
-    UNITTEST_ASSERT(
-        !std::strcmp(projectName, "Retrogame-base"),
-        "fetch project name from definitions"
-    );
-    UNITTEST_CRITICAL_BARRIER;
-
-    UNITTEST_ASSERT(
-        codeVersion_major == 1,
-        "fetch project version major"
-    );
-    UNITTEST_CRITICAL_BARRIER;
-
-    UNITTEST_ASSERT(
-        codeVersion_minor == 1,
-        "fetch project version minor"
-    );
-    UNITTEST_CRITICAL_BARRIER;
-
-    auto doc = XmlLoad(testfile);
-    auto root = doc.child("project");
-    UNITTEST_ASSERT(
-        !root.empty(),
-        "find the root node in the testfile"
-    );
-    UNITTEST_CRITICAL_BARRIER;
-
-    auto nodeAnimation = root.child("animation");
-    UNITTEST_ASSERT(
-        !nodeAnimation.empty(),
-        "find the animation node in the testfile"
-    );
-    UNITTEST_CRITICAL_BARRIER;
-
-    // ...................................................................... //
-
-    auto attributeList= XmlExtractSimpleGroup(nodeAnimation);
-
     XmlSimpleGroup expected =
     {
         {
@@ -216,6 +176,45 @@ bool unittest_xmlSystem_XmlExtractSimpleGroup()
             }
         }
     };
+
+    // ...................................................................... //
+
+    UNITTEST_ASSERT(
+        !std::strcmp(projectName, "Retrogame-base"),
+        "fetch project name from definitions"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    UNITTEST_ASSERT(
+        codeVersion_major == 1,
+        "fetch project version major"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    UNITTEST_ASSERT(
+        codeVersion_minor == 1,
+        "fetch project version minor"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    auto doc = XmlLoad(testfile);
+    auto root = doc.child("project");
+    UNITTEST_ASSERT(
+        !root.empty(),
+        "find the root node in the testfile"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    auto nodeAnimation = root.child("animation");
+    UNITTEST_ASSERT(
+        !nodeAnimation.empty(),
+        "find the animation node in the testfile"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    // ...................................................................... //
+
+    auto attributeList= XmlExtractSimpleGroup(nodeAnimation);
 
     UNITTEST_ASSERT(
         !attributeList.empty(),
