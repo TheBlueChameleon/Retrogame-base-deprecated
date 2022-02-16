@@ -127,7 +127,7 @@ namespace RetrogameBase
             return index;
         }
 
-        auto& newAnimation = animations.emplace_back(this->window, filename);
+        animations.emplace_back(this->window, filename);
         filenames.push_back(filename);
 
         return animations.size() - 1;
