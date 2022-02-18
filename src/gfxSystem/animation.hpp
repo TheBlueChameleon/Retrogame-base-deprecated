@@ -61,6 +61,7 @@ namespace RetrogameBase
             // setters/modifiers
 
             void reset();
+            void resetPhase();
 
             void advanceFrame();
 

@@ -141,6 +141,14 @@ namespace RetrogameBase
         }
     }
 
+    void AnimationStore::resetPhases()
+    {
+        for (auto& animation : animations)
+        {
+            animation.resetPhase();
+        }
+    }
+
 // ========================================================================== //
 // namespace
 }

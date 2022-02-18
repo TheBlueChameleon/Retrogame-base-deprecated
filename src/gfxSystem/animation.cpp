@@ -101,6 +101,11 @@ namespace RetrogameBase
         dimension = NODIMENSION;
     }
 
+    void Animation::resetPhase()
+    {
+        currentPhase = 0;
+    }
+
     void Animation::advanceFrame()
     {
         ++currentPhase;

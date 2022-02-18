@@ -64,6 +64,7 @@ namespace RetrogameBase
             size_t addAnimation (const std::string& filename);                    // returns index of loaded image in store. Prevents double loading
 
             void advanceAll();
+            void resetPhases();
     };
 }
 
