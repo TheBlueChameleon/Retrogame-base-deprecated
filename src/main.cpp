@@ -5,16 +5,24 @@
 #include <iostream>
 
 // own
-#include "globals.hpp"
-#include "gfxSystem/window.hpp"
+//#include "globals.hpp"
+//#include "gfxSystem/window.hpp"
+//#include "gfxSystem/animationlayer.hpp"
+
+#include "Retrogamebase.h"
 
 // ========================================================================== //
 
-#include <SDL2/SDL_image.h>
+// #include <SDL2/SDL_image.h>
 
 int main()
 {
     RetrogameBase::initAll();
+
+    RetrogameBase::Window win("x");
+    RetrogameBase::AnimationLayer al(win);
+
+    al.loadXML("../unittest-xml/animationlayers/scene.xml");
 
 //    RetrogameBase::Window win1("x");
 //    RetrogameBase::Window win2("y");

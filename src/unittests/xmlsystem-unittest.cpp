@@ -31,7 +31,7 @@ bool unittest_xmlSystem_load()
     // ...................................................................... //
 
     UNITTEST_ASSERT(
-        !std::strcmp(projectName, "Retrogame-base"),
+        !std::strcmp(projectName, "Retrogame"),
         "fetch project name from definitions"
     );
     UNITTEST_CRITICAL_BARRIER;
@@ -175,7 +175,7 @@ bool unittest_xmlSystem_XmlExtractSimpleGroup()
     // ...................................................................... //
 
     UNITTEST_ASSERT(
-        !std::strcmp(projectName, "Retrogame-base"),
+        !std::strcmp(projectName, "Retrogame"),
         "fetch project name from definitions"
     );
     UNITTEST_CRITICAL_BARRIER;

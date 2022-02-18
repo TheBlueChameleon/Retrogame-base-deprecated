@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.5)
 # ============================================================================ #
 # lanugage definition
 
-project(Retrogame-base LANGUAGES CXX)
+project(Retrogamebase
+    VERSION 0.0.1
+    LANGUAGES CXX
+)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,7 +18,7 @@ if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
     add_definitions(-DDEBUG)
 endif(${CMAKE_BUILD_TYPE} MATCHES "Debug")
 
-add_definitions(-DPROJECT_NAME="Retrogame-base")
+add_definitions(-DPROJECT_NAME="Retrogame")
 add_definitions(-DCODEVERSION_MAJOR=1)
 add_definitions(-DCODEVERSION_MINOR=1)
 
@@ -29,10 +32,10 @@ set(SDL2_LIBRARIES "${SDL2_LIBRARIES} -lSDL2_image -lSDL2_ttf")
 include_directories(${SDL2_INCLUDE_DIRS})
 
 # ============================================================================ #
-# main executable definition
+# library definition
 
-add_executable(Retrogame-base
-    src/main.cpp
+add_library(Retrogamebase-lib SHARED
+    src/Retrogamebase.h
     src/globals.hpp src/globals.cpp
     #
     src/gfxSystem/window.hpp src/gfxSystem/window.cpp
@@ -45,23 +48,34 @@ add_executable(Retrogame-base
     src/xmlSystem/xmlwrapper.hpp src/xmlSystem/xmlwrapper.cpp
 )
 
-target_link_libraries(Retrogame-base ${SDL2_LIBRARIES})
+set_target_properties(Retrogamebase-lib PROPERTIES
+    VERSION   ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION}
+    PUBLIC_HEADER src/Retrogamebase.h
+)
+
+target_link_libraries(Retrogamebase-lib
+    ${SDL2_LIBRARIES}
+)
+
+# ============================================================================ #
+# main executable definition
+
+add_executable(Retrogamebase-exe
+    src/main.cpp
+)
+
+target_link_libraries(Retrogamebase-exe
+    ${SDL2_LIBRARIES}
+    Retrogamebase-lib
+)
 
 # ============================================================================ #
 # unittest definition
 
-add_executable(Retrogame-base-unittest
+add_executable(Retrogamebase-unittest
     src/main-unittest.cpp
     src/unittests/unittest-macros.hpp
-    src/globals.hpp src/globals.cpp
-    #
-    src/gfxSystem/window.hpp src/gfxSystem/window.cpp
-    src/gfxSystem/texturestore.hpp src/gfxSystem/texturestore.cpp
-    src/gfxSystem/animation.hpp src/gfxSystem/animation.cpp
-    src/gfxSystem/animationstore.hpp src/gfxSystem/animationstore.cpp
-    #
-    src/xmlSystem/pugixml.hpp src/xmlSystem/pugiconfig.hpp src/xmlSystem/pugixml.cpp
-    src/xmlSystem/xmlwrapper.hpp src/xmlSystem/xmlwrapper.cpp
     #
     src/unittests/globals-unittest.hpp src/unittests/globals-unittest.cpp
     src/unittests/xmlsystem-unittest.hpp src/unittests/xmlsystem-unittest.cpp
@@ -71,4 +85,7 @@ add_executable(Retrogame-base-unittest
     src/unittests/animationstore-unittest.hpp src/unittests/animationstore-unittest.cpp
 )
 
-target_link_libraries(Retrogame-base-unittest ${SDL2_LIBRARIES})
+target_link_libraries(Retrogamebase-unittest
+    ${SDL2_LIBRARIES}
+    Retrogamebase-lib
+)
