@@ -11,6 +11,9 @@
 // SDL
 #include <SDL2/SDL_ttf.h>
 
+// own
+#include "exceptions.hpp"
+
 // ========================================================================== //
 // namespace
 

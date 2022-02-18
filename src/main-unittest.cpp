@@ -9,7 +9,7 @@
 #include <functional>
 
 // own
-#include "globals.hpp"
+#include "base/globals.hpp"
 
 #include "unittests/globals-unittest.hpp"
 #include "unittests/xmlsystem-unittest.hpp"

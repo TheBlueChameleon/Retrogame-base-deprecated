@@ -14,7 +14,7 @@
 #include <SDL2/SDL_ttf.h>
 
 // own
-#include "../globals.hpp"
+#include "../base/globals.hpp"
 #include "texturestore.hpp"
 #include "animationstore.hpp"
 

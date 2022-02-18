@@ -6,7 +6,7 @@
 
 // own
 #include "unittest-macros.hpp"
-#include "../globals.hpp"
+#include "../base/globals.hpp"
 #include "globals-unittest.hpp"
 
 using namespace RetrogameBase;

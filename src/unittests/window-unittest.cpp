@@ -7,7 +7,7 @@
 
 // own
 #include "unittest-macros.hpp"
-#include "../globals.hpp"
+#include "../base/globals.hpp"
 #include "../gfxSystem/window.hpp"
 #include "window-unittest.hpp"
 

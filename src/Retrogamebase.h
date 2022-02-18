@@ -1,7 +1,7 @@
 #ifndef RETROGAMEBASE_H
 #define RETROGAMEBASE_H
 
-#include "globals.hpp"
+#include "base/globals.hpp"
 
 #include "gfxSystem/window.hpp"
 #include "gfxSystem/texturestore.hpp"

@@ -4,16 +4,14 @@
 // STL
 #include <iostream>
 
-// own
-//#include "globals.hpp"
-//#include "gfxSystem/window.hpp"
-//#include "gfxSystem/animationlayer.hpp"
+// SDL
+// #include <SDL2/SDL_image.h>
 
+// own
 #include "Retrogamebase.h"
 
 // ========================================================================== //
 
-// #include <SDL2/SDL_image.h>
 
 int main()
 {

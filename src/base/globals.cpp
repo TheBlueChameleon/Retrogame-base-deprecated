@@ -3,17 +3,29 @@
 
 // STL
 #include <exception>
-
-#include <cstdlib>
 #include <iostream>
 
-#include <string>
 #include <unordered_map>
-
+#include <string>
 using namespace std::string_literals;
+
+#include <cstdlib>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 // own
 #include "globals.hpp"
+
+// ========================================================================== //
+// local macro
+
+#define THROWTEXT(msg) ("RUNTIME EXCEPTION IN "s + (__PRETTY_FUNCTION__) + "\n"s + msg)
+
+#define CHECK_FILE_EXISTS(filename) { \
+        if (!fs::exists(filename)) { \
+            throw FileNotFoundError(THROWTEXT("  file not found: '"s + filename + "'")); \
+        } \
+    }
 
 // ========================================================================== //
 // namespace
@@ -74,6 +86,8 @@ namespace RetrogameBase
     void loadFont(const std::string& alias, const std::string& filename, int size)
     {
         auto fontPtr = TTF_OpenFont(filename.c_str(), size);
+
+        CHECK_FILE_EXISTS(filename);
 
         if (!fontPtr)
         {

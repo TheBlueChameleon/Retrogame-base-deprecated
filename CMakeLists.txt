@@ -36,7 +36,9 @@ include_directories(${SDL2_INCLUDE_DIRS})
 
 add_library(Retrogamebase-lib SHARED
     src/Retrogamebase.h
-    src/globals.hpp src/globals.cpp
+    #
+    src/base/globals.hpp src/base/globals.cpp
+    src/base/exceptions.hpp
     #
     src/gfxSystem/window.hpp src/gfxSystem/window.cpp
     src/gfxSystem/texturestore.hpp src/gfxSystem/texturestore.cpp
