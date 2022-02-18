@@ -15,8 +15,9 @@ namespace fs = std::filesystem;
 
 // own
 #include "unittest-macros.hpp"
-#include "../xmlSystem/xmlwrapper.hpp"
 #include "xmlsystem-unittest.hpp"
+#include "../base/exceptions.hpp"
+#include "../xmlSystem/xmlwrapper.hpp"
 
 using namespace RetrogameBase;
 
@@ -76,7 +77,7 @@ bool unittest_xmlSystem_load()
 
     UNITTEST_THROWS(
         XmlLoad("nonexistent file", ""),
-        std::runtime_error,
+        FileNotFoundError,
         "throw on loading nonexistent file"
     );
 

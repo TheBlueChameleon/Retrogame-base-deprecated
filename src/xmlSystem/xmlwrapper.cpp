@@ -9,7 +9,11 @@
 #include <string>
 using namespace std::string_literals;
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 // own
+#include "../base/exceptions.hpp"
 #include "xmlwrapper.hpp"
 
 // ========================================================================== //
@@ -18,6 +22,12 @@ using namespace std::string_literals;
 #define THROWTEXT(msg) ("RUNTIME EXCEPTION IN "s + (__PRETTY_FUNCTION__) + "\n"s + msg)
 
 #define VERSIONTEXT(major_int, minor_int) (std::to_string(major_int) + "." + std::to_string(minor_int))
+
+#define CHECK_FILE_EXISTS(filename) { \
+        if (!fs::exists(filename)) { \
+            throw FileNotFoundError(THROWTEXT("  file not found: '"s + filename + "'")); \
+        } \
+    }
 
 // ========================================================================== //
 // namespace
@@ -40,14 +50,16 @@ namespace RetrogameBase
         // ........................................................................ //
         // load and check XML validity
 
+        CHECK_FILE_EXISTS(filename);
+
         pugi::xml_parse_result parseResult = doc.load_file(filename.data());
 
         if (not parseResult)
         {
-            throw std::runtime_error(THROWTEXT(
-                                         "    Could not load '"s + filename + "'.\n"
-                                         "    Load result : " + parseResult.description()
-                                     ));
+            throw PugiInternalError(THROWTEXT(
+                                        "    Could not load '"s + filename + "'.\n"
+                                        "    Load result : " + parseResult.description()
+                                    ));
         }
 
         // ........................................................................ //
@@ -63,18 +75,18 @@ namespace RetrogameBase
 
         if (not nodeProject)
         {
-            throw std::runtime_error(THROWTEXT(
-                                         "    Invalid file '"s + filename + "'.\n"
-                                         "    Couldn't find project tag"
-                                     ));
+            throw InvalidFileError(THROWTEXT(
+                                       "    Invalid file '"s + filename + "'.\n"
+                                       "    Couldn't find project tag"
+                                   ));
         }
 
         if ( std::strcmp(nodeProject.attribute("name").value(), projectName) )
         {
-            throw std::runtime_error(THROWTEXT(
-                                         "    Invalid file '"s + filename + "'.\n"
-                                         "    Not part of project '" + projectName + "'"
-                                     ));
+            throw InvalidFileError(THROWTEXT(
+                                       "    Invalid file '"s + filename + "'.\n"
+                                       "    Not part of project '" + projectName + "'"
+                                   ));
         }
 
         // ........................................................................ //
@@ -96,10 +108,10 @@ namespace RetrogameBase
         auto nodeVersion = nodeProject.child("version");
         if (not nodeVersion)
         {
-            throw std::runtime_error(THROWTEXT(
-                                         "    Invalid file '"s + filename + "'.\n"
-                                         "    Couldn't find version tag"
-                                     ));
+            throw InvalidVersionError(THROWTEXT(
+                                          "    Invalid file '"s + filename + "'.\n"
+                                          "    Couldn't find version tag"
+                                      ));
         }
 
         auto nodeMajor = nodeVersion.child("major");
@@ -108,39 +120,27 @@ namespace RetrogameBase
         auto fileVersion_major = nodeMajor.attribute("value").as_int(-1);
         auto fileVersion_minor = nodeMinor.attribute("value").as_int(-1);
 
-        if (
-            (fileVersion_major  < 0 || fileVersion_minor  < 0) ||
-            (fileVersion_major == 0 && fileVersion_minor == 0)
-        )
-        {
-            throw std::runtime_error(THROWTEXT(
-                                         "    Invalid file '"s + filename + "'.\n"
-                                         "    Version number " + std::to_string(fileVersion_major) + "." + std::to_string(fileVersion_minor) + " is invalid."
-                                     ));
-        }
-
-
         bool invalidVersion = false;
-        if (fileVersion_major > codeVersion_major)
-        {
-            invalidVersion = true;
-        }
+
+        // *INDENT-OFF*
+        if (fileVersion_major  < 0 || fileVersion_minor  < 0)   {invalidVersion = true;}
+        if (fileVersion_major == 0 && fileVersion_minor == 0)   {invalidVersion = true;}
+
+        if      (fileVersion_major >  codeVersion_major)        {invalidVersion = true;}
         else if (fileVersion_major == codeVersion_major)
         {
-            if (fileVersion_minor > codeVersion_minor)
-            {
-                invalidVersion = true;
-            }
+            if  (fileVersion_minor >  codeVersion_minor)        {invalidVersion = true;}
         }
+        // *INDENT-ON*
+
         if (invalidVersion)
         {
-            throw std::runtime_error(THROWTEXT(
-                                         "    Invalid file '"s + filename + "'.\n"
-                                         "    Version number "  + VERSIONTEXT(fileVersion_major, fileVersion_minor) + " is not supported.\n"
-                                         "    This is version " + VERSIONTEXT(codeVersion_major, codeVersion_minor)
-                                     ));
+            throw InvalidVersionError(THROWTEXT(
+                                          "    Invalid file '"s + filename + "'.\n"
+                                          "    Version number "  + VERSIONTEXT(fileVersion_major, fileVersion_minor) + " is not supported.\n"
+                                          "    This is version " + VERSIONTEXT(codeVersion_major, codeVersion_minor)
+                                      ));
         }
-
 
         // ........................................................................ //
         // check content (if specified)
@@ -155,11 +155,11 @@ namespace RetrogameBase
             auto fileContent = nodeProject.child("content").attribute("value").value();
             if ( std::strcmp( fileContent, expectedContent.data() ) )
             {
-                throw std::runtime_error(THROWTEXT(
-                                             "    Invalid content\n"
-                                             "    Expected: '"s + expectedContent + "'\n"
-                                             "    Found   : '"s + fileContent + "'"
-                                         ));
+                throw InvalidFileError(THROWTEXT(
+                                           "    Invalid content\n"
+                                           "    Expected: '"s + expectedContent + "'\n"
+                                           "    Found   : '"s + fileContent + "'"
+                                       ));
             }
         }
 
