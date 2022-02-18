@@ -66,7 +66,7 @@ bool unittest_Animationstore_addReset()
     );
 
     UNITTEST_ASSERT_STATE_CERR(
-        "Warning: invalid tag in Animation Definition ../unittest-xml/animations/animation-pure.xml\n",
+        "Warning: invalid tag 'new' in Animation Definition ../unittest-xml/animations/animation-pure.xml\n",
         "utter warning"
     );
     UNITTEST_CLEAR_CERR;

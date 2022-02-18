@@ -155,7 +155,7 @@ namespace RetrogameBase
 
             if (data == INVALID_TAG)
             {
-                std::cerr << "Warning: invalid tag in Animation Definition " << filename << std::endl;
+                std::cerr << "Warning: invalid tag '" << subNode.name() << "' in Animation Definition " << filename << std::endl;
                 continue;
             }
             else
