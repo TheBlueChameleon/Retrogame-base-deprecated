@@ -24,6 +24,10 @@
             1@45 1@45 1@45 2@45 2@45 2@45 0@45 0@45 0@45
             1@45 1@45 1@45 2@45 2@45 2@45 0@45 0@45 0@45</grid>
 
+        <grid />
+        <grid spacing_x="1" spacing_y="1"></grid>
+        <grid spacing_x="2" spacing_y="2" />
+
         <element file="../unittest-xml/animation-valid-deprecated.xml" offset_x="500" offset_y="25" />
         <element id="0" offset_x="500" offset_y="50" rotation="45" />
     </elements>

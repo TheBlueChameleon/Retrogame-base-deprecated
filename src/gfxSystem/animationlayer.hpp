@@ -71,7 +71,7 @@ namespace RetrogameBase
             static constexpr ElementDescriptor VOID_GRIDELEMENT    = {-1,  0};
 
             std::vector<std::string> getPaletteEntries(pugi::xml_node node) const;
-            std::vector<Element>     parseGridNode(pugi::xml_node node) const;
+            std::vector<Element>     parseGridNode(pugi::xml_node node, const std::string& filename) const;
             ElementDescriptor        parseGridElement(const std::string_view& elementDescriptor) const;
 
         public:

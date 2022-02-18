@@ -147,7 +147,7 @@ namespace RetrogameBase
         {
             if ( std::strcmp(subNode.name(), "grid") == 0 )
             {
-                auto gridElements = parseGridNode(subNode);
+                auto gridElements = parseGridNode(subNode, filename);
                 elements.insert(
                     elements.end(),
                     gridElements.begin(), gridElements.end()
@@ -200,7 +200,7 @@ namespace RetrogameBase
         return reVal;
     }
 
-    std::vector<AnimationLayer::Element> AnimationLayer::parseGridNode(pugi::xml_node node) const
+    std::vector<AnimationLayer::Element> AnimationLayer::parseGridNode(pugi::xml_node node, const std::string& filename) const
     {
         std::vector<AnimationLayer::Element> reVal;
 
@@ -208,8 +208,20 @@ namespace RetrogameBase
         const auto spacingY = node.attribute("spacing_y").as_int();
 
         // *INDENT-OFF*
-        if (!spacingX) {return reVal;}
-        if (!spacingY) {return reVal;}
+        bool abortParse = false;
+
+        if (!spacingX) {abortParse = true;}
+        if (!spacingY) {abortParse = true;}
+        if (abortParse) {
+            std::cerr << "Warning: grid without spacing in file " << filename << " (ignored)" << std::endl;
+            return reVal;
+        }
+
+        if (!node.text())                   {abortParse = true;}
+        if (abortParse) {
+            std::cerr << "Warning: empty grid in file " << filename << " (ignored)" << std::endl;
+            return reVal;
+        }
         // *INDENT-ON*
 
         const auto offsetX  = node.attribute("offset_x") .as_int();
