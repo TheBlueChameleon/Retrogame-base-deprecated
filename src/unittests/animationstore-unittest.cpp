@@ -23,6 +23,7 @@ using namespace RetrogameBase;
 bool unittest_Animationstore_addReset()
 {
     UNITTEST_VARS;
+    UNITTEST_CAPTURE_CERR;
 
     constexpr auto testfile_1 = "../unittest-xml/animations/animation-pure.xml";
     constexpr auto testfile_2 = "../unittest-xml/animations/animation-sea.xml";
@@ -63,6 +64,12 @@ bool unittest_Animationstore_addReset()
         std::exception,
         "load first valid file"
     );
+
+    UNITTEST_ASSERT_STATE_CERR(
+        "Warning: invalid tag in Animation Definition ../unittest-xml/animations/animation-pure.xml\n",
+        "utter warning"
+    );
+    UNITTEST_CLEAR_CERR;
 
     UNITTEST_DOESNT_THROW(
         aniStore.addAnimation(testfile_1),
