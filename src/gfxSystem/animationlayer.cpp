@@ -147,7 +147,7 @@ namespace RetrogameBase
         {
             if ( std::strcmp(subNode.name(), "grid") == 0 )
             {
-                auto gridElements = parseGridNode(subNode, filename);
+                auto gridElements = parseGridNode(subNode, paletteIndexToStoreIndex,filename);
                 elements.insert(
                     elements.end(),
                     gridElements.begin(), gridElements.end()
@@ -200,7 +200,11 @@ namespace RetrogameBase
         return reVal;
     }
 
-    std::vector<AnimationLayer::Element> AnimationLayer::parseGridNode(pugi::xml_node node, const std::string& filename) const
+    std::vector<AnimationLayer::Element> AnimationLayer::parseGridNode(
+        pugi::xml_node node,
+        const std::vector<int>& palette,
+        const std::string& filename
+    ) const
     {
         std::vector<AnimationLayer::Element> reVal;
 
@@ -240,7 +244,7 @@ namespace RetrogameBase
             for (auto& cell : split_nonowning(trim_nonowning(row), " "))
             {
                 const auto trimmedCell   = trim_nonowning(cell);
-                const auto IdAndRotation = parseGridElement(trimmedCell);
+                const auto IdAndRotation = parseGridElement(trimmedCell, palette);
 
                 if (IdAndRotation == INVALID_GRIDELEMENT)
                 {
@@ -264,7 +268,10 @@ namespace RetrogameBase
         return reVal;
     }
 
-    AnimationLayer::ElementDescriptor AnimationLayer::parseGridElement(const std::string_view& elementDescriptor) const
+    AnimationLayer::ElementDescriptor AnimationLayer::parseGridElement(
+        const std::string_view& elementDescriptor,
+        const std::vector<int>& palette
+    ) const
     {
         if (elementDescriptor == VOID_REPRESENTATION)
         {
@@ -292,9 +299,11 @@ namespace RetrogameBase
         // *INDENT-OFF*
         try {ID = std::stoi( std::string(startIterator, startIterator + rotationOffset) );}
         catch (const std::invalid_argument& e) {return INVALID_GRIDELEMENT;}
+
+        if (ID < 0 || ID >= palette.size()) {return INVALID_GRIDELEMENT;}
         // *INDENT-ON*
 
-        return std::make_pair(ID, angle);
+        return std::make_pair(palette[ID], angle);
     }
 
 // ========================================================================== //

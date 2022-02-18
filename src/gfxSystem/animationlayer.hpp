@@ -63,7 +63,7 @@ namespace RetrogameBase
             void loadXML (const std::string& filename);
 
         private:
-            using ElementDescriptor = std::pair<int, int>;          // paletteID, angle [deg]
+            using ElementDescriptor = std::pair<int, int>;          // storeID, angle [deg]
 
             static constexpr auto              INVALID_TAG         = "<-*-invalid-*->";
             static constexpr auto              VOID_REPRESENTATION = "#";
@@ -71,8 +71,10 @@ namespace RetrogameBase
             static constexpr ElementDescriptor VOID_GRIDELEMENT    = {-1,  0};
 
             std::vector<std::string> getPaletteEntries(pugi::xml_node node) const;
-            std::vector<Element>     parseGridNode(pugi::xml_node node, const std::string& filename) const;
-            ElementDescriptor        parseGridElement(const std::string_view& elementDescriptor) const;
+            std::vector<Element>     parseGridNode(pugi::xml_node node,
+                                                   const std::vector<int>& palette,
+                                                   const std::string& filename) const;
+            ElementDescriptor        parseGridElement(const std::string_view& elementDescriptor, const std::vector<int>& palette) const;
 
         public:
 

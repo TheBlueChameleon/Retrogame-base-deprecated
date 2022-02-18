@@ -15,6 +15,7 @@
     </palette>
 
     <elements>
+        <!--valid grid-->
         <grid spacing_x="50" spacing_y="50"># 0 0 1 1 1 2 2 2
 0 # 0 1 1 1 2 2 2
 0 0 # 1 1 1 2 2 2</grid>
@@ -24,10 +25,18 @@
             1@45 1@45 1@45 2@45 2@45 2@45 0@45 0@45 0@45
             1@45 1@45 1@45 2@45 2@45 2@45 0@45 0@45 0@45</grid>
 
+        <!--invalid grid, non-aborting-->
         <grid />
         <grid spacing_x="1" spacing_y="1"></grid>
         <grid spacing_x="2" spacing_y="2" />
 
+        <grid spacing_x="50" spacing_y="50">3</grid>
+        <grid spacing_x="50" spacing_y="50">-1</grid>
+        <grid spacing_x="50" spacing_y="50">-2</grid>
+        <grid spacing_x="50" spacing_y="50">#</grid>
+        <grid spacing_x="50" spacing_y="50">word</grid>
+
+        <!--valid single elements-->
         <element file="../unittest-xml/animation-valid-deprecated.xml" offset_x="500" offset_y="25" />
         <element id="0" offset_x="500" offset_y="50" rotation="45" />
     </elements>
