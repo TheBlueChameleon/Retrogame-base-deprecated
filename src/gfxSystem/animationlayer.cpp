@@ -250,7 +250,7 @@ namespace RetrogameBase
 
                 if (IdAndRotation != VOID_GRIDELEMENT)
                 {
-                    Coordinate coord = {x, y, IdAndRotation.second};
+                    const Coordinate coord = {x, y, deg2rad(IdAndRotation.second)};
                     reVal.emplace_back(IdAndRotation.first, coord);
                 }
 

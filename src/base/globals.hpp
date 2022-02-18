@@ -10,6 +10,8 @@
 #include <vector>
 #include <unordered_map>
 
+#include <numbers>
+
 // SDL
 #include <SDL2/SDL_ttf.h>
 
@@ -39,6 +41,11 @@ namespace RetrogameBase
 
     std::vector<std::string_view> split_nonowning(const std::string_view& text, const std::string& separator=",");
     std::string_view trim_nonowning(const std::string_view& text, const std::string& charsToTrim = " \t\n");
+
+    inline double deg2rad(double deg)
+    {
+        return (deg / 180.) * std::numbers::pi;
+    }
 
 // ========================================================================== //
 // colors
