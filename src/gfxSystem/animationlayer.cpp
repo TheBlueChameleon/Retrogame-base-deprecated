@@ -67,6 +67,11 @@ namespace RetrogameBase
         return elements.size();
     }
 
+    const std::vector<AnimationLayer::Element> AnimationLayer::getElements() const
+    {
+        return elements;
+    }
+
     AnimationLayer::Element AnimationLayer::getElement(const int index) const
     {
         CHECK_ELEMENT_INDEX(index);

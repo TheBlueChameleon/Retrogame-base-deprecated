@@ -45,6 +45,8 @@ namespace RetrogameBase
 
             size_t size() const;
 
+            const std::vector<Element> getElements() const;
+
             Element    getElement    (const int index) const;
             int        getAnimationID(const int index) const;
             Animation& getAnimation  (const int index) const;
