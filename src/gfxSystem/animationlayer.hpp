@@ -70,6 +70,8 @@ namespace RetrogameBase
                                                    const std::string& filename) const;
             ElementDescriptor        parseGridElement(const std::string_view& elementDescriptor, const std::vector<int>& palette) const;
 
+            Element                  parseElementTag(pugi::xml_node node, const std::vector<int>& palette) const;
+
         public:
 
             // -------------------------------------------------------------- //

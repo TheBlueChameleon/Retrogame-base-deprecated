@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Retrogame">
+  <version>
+    <major value="1" />
+    <minor value="1" />
+  </version>
+  
+  <content value="animation" />
+
+  <animation>
+    <frame file="../unittest-gfx/frame01.png" />
+    <frame file="../unittest-gfx/frame02.png" />
+    <frame file="../unittest-gfx/frame03.png" />
+    <frame file="../unittest-gfx/frame04.png" />
+    <frame file="../unittest-gfx/frame05.png" />
+    <frame file="../unittest-gfx/frame06.png" />
+    <frame file="../unittest-gfx/frame07.png" />
+    <frame file="../unittest-gfx/frame08.png" />
+    <frame file="../unittest-gfx/frame09.png" />
+    <frame file="../unittest-gfx/frame10.png" />
+  </animation>
+</project>

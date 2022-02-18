@@ -49,6 +49,7 @@ namespace RetrogameBase
     static constexpr auto              ANGLE_SEPARATOR     = "@";
     static constexpr AnimationLayer::ElementDescriptor INVALID_GRIDELEMENT = {-1, -1};
     static constexpr AnimationLayer::ElementDescriptor VOID_GRIDELEMENT    = {-1,  0};
+    static constexpr AnimationLayer::Element           INVALID_ELEMENT     = {-1, {0,0,0}};
 
 // ========================================================================== //
 // CTor, DTor
@@ -164,21 +165,18 @@ namespace RetrogameBase
             }
             else if ( std::strcmp(subNode.name(), "element") == 0 )
             {
-                std::cout << "### element: todo" << std::endl;
+                auto data = parseElementTag(subNode, paletteIndexToStoreIndex);
+                if (data == INVALID_ELEMENT)
+                {
+                    std::cerr << "Warning: element tag in Scene definition " << filename << std::endl;
+                    continue;
+                }
+                elements.push_back( data );
             }
             else
             {
                 std::cerr << "Warning: invalid tag '" << subNode.name() << "' in Scene definition " << filename << std::endl;
             }
-        }
-
-        for (const auto& element : elements)
-        {
-            std::cout << element.first << " at ("
-                      << std::get<0>(element.second) << ", "
-                      << std::get<1>(element.second) << "), rotation "
-                      << std::get<2>(element.second)
-                      << std::endl;
         }
     }
 
@@ -313,6 +311,35 @@ namespace RetrogameBase
         // *INDENT-ON*
 
         return std::make_pair(palette[ID], angle);
+    }
+
+    AnimationLayer::Element AnimationLayer::parseElementTag(pugi::xml_node node, const std::vector<int>& palette) const
+    {
+        int ID       = node.attribute("id").as_int(-1);
+        int x        = node.attribute("offset_x").as_int();
+        int y        = node.attribute("offset_y").as_int();
+        double angle = node.attribute("rotation").as_int();
+
+        if (ID == -1)
+        {
+            auto attributeFilename = node.attribute("file");
+            if (attributeFilename)
+            {
+                ID = animationStore.addAnimation(attributeFilename.value());
+                return Element(ID, {x, y, deg2rad(angle)});
+            }
+            else
+            {
+                return INVALID_ELEMENT;
+            }
+        }
+
+        if (ID < 0 || ID >= palette.size())
+        {
+            return INVALID_ELEMENT;
+        }
+
+        return Element(ID, {x, y, deg2rad(angle)});
     }
 
 // ========================================================================== //
