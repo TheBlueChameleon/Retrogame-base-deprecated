@@ -76,7 +76,7 @@ bool unittest_TextureStore_addReset()
 
     UNITTEST_THROWS(
         ID = tex.addFrame("a file that does not exist"),
-        std::runtime_error,
+        FileNotFoundError,
         "throw std::runtime_error on loading non-existent file"
     );
 

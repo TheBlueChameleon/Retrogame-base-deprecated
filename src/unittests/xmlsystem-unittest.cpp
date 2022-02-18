@@ -14,6 +14,7 @@ namespace fs = std::filesystem;
 #include "../xmlSystem/pugixml.hpp"
 
 // own
+#include "../base/exceptions.hpp"
 #include "unittest-macros.hpp"
 #include "xmlsystem-unittest.hpp"
 #include "../base/exceptions.hpp"
@@ -106,7 +107,7 @@ bool unittest_xmlSystem_load()
 
         UNITTEST_THROWS(
             XmlLoad(filename, "wrong content type"),
-            std::runtime_error,
+            InvalidFileError,
             "throw on loading file '" << filename << "' with mismatched expected content type"
         );
     }

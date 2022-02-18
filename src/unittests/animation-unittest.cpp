@@ -101,7 +101,7 @@ bool unittest_Animation_addReset()
 
     UNITTEST_THROWS(
         ani.addFrame(2, 1),
-        std::runtime_error,
+        InvalidFrameError,
         "throw when adding frame with non-matching dimension frames from filled store"
     );
 

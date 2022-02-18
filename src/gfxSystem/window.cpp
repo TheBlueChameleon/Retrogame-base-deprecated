@@ -31,7 +31,7 @@ namespace RetrogameBase
 
         if (!(hwin && win_renderer))
         {
-            throw std::runtime_error("Window could not be initialized.");
+            throw SdlInternalError("Window could not be initialized.");
         }
     }
 

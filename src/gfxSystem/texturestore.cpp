@@ -32,9 +32,9 @@ namespace fs = std::filesystem;
 
 #define CHECK_FILE_EXISTS(filename) {\
         if (!fs::exists(filename)) { \
-            throw std::runtime_error(THROWTEXT( \
-                                                "  file not found: '"s + filename + "'" \
-                                              )); \
+            throw FileNotFoundError(THROWTEXT( \
+                                               "  file not found: '"s + filename + "'" \
+                                             )); \
         } \
     }
 
@@ -124,20 +124,20 @@ namespace RetrogameBase
 
         if( loadedSurface == NULL )
         {
-            throw std::runtime_error(THROWTEXT(
-                                         "Unable to load image " + filename + "!\n"
-                                         "\tSDL_image Error: " + IMG_GetError()
-                                     ));
+            throw SdlInternalError(THROWTEXT(
+                                       "Unable to load image " + filename + "!\n"
+                                       "\tSDL_image Error: " + IMG_GetError()
+                                   ));
         }
 
         SDL_Texture* newTexture = SDL_CreateTextureFromSurface(window.getRenderer(),
                                   loadedSurface);
         if(!newTexture)
         {
-            throw std::runtime_error(THROWTEXT(
-                                         "Unable to create texture from image " + filename + "!\n"
-                                         "\tSDL_image Error: " + IMG_GetError()
-                                     ));
+            throw SdlInternalError(THROWTEXT(
+                                       "Unable to create texture from image " + filename + "!\n"
+                                       "\tSDL_image Error: " + IMG_GetError()
+                                   ));
         }
 
         filenames.push_back(filename);

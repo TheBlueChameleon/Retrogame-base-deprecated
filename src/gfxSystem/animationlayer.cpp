@@ -141,7 +141,7 @@ namespace RetrogameBase
 
         if (!nodeElements)
         {
-            throw std::runtime_error(THROWTEXT("  Could not find tag 'elements' in file '"s + filename + "'"));
+            throw InvalidFileError(THROWTEXT("  Could not find tag 'elements' in file '"s + filename + "'"));
         }
 
         std::cout << "pal:" << std::endl;

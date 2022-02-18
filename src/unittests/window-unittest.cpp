@@ -60,7 +60,7 @@ bool unittest_Window_CTor()
 
     UNITTEST_THROWS(
         Window win("null size", 80, 60, -1),
-        std::runtime_error,
+        SdlInternalError,
         "throw on set up window with all flags"
     );
 

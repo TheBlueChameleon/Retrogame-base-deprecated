@@ -11,9 +11,9 @@
 // ========================================================================== //
 // local macro
 
-#define ERROR(classname) class classname ## Error : public std::runtime_error { \
+#define ERROR(classname) class classname : public std::runtime_error { \
         public:\
-            classname ## Error (const std::string& msg) : std::runtime_error(msg) {}\
+            classname (const std::string& msg) : std::runtime_error(msg) {}\
     }
 
 // ========================================================================== //
@@ -21,14 +21,16 @@
 
 namespace RetrogameBase
 {
-    ERROR(FileNotFound);
-    ERROR(InvalidFile);
-    ERROR(InvalidVersion);
+    ERROR(SdlInternalError);
+    ERROR(PugiInternalError);
 
-    ERROR(MemoryManagement);
+    ERROR(MemoryManagementError);
 
-    ERROR(SdlInternal);
-    ERROR(PugiInternal);
+    ERROR(FileNotFoundError);
+    ERROR(InvalidFileError);
+    ERROR(InvalidVersionError);
+
+    ERROR(InvalidFrameError);
 }
 
 // ========================================================================== //

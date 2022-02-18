@@ -13,6 +13,7 @@ using namespace std::string_literals;
 namespace fs = std::filesystem;
 
 // own
+#include "../base/exceptions.hpp"
 #include "window.hpp"
 #include "texturestore.hpp"
 #include "animation.hpp"
@@ -25,7 +26,7 @@ namespace fs = std::filesystem;
 
 #define CHECK_FILE_EXISTS(filename) { \
         if (!fs::exists(filename)) { \
-            throw std::runtime_error(THROWTEXT("  file not found: '"s + filename + "'")); \
+            throw FileNotFoundError(THROWTEXT("  file not found: '"s + filename + "'")); \
         } \
     }
 
@@ -116,12 +117,12 @@ namespace RetrogameBase
         {
             if (dimension != textureStore.getTextureDimension(ID))
             {
-                throw std::runtime_error(THROWTEXT("  Invalid frame dimension!\n"
-                                                   "  Expected: "s +
-                                                   DIMENSIONSTRING(dimension) + "\n"
-                                                   "  Found: " +
-                                                   DIMENSIONSTRING(textureStore.getTextureDimension(ID))
-                                                  ));
+                throw InvalidFrameError(THROWTEXT("  Invalid frame dimension!\n"
+                                                  "  Expected: "s +
+                                                  DIMENSIONSTRING(dimension) + "\n"
+                                                  "  Found: " +
+                                                  DIMENSIONSTRING(textureStore.getTextureDimension(ID))
+                                                 ));
             }
         }
 
@@ -144,7 +145,7 @@ namespace RetrogameBase
 
         if (!nodeAnimation)
         {
-            throw std::runtime_error(THROWTEXT("  Could not find tag 'animation' in file '"s + filename + "'"));
+            throw InvalidFileError(THROWTEXT("  Could not find tag 'animation' in file '"s + filename + "'"));
         }
 
         reset();
