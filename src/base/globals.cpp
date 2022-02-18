@@ -10,6 +10,8 @@
 using namespace std::string_literals;
 
 #include <cstdlib>
+#include <algorithm>
+#include <cctype>
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -39,7 +41,7 @@ namespace RetrogameBase
     std::unordered_map<std::string, TTF_Font*> fonts;
 
 // ========================================================================== //
-// proc
+// SDL ressources
 
     void initAll()
     {
@@ -106,6 +108,14 @@ namespace RetrogameBase
             TTF_CloseFont(fontPtr);
             throw MemoryManagementError("FontMap could not be updated");
         }
+    }
+
+// ========================================================================== //
+// convenience
+
+    bool isInteger (const std::string& s)
+    {
+        return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
     }
 
 // ========================================================================== //

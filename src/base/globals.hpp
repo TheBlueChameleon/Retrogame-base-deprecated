@@ -21,7 +21,7 @@ namespace RetrogameBase
 {
 
 // ========================================================================== //
-// proc
+// SDL ressources
 
     void initAll();
 
@@ -29,6 +29,11 @@ namespace RetrogameBase
     void freeGlobals();
 
     void loadFont(const std::string& alias, const std::string& filename, int size);
+
+// ========================================================================== //
+// convenience
+
+    bool isInteger (const std::string& str);
 
 // ========================================================================== //
 // colors
