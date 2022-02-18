@@ -148,7 +148,7 @@ namespace RetrogameBase
         }
 
         reset();
-        for (auto subNode = nodeAnimation.first_child(); subNode; subNode = subNode.next_sibling())
+        for (auto& subNode : nodeAnimation)
         {
             const auto data = getFilenameAndRepetitionFromTag(subNode, filename);
 
