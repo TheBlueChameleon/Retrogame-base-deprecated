@@ -155,7 +155,7 @@ namespace RetrogameBase
     {
         decltype(getPaletteEntries(parent)) reVal;
 
-        for (auto node = parent.first_child(); node; node = node.next_sibling())
+        for (auto node : parent)
         {
             if (std::strcmp(node.name(), "animation"))
             {

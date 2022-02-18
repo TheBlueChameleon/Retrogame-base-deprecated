@@ -173,7 +173,7 @@ namespace RetrogameBase
         std::vector<XmlTagElement>  elements;
         XmlSimpleGroup              reVal;
 
-        for (auto subNode = node.first_child(); subNode; subNode = subNode.next_sibling())
+        for (auto subNode : node)
         {
             tag = subNode.name();
             elements.clear();
