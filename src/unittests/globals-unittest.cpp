@@ -35,6 +35,18 @@ bool unittest_loadFont()
         );
     }
 
+    UNITTEST_THROWS(
+        loadFont("alias", "nonexistent file", 12),
+        FileNotFoundError,
+        "throw on loading nonexistent file"
+    );
+
+    UNITTEST_THROWS(
+        loadFont("fixed-small", "../font/FreeMono.ttf", 8),
+        MemoryManagementError,
+        "throw on loading font again"
+    );
+
     // ...................................................................... //
 
     UNITTEST_FINALIZE;

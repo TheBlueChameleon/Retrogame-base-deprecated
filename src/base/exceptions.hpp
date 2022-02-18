@@ -22,9 +22,13 @@
 namespace RetrogameBase
 {
     ERROR(FileNotFound);
-    //class FileNotFoundError   : std::runtime_error {};
-    class InvalidFileError    : std::runtime_error {};
-    class InvalidVersionError : std::runtime_error {};
+    ERROR(InvalidFile);
+    ERROR(InvalidVersion);
+
+    ERROR(MemoryManagement);
+
+    ERROR(SdlInternal);
+    ERROR(PugiInternal);
 }
 
 // ========================================================================== //

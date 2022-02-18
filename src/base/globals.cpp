@@ -89,9 +89,14 @@ namespace RetrogameBase
 
         CHECK_FILE_EXISTS(filename);
 
+        if (fonts.contains(alias))
+        {
+            throw MemoryManagementError("Font alias '"s + alias + "' is already in use");
+        }
+
         if (!fontPtr)
         {
-            throw std::runtime_error("Could not load font '"s + filename + "'");
+            throw SdlInternalError("Could not load font '"s + filename + "'");
         }
 
         auto [it, success] = fonts.emplace(alias, fontPtr);
@@ -99,7 +104,7 @@ namespace RetrogameBase
         if (!success)
         {
             TTF_CloseFont(fontPtr);
-            throw std::runtime_error("Font '"s + filename + "' already in font store");
+            throw MemoryManagementError("FontMap could not be updated");
         }
     }
 
