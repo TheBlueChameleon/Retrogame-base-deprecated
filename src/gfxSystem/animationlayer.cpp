@@ -42,6 +42,15 @@ namespace RetrogameBase
 {
 
 // ========================================================================== //
+// static members
+
+    static constexpr auto              INVALID_TAG         = "<-*-invalid-*->";
+    static constexpr auto              VOID_REPRESENTATION = "#";
+    static constexpr auto              ANGLE_SEPARATOR     = "@";
+    static constexpr AnimationLayer::ElementDescriptor INVALID_GRIDELEMENT = {-1, -1};
+    static constexpr AnimationLayer::ElementDescriptor VOID_GRIDELEMENT    = {-1,  0};
+
+// ========================================================================== //
 // CTor, DTor
 
     AnimationLayer::AnimationLayer(Window& window) :
@@ -278,15 +287,15 @@ namespace RetrogameBase
             return VOID_GRIDELEMENT;
         }
 
-        const auto startIterator  = elementDescriptor.begin();
-        auto       rotationOffset = elementDescriptor.find("@");
+        int ID, angle;
 
-        int ID    = -1;
-        int angle =  0;
+        const auto startIterator  = elementDescriptor.begin();
+        auto       rotationOffset = elementDescriptor.find(ANGLE_SEPARATOR);
 
         if (rotationOffset == std::string::npos)
         {
             rotationOffset = elementDescriptor.length();
+            angle = 0;
         }
         else
         {

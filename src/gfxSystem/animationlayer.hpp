@@ -25,8 +25,9 @@ namespace RetrogameBase
     class AnimationLayer
     {
         public:
-            using Coordinate = std::tuple<int, int, double>;        // x, y, angle [rad]
-            using Element    = std::pair<int, Coordinate>;          // storeID, Coordinate
+            using Coordinate        = std::tuple<int, int, double>;     // x, y, angle [rad]
+            using Element           = std::pair<int, Coordinate>;       // storeID, Coordinate
+            using ElementDescriptor = std::pair<int, int>;              // storeID, angle [deg]
 
         private:
             Window& window;
@@ -63,13 +64,6 @@ namespace RetrogameBase
             void loadXML (const std::string& filename);
 
         private:
-            using ElementDescriptor = std::pair<int, int>;          // storeID, angle [deg]
-
-            static constexpr auto              INVALID_TAG         = "<-*-invalid-*->";
-            static constexpr auto              VOID_REPRESENTATION = "#";
-            static constexpr ElementDescriptor INVALID_GRIDELEMENT = {-1, -1};
-            static constexpr ElementDescriptor VOID_GRIDELEMENT    = {-1,  0};
-
             std::vector<std::string> getPaletteEntries(pugi::xml_node node) const;
             std::vector<Element>     parseGridNode(pugi::xml_node node,
                                                    const std::vector<int>& palette,

@@ -39,6 +39,11 @@ namespace RetrogameBase
 {
 
 // ========================================================================== //
+// static members
+
+    const std::pair<std::string, int> Animation::INVALID_TAG = {"<-*-invalid-*->", -1};
+
+// ========================================================================== //
 // CTor, DTor
 
     Animation::Animation(Window& window) :
@@ -165,8 +170,6 @@ namespace RetrogameBase
             }
         }
     }
-
-    const std::pair<std::string, int> Animation::INVALID_TAG  = {"<-*-invalid-*->", -1};
 
     std::pair<std::string, int> Animation::getFilenameAndRepetitionFromTag(pugi::xml_node& node, const std::string& filename) const
     {
