@@ -40,16 +40,23 @@ bool unittest_foobar()
     }
 
 #define UNITTEST_THROWS(expr, exception, taskDescription) {\
-        try                        {unittest_last_result = false; expr;} \
-        catch (const exception& e) {unittest_last_result = true;} \
+        try                        { \
+            unittest_last_result = false; expr; \
+        } catch (const exception& e) { \
+            unittest_last_result = true; \
+        } \
         if (unittest_last_result) {std::cout << "  succeeded to " << taskDescription << std::endl;} \
-        else                      {std::cout << "  failed to " << taskDescription << std::endl;} \
+        else                      {std::cout << "  failed to "    << taskDescription << std::endl;} \
         unittest_result &= unittest_last_result; \
     }
 
 #define UNITTEST_DOESNT_THROW(expr, exception, taskDescription) {\
-        try                        {unittest_last_result = true; expr;} \
-        catch (const exception& e) {unittest_last_result = false;} \
+        try                        { \
+            unittest_last_result = true; expr; \
+        } catch (const exception& e) { \
+            unittest_last_result = false; \
+            std::cout << "  " << e.what() << std::endl; \
+        } \
         if (unittest_last_result) {std::cout << "  succeeded to " << taskDescription << std::endl;} \
         else                      {std::cout << "  failed to " << taskDescription << std::endl;} \
         unittest_result &= unittest_last_result; \
