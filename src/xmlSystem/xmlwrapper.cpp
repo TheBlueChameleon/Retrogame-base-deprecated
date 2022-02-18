@@ -14,6 +14,7 @@ namespace fs = std::filesystem;
 
 // own
 #include "../base/exceptions.hpp"
+#include "../base/globals.hpp"
 #include "xmlwrapper.hpp"
 
 // ========================================================================== //
@@ -117,19 +118,25 @@ namespace RetrogameBase
         auto nodeMajor = nodeVersion.child("major");
         auto nodeMinor = nodeVersion.child("minor");
 
-        auto fileVersion_major = nodeMajor.attribute("value").as_int(-1);
-        auto fileVersion_minor = nodeMinor.attribute("value").as_int(-1);
+        auto attrMajor = nodeMajor.attribute("value");
+        auto attrMinor = nodeMinor.attribute("value");
+
+        auto fileVersion_major = attrMajor.as_int(-1);
+        auto fileVersion_minor = attrMinor.as_int(-1);
 
         bool invalidVersion = false;
 
-        // *INDENT-OFF*
-        if (fileVersion_major  < 0 || fileVersion_minor  < 0)   {invalidVersion = true;}
-        if (fileVersion_major == 0 && fileVersion_minor == 0)   {invalidVersion = true;}
+        invalidVersion |= (!( isInteger(attrMajor.value()) && isInteger(attrMajor.value()) ));
+        invalidVersion |= (fileVersion_major  < 0 || fileVersion_minor  < 0);
+        invalidVersion |= (fileVersion_major == 0 && fileVersion_minor == 0);
 
-        if      (fileVersion_major >  codeVersion_major)        {invalidVersion = true;}
-        else if (fileVersion_major == codeVersion_major)
-        {
-            if  (fileVersion_minor >  codeVersion_minor)        {invalidVersion = true;}
+        // *INDENT-OFF*
+        if (!invalidVersion) {
+            if      (fileVersion_major >  codeVersion_major) {invalidVersion = true;}
+            else if (fileVersion_major == codeVersion_major)
+            {
+                if  (fileVersion_minor >  codeVersion_minor) {invalidVersion = true;}
+            }
         }
         // *INDENT-ON*
 
