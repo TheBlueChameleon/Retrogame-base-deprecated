@@ -118,6 +118,50 @@ namespace RetrogameBase
         return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
     }
 
+    std::vector<std::string_view> split_nonowning(const std::string_view& text, const std::string& separator)
+    {
+        std::vector<std::string_view> reVal;
+
+        const auto startIterator = text.begin();
+        const auto skipWidth     = separator.length();
+        auto last = 0;
+        auto next = -skipWidth;
+
+        while (true)
+        {
+            last = next + skipWidth;
+            next = text.find(separator, last);
+
+            if (next != std::string::npos)
+            {
+                reVal.emplace_back( startIterator + last, startIterator + next );
+            }
+            else
+            {
+                reVal.emplace_back( startIterator + last, text.end() );
+                break;
+            }
+        }
+
+        return reVal;
+    }
+
+    std::string_view trim_nonowning(const std::string_view& text, const std::string& charsToTrim)
+    {
+        if (text.length())
+        {
+            const auto startIterator = text.begin();
+            return std::string_view(
+                       startIterator + text.find_first_not_of(charsToTrim),
+                       startIterator + text.find_last_not_of(charsToTrim) + 1
+                   );
+        }
+        else
+        {
+            return std::string_view();
+        }
+    }
+
 // ========================================================================== //
 // namespace
 }
