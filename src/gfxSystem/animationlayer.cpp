@@ -35,6 +35,16 @@ namespace fs = std::filesystem;
 #define CHECK_ELEMENT_INDEX(ID) {}
 #endif
 
+#ifdef DEBUG
+#define CHECK_ANIMATIONSTORE_INDEX(ID) { \
+        if ( (ID >= this->animationStore.size()) ) { \
+            throw std::out_of_range(THROWTEXT( "  Invalid AnimationStore ID: "s + std::to_string(ID) )); \
+        } \
+    }
+#else
+#define CHECK_ELEMENT_INDEX(ID) {}
+#endif
+
 // ========================================================================== //
 // namespace
 
@@ -106,14 +116,14 @@ namespace RetrogameBase
 
     void AnimationLayer::addElement(const Element& element)
     {
-        CHECK_ELEMENT_INDEX(element.first);
+        CHECK_ANIMATIONSTORE_INDEX(element.first);
         elements.push_back(element);
     }
 
     void AnimationLayer::replaceElement(const int index, const Element& element)
     {
         CHECK_ELEMENT_INDEX(index);
-        CHECK_ELEMENT_INDEX(element.first);
+        CHECK_ANIMATIONSTORE_INDEX(element.first);
         elements[index] = element;
     }
 
