@@ -32,9 +32,9 @@ namespace fs = std::filesystem;
 
 #define CHECK_FILE_EXISTS(filename) {\
         if (!fs::exists(filename)) { \
-            throw std::runtime_error(THROWTEXT( \
-                                                "  file not found: '"s + filename + "'" \
-                                              )); \
+            throw FileNotFoundError(THROWTEXT( \
+                                               "  file not found: '"s + filename + "'" \
+                                             )); \
         } \
     }
 
