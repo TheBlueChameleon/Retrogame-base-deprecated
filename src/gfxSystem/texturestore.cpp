@@ -68,6 +68,11 @@ namespace RetrogameBase
         return textures.size();
     }
 
+    size_t TextureStore::getTotalMemory() const
+    {
+        return totalMemory;
+    }
+
     SDL_Texture* TextureStore::getTexture(size_t ID) const
     {
         CHECK_GFX_INDEX(ID);
@@ -84,6 +89,17 @@ namespace RetrogameBase
     {
         CHECK_GFX_INDEX(ID);
         return dimensions[ID];
+    }
+
+    size_t TextureStore::getTextureMemorySize(const int ID) const
+    {
+        CHECK_GFX_INDEX(ID);
+        int w, h;
+        Uint32 format;
+
+        SDL_QueryTexture(textures[ID], &format, NULL, &w, &h);
+
+        return w * h * SDL_BYTESPERPIXEL(format);
     }
 
     size_t TextureStore::findByFilename(const std::string& filename) const
@@ -140,6 +156,10 @@ namespace RetrogameBase
                                    ));
         }
 
+        Uint32 format;
+        SDL_QueryTexture(newTexture, &format, nullptr, nullptr, nullptr);
+        totalMemory += loadedSurface->w * loadedSurface->h * SDL_BYTESPERPIXEL(format);
+
         filenames.push_back(filename);
         textures.push_back(newTexture);
         dimensions.push_back( std::make_pair(loadedSurface->w, loadedSurface->h) );
@@ -155,6 +175,8 @@ namespace RetrogameBase
         {
             SDL_DestroyTexture(tex);
         }
+
+        totalMemory = 0;
 
         textures.clear();
         filenames.clear();

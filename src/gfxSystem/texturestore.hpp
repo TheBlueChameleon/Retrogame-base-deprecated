@@ -29,6 +29,8 @@ namespace RetrogameBase
             std::vector<std::string>         filenames;
             std::vector<std::pair<int, int>> dimensions;
 
+            size_t                           totalMemory = 0;
+
         public:
             static const size_t NOINDEX = std::numeric_limits<size_t>::max();
             friend class Window;
@@ -47,9 +49,12 @@ namespace RetrogameBase
 
             size_t size() const;
 
+            size_t getTotalMemory() const;
+
             SDL_Texture*        getTexture(size_t ID) const;
             const std::string&  getFilename(const int ID) const;
             std::pair<int, int> getTextureDimension(const int ID) const;
+            size_t              getTextureMemorySize(const int ID) const;
 
             size_t findByFilename(const std::string& filename) const;         // returns NOINDEX if image not in store
 
