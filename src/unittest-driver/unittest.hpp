@@ -113,7 +113,12 @@ bool unittest_foobar()
 #endif // UNITTESTMACROS_HPP
 
 // ========================================================================== //
+// type
+
+using Unittest_RessorceList = std::vector<std::string>;
+
+// ========================================================================== //
 // procs
 
-void unittest_check_files_present(const std::vector<std::string>& files);
-void unittest_check_directories  (const std::vector<std::string>& directories);
+void unittest_check_files_present(const Unittest_RessorceList& files);
+void unittest_check_directories  (const Unittest_RessorceList& directories);

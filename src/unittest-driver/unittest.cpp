@@ -17,7 +17,7 @@ using namespace std::string_literals;
 // ========================================================================== //
 // procs
 
-void unittest_check_files_present(const std::vector<std::string>& files)
+void unittest_check_files_present(const Unittest_RessorceList& files)
 {
     for (auto& file : files)
     {
@@ -28,7 +28,7 @@ void unittest_check_files_present(const std::vector<std::string>& files)
     }
 }
 
-void unittest_check_directories(const std::vector<std::string>& directories)
+void unittest_check_directories(const Unittest_RessorceList& directories)
 {
     for (auto& directory : directories)
     {
