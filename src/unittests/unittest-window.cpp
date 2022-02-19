@@ -224,5 +224,6 @@ bool unittest_Window_Stores()
 
     // ...................................................................... //
 
+    UNITTEST_CLEAR_CERR;
     UNITTEST_FINALIZE;
 }
