@@ -31,7 +31,10 @@ bool unittest_foobar()
 // dependencies
 
 #include <stdexcept>
+
+#include <string>
 #include <sstream>
+#include <vector>
 
 // ========================================================================== //
 // macros
@@ -109,6 +112,8 @@ bool unittest_foobar()
 
 #endif // UNITTESTMACROS_HPP
 
+// ========================================================================== //
+// procs
 
-
-
+void unittest_check_files_present(const std::vector<std::string>& files);
+void unittest_check_directories  (const std::vector<std::string>& directories);
