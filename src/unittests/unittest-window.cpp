@@ -88,7 +88,6 @@ bool unittest_Window_Stores()
         "../unittest-xml/animations/animation-pure.xml",
         "../unittest-xml/animations/animation-simple.xml",
         "../unittest-xml/animations/animation-valid-deprecated.xml",
-        "../unittest-xml/animations/animation-simple.xml",
 
         "../unittest-gfx/frame01.png",
         "../unittest-gfx/frame02.png",
