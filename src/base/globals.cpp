@@ -7,6 +7,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <string_view>
 using namespace std::string_literals;
 
 #include <cstdlib>
@@ -113,14 +114,34 @@ namespace RetrogameBase
 // ========================================================================== //
 // convenience
 
-    bool isInteger (const std::string& s)
+    bool isInteger (const std::string& stringToTest)
     {
-        return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+        // *INDENT-OFF*
+        if (stringToTest.empty())                                                               {return false;}
+        if (!std::isdigit(stringToTest[0]) && stringToTest[0] != '+' && stringToTest[0] != '-') {return false;}
+        // *INDENT-ON*
+
+        auto remainingString = std::string_view(stringToTest.begin() + 1, stringToTest.end());
+        return std::all_of(remainingString.begin(), remainingString.end(), ::isdigit);
     }
 
-    std::vector<std::string_view> split_nonowning(const std::string_view& text, const std::string& separator)
+    std::vector<std::string_view> split_nonowning(
+        const std::string_view& text,
+        const std::string_view& separator
+    )
     {
         std::vector<std::string_view> reVal;
+
+        if (text.empty())
+        {
+            return reVal;
+        }
+
+        if (separator.empty())
+        {
+            reVal.push_back(text);
+            return reVal;
+        }
 
         const auto startIterator = text.begin();
         const auto skipWidth     = separator.length();
@@ -146,7 +167,9 @@ namespace RetrogameBase
         return reVal;
     }
 
-    std::string_view trim_nonowning(const std::string_view& text, const std::string& charsToTrim)
+    std::string_view trim_nonowning(
+        const std::string_view& text,
+        const std::string_view& charsToTrim)
     {
         if (text.length())
         {

@@ -39,8 +39,14 @@ namespace RetrogameBase
 
     bool isInteger (const std::string& str);
 
-    std::vector<std::string_view> split_nonowning(const std::string_view& text, const std::string& separator=",");
-    std::string_view trim_nonowning(const std::string_view& text, const std::string& charsToTrim = " \t\n");
+    std::vector<std::string_view> split_nonowning(
+        const std::string_view& text,
+        const std::string_view& separator=","
+    );
+    std::string_view trim_nonowning(
+        const std::string_view& text,
+        const std::string_view& charsToTrim = " \t\n"
+    );
 
     inline double deg2rad(double deg)
     {
