@@ -106,12 +106,14 @@ namespace RetrogameBase
 
     void AnimationLayer::addElement(const Element& element)
     {
+        CHECK_ELEMENT_INDEX(element.first);
         elements.push_back(element);
     }
 
     void AnimationLayer::replaceElement(const int index, const Element& element)
     {
         CHECK_ELEMENT_INDEX(index);
+        CHECK_ELEMENT_INDEX(element.first);
         elements[index] = element;
     }
 
@@ -136,7 +138,7 @@ namespace RetrogameBase
     void AnimationLayer::loadXML(const std::string& filename)
     {
         auto doc = XmlLoad(filename, "animationlayer");
-        auto root         = doc.child("project");
+        auto root         = doc .child("project");
         auto nodePalette  = root.child("palette");
         auto nodeElements = root.child("elements");
 
