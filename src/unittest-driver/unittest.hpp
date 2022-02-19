@@ -91,6 +91,10 @@ bool unittest_foobar()
     unittest_originalCerr = std::cerr.rdbuf(unittest_cerrBuffer.rdbuf());
 
 #define UNITTEST_RELEASE_CERR \
+    if (unittest_cerrBuffer.str().length()) {\
+        std::cout << "  Warning: Unprocessed messages in CERR:" << std::endl; \
+        std::cout << "    " << unittest_cerrBuffer.str() << std::endl; \
+    } \
     std::cerr.rdbuf( unittest_originalCerr );
 
 #define UNITTEST_CLEAR_CERR \
@@ -104,6 +108,10 @@ bool unittest_foobar()
         std::cout << "    expected state:" << std::endl; \
         std::cout << "      '" << cerrText << "'"<< std::endl; \
     }
+
+#define UNITTEST_ASSERT_AND_CLEAR_CERR(cerrText, taskDescription) \
+    UNITTEST_ASSERT_STATE_CERR(cerrText, taskDescription); \
+    UNITTEST_CLEAR_CERR;
 
 #define UNITTEST_ASSERT_OUTPUTS_ON_CERR(expr, cerrText, taskDescription) \
     UNITTEST_CLEAR_CERR; \
