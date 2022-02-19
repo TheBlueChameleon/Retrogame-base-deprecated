@@ -38,18 +38,21 @@ int main()
 
     std::cout << "REGISTERING UNIT TESTS ... " << std::flush;
 
-//    ADD_UNITTEST(unittest_loadFont);
-//    ADD_UNITTEST(unittest_xmlSystem_load);
-//    ADD_UNITTEST(unittest_xmlSystem_XmlExtractSimpleGroup);
-//    ADD_UNITTEST(unittest_Window_CTor);
-//    ADD_UNITTEST(unittest_Window_Stores);       // TODO
-//    ADD_UNITTEST(unittest_TextureStore_addReset);
-//    ADD_UNITTEST(unittest_Animation_addReset);
-//    ADD_UNITTEST(unittest_Animation_loadXml);
-//    ADD_UNITTEST(unittest_Animationstore_addReset);
-//    ADD_UNITTEST(unittest_Animationstore_advanceAll);
-    ADD_UNITTEST(unittest_AnimationLayer_addElements);
-    ADD_UNITTEST(unittest_AnimationLayer_loadXml);
+    ADD_UNITTEST(unittest_globals_loadFont);
+    ADD_UNITTEST(unittest_globals_isInteger);
+    ADD_UNITTEST(unittest_globals_split_nonowning);
+    ADD_UNITTEST(unittest_globals_trim_nonowning);
+    ADD_UNITTEST(unittest_xmlSystem_load);
+    ADD_UNITTEST(unittest_xmlSystem_XmlExtractSimpleGroup);
+    ADD_UNITTEST(unittest_Window_CTor);
+    ADD_UNITTEST(unittest_Window_Stores);       // TODO
+    ADD_UNITTEST(unittest_TextureStore_addReset);
+    ADD_UNITTEST(unittest_Animation_addReset);
+    ADD_UNITTEST(unittest_Animation_loadXml);
+    ADD_UNITTEST(unittest_Animationstore_addReset);
+    ADD_UNITTEST(unittest_Animationstore_advanceAll);
+    ADD_UNITTEST(unittest_AnimationLayer_addElements);    // TODO
+    ADD_UNITTEST(unittest_AnimationLayer_loadXml);        // TODO
 
     std::cout << "DONE" << std::endl << std::endl;
 
