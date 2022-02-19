@@ -6,10 +6,11 @@
 #include <stdexcept>
 
 // own
-#include "unittest-macros.hpp"
 #include "../base/globals.hpp"
 #include "../gfxSystem/window.hpp"
-#include "window-unittest.hpp"
+
+#include "../unittest-driver/unittest.hpp"
+#include "unittest-window.hpp"
 
 using namespace RetrogameBase;
 

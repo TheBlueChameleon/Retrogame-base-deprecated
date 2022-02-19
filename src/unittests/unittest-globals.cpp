@@ -5,9 +5,10 @@
 #include <iostream>
 
 // own
-#include "unittest-macros.hpp"
 #include "../base/globals.hpp"
-#include "globals-unittest.hpp"
+
+#include "../unittest-driver/unittest.hpp"
+#include "unittest-globals.hpp"
 
 using namespace RetrogameBase;
 

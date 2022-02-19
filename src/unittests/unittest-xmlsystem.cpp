@@ -15,10 +15,10 @@ namespace fs = std::filesystem;
 
 // own
 #include "../base/exceptions.hpp"
-#include "unittest-macros.hpp"
-#include "xmlsystem-unittest.hpp"
-#include "../base/exceptions.hpp"
 #include "../xmlSystem/xmlwrapper.hpp"
+
+#include "../unittest-driver/unittest.hpp"
+#include "unittest-xmlsystem.hpp"
 
 using namespace RetrogameBase;
 

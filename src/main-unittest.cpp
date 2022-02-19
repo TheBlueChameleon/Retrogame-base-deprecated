@@ -11,12 +11,13 @@
 // own
 #include "base/globals.hpp"
 
-#include "unittests/globals-unittest.hpp"
-#include "unittests/xmlsystem-unittest.hpp"
-#include "unittests/window-unittest.hpp"
-#include "unittests/texturestore-unittest.hpp"
-#include "unittests/animation-unittest.hpp"
-#include "unittests/animationstore-unittest.hpp"
+#include "unittests/unittest-globals.hpp"
+#include "unittests/unittest-xmlsystem.hpp"
+#include "unittests/unittest-window.hpp"
+#include "unittests/unittest-texturestore.hpp"
+#include "unittests/unittest-animation.hpp"
+#include "unittests/unittest-animationstore.hpp"
+#include "unittests/unittest-animationlayer.hpp"
 
 // ========================================================================== //
 // convenience macro
@@ -37,16 +38,18 @@ int main()
 
     std::cout << "REGISTERING UNIT TESTS ... " << std::flush;
 
-    ADD_UNITTEST(unittest_loadFont);
-    ADD_UNITTEST(unittest_xmlSystem_load);
-    ADD_UNITTEST(unittest_xmlSystem_XmlExtractSimpleGroup);
-    ADD_UNITTEST(unittest_Window_CTor);
-    ADD_UNITTEST(unittest_Window_Stores);       // TODO
-    ADD_UNITTEST(unittest_TextureStore_addReset);
-    ADD_UNITTEST(unittest_Animation_addReset);
-    ADD_UNITTEST(unittest_Animation_loadXml);
-    ADD_UNITTEST(unittest_Animationstore_addReset);
-    ADD_UNITTEST(unittest_Animationstore_advanceAll);
+//    ADD_UNITTEST(unittest_loadFont);
+//    ADD_UNITTEST(unittest_xmlSystem_load);
+//    ADD_UNITTEST(unittest_xmlSystem_XmlExtractSimpleGroup);
+//    ADD_UNITTEST(unittest_Window_CTor);
+//    ADD_UNITTEST(unittest_Window_Stores);       // TODO
+//    ADD_UNITTEST(unittest_TextureStore_addReset);
+//    ADD_UNITTEST(unittest_Animation_addReset);
+//    ADD_UNITTEST(unittest_Animation_loadXml);
+//    ADD_UNITTEST(unittest_Animationstore_addReset);
+//    ADD_UNITTEST(unittest_Animationstore_advanceAll);
+    ADD_UNITTEST(unittest_AnimationLayer_addElements);
+    ADD_UNITTEST(unittest_AnimationLayer_loadXml);
 
     std::cout << "DONE" << std::endl << std::endl;
 

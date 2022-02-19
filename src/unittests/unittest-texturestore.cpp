@@ -11,10 +11,11 @@ namespace fs = std::filesystem;
 #include <utility>
 
 // own
-#include "unittest-macros.hpp"
 #include "../gfxSystem/window.hpp"
 #include "../gfxSystem/texturestore.hpp"
-#include "texturestore-unittest.hpp"
+
+#include "../unittest-driver/unittest.hpp"
+#include "unittest-texturestore.hpp"
 
 using namespace RetrogameBase;
 

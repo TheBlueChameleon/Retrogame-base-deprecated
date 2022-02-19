@@ -11,12 +11,13 @@
 namespace fs = std::filesystem;
 
 // own
-#include "unittest-macros.hpp"
 #include "../gfxSystem/window.hpp"
 #include "../gfxSystem/texturestore.hpp"
 #include "../gfxSystem/animation.hpp"
 #include "../xmlSystem/xmlwrapper.hpp"
-#include "animationstore-unittest.hpp"
+
+#include "../unittest-driver/unittest.hpp"
+#include "unittest-animationstore.hpp"
 
 using namespace RetrogameBase;
 
@@ -86,7 +87,7 @@ bool unittest_Animationstore_addReset()
 
     UNITTEST_THROWS(
         aniStore.addAnimation(testfile_X),
-        std::runtime_error,
+        FileNotFoundError,
         "throw on load of invalid file"
     );
 
@@ -160,6 +161,17 @@ bool unittest_Animationstore_advanceAll()
         aniStore.getAnimation(1).getCurrentPhase() == 5,
         "advance animation 1"
     );
+
+    // ...................................................................... //
+
+    aniStore.resetPhases();
+    for (auto i=0u; i<aniStore.size(); ++i)
+    {
+        UNITTEST_ASSERT(
+            aniStore.getAnimation(i).getCurrentPhase() == 0,
+            "reset animation " << i << " to phase 0"
+        );
+    }
 
     // ...................................................................... //
 
