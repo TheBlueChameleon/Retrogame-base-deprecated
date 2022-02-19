@@ -5,8 +5,28 @@
 #include <iostream>
 #include <exception>
 
+#include <functional>
+
+#include <string>
+using namespace std::string_literals;
+
 // local
 #include "window.hpp"
+
+// ========================================================================== //
+// local macro
+
+#define THROWTEXT(msg) ("RUNTIME EXCEPTION IN "s + (__PRETTY_FUNCTION__) + "\n"s + msg)
+
+#ifdef DEBUG
+#define CHECK_ANIMATIONLAYER_INDEX(ID) { \
+        if ( (ID >= this->animationLayers.size()) ) { \
+            throw std::out_of_range(THROWTEXT( "  Invalid AnimationLayer ID: "s + std::to_string(ID) )); \
+        } \
+    }
+#else
+#define CHECK_ANIMATION_INDEX(ID) {}
+#endif
 
 // ========================================================================== //
 // namespace
@@ -233,6 +253,39 @@ namespace RetrogameBase
         return animationStore;
     }
 
+    const std::vector<AnimationLayer>& Window::getAnimationLayers() const
+    {
+        return animationLayers;
+    }
+
+    size_t Window::getLayerCount() const
+    {
+        return animationLayers.size();
+    }
+
+    AnimationLayer& Window::getLayer(size_t ID)
+    {
+        CHECK_ANIMATIONLAYER_INDEX(ID);
+        return animationLayers[ID];
+    }
+
+    std::pair<size_t, AnimationLayer&>
+    Window::addLayer()
+    {
+        auto& layer = animationLayers.emplace_back(*this);
+        return std::make_pair(animationLayers.size() - 1, std::reference_wrapper(layer));
+    }
+
+    std::pair<size_t, AnimationLayer&> Window::addLayer(const std::string& filename)
+    {
+        auto& layer = animationLayers.emplace_back(*this);
+        size_t ID   = animationLayers.size() - 1;
+
+        layer.loadXML(filename);
+
+        return std::make_pair(ID, std::reference_wrapper(layer));
+    }
+
     void Window::resetStores(ResetStoresDepth depth)
     {
         switch (depth)
@@ -244,7 +297,7 @@ namespace RetrogameBase
                 animationStore.reset_private();
                 [[fallthrough]];
             case ResetStoresDepth::Layers:
-                break;
+                animationLayers.clear();
         }
     }
 
