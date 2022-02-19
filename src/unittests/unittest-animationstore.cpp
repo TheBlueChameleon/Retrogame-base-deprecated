@@ -21,6 +21,9 @@ namespace fs = std::filesystem;
 
 using namespace RetrogameBase;
 
+// ========================================================================== //
+// Tests
+
 bool unittest_Animationstore_addReset()
 {
     UNITTEST_VARS;

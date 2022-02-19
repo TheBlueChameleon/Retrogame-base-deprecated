@@ -21,6 +21,9 @@ namespace fs = std::filesystem;
 
 using namespace RetrogameBase;
 
+// ========================================================================== //
+// Tests
+
 bool unittest_Animation_addReset()
 {
     std::cout << "TESTING ANIMATION CLASS: ADD AND RESET METHODS" << std::endl;

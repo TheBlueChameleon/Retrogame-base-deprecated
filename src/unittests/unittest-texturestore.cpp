@@ -22,7 +22,6 @@ using namespace RetrogameBase;
 // ========================================================================== //
 // tests
 
-
 bool unittest_TextureStore_addReset()
 {
     std::cout << "TESTING TEXTURESTORE ADD AND RESET METHODS" << std::endl;

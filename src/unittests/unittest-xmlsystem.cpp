@@ -22,6 +22,9 @@ namespace fs = std::filesystem;
 
 using namespace RetrogameBase;
 
+// ========================================================================== //
+// Tests
+
 bool unittest_xmlSystem_load()
 {
     std::cout << "TESTING XML LOAD CONVENIENCE FUNCTION" << std::endl;

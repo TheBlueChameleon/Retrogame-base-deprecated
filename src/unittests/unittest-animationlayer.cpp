@@ -12,6 +12,9 @@
 
 using namespace RetrogameBase;
 
+// ========================================================================== //
+// Tests
+
 bool unittest_AnimationLayer_addElements()
 {
     std::cout << "TESTING FOOBAR CLASS" << std::endl;
