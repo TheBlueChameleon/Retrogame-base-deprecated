@@ -12,6 +12,7 @@ namespace fs = std::filesystem;
 #include <SDL2/SDL_image.h>
 
 // own
+#include "../base/globals.hpp"
 #include "window.hpp"
 #include "texturestore.hpp"
 
@@ -193,6 +194,26 @@ namespace RetrogameBase
         SDL_Rect dest = {x, y, dimensions[ID].first, dimensions[ID].second};
 
         SDL_RenderCopy(window.getRenderer(), textures[ID], NULL, &dest);
+    }
+
+    void TextureStore::put(int ID, int x, int y, int angle)
+    {
+        CHECK_GFX_INDEX(ID);
+
+        auto w = dimensions[ID].first, h = dimensions[ID].second;
+        SDL_Rect dest = {x, y,
+                         static_cast<int>(w* valuesCos[angle]  +  h* valuesSin[angle]),
+                         static_cast<int>(w* valuesSin[angle]  +  h* valuesCos[angle])
+                        };
+
+        SDL_RenderCopyEx(window.getRenderer(),
+                         textures[ID],
+                         NULL,                          // &srcRect
+                         &dest,
+                         angle,
+                         NULL,                          // SDL_FPoint *center
+                         SDL_FLIP_NONE                  // flip
+                        );
     }
 
 // ========================================================================== //

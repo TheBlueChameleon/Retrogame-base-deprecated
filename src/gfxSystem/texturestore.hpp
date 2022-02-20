@@ -72,6 +72,8 @@ namespace RetrogameBase
             // display
 
             void put (int ID, int x, int y);
+            void put (int ID, int x, int y, int angle);
+
     };
 
 }
