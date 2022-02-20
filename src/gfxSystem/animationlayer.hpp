@@ -26,8 +26,8 @@ namespace RetrogameBase
     {
         public:
             using Coordinate        = std::tuple<int, int, int>;        // x, y, angle [deg]
-            using Element           = std::pair<int, Coordinate>;       // storeID, Coordinate
-            using ElementDescriptor = std::pair<int, int>;              // storeID, angle [deg]
+            using Element           = std::pair<int, Coordinate>;       // AniStoreID, Coordinate
+            using ElementDescriptor = std::pair<int, int>;              // AniStoreID, angle [deg]
 
         private:
             Window& window;
@@ -46,7 +46,9 @@ namespace RetrogameBase
 
             size_t size() const;
 
-            const std::vector<Element> getElements() const;
+            Window&                     getWindow();
+            AnimationStore&             getAnimationStore();
+            const std::vector<Element>  getElements() const;
 
             Element    getElement    (const int index) const;
             int        getAnimationID(const int index) const;
@@ -79,6 +81,9 @@ namespace RetrogameBase
 
             // -------------------------------------------------------------- //
             // display
+
+            void showCurrentPhase();
+            void showCurrentPhaseAndAdvance();
     };
 
 }

@@ -188,4 +188,17 @@ namespace RetrogameBase
 
         return std::make_pair(frameFile, repeat);
     }
+
+// ========================================================================== //
+// display
+
+    void Animation::put(int x, int y)
+    {
+        textureStore.put(frames[currentPhase], x, y);
+    }
+
+    void Animation::put(int x, int y, int angle)
+    {
+        textureStore.put(frames[currentPhase], x, y, angle);
+    }
 }

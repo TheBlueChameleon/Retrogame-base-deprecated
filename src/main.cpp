@@ -14,6 +14,7 @@
 // showcase defs
 
 void showcase_waitTillClose(RetrogameBase::Window& win);
+void showcase_driveAnimationLayer(RetrogameBase::AnimationLayer& al);
 
 // ========================================================================== //
 // main
@@ -36,11 +37,7 @@ int main()
                   << std::endl;
     }
 
-    win.getTextureStore().put(0, 300, 300);
-    win.getTextureStore().put(0, 350, 350);
-    win.getTextureStore().put(1, 300, 300, 30);
-
-    showcase_waitTillClose(win);
+    showcase_driveAnimationLayer(al);
 
 //    RetrogameBase::Window win1("x");
 //    RetrogameBase::Window win2("y");
@@ -96,6 +93,29 @@ void showcase_waitTillClose(RetrogameBase::Window& win)
 
         win.update();
 
+        SDL_Delay(1000 / fps);
+    }
+    // *INDENT-ON*
+}
+
+void showcase_driveAnimationLayer(RetrogameBase::AnimationLayer& al)
+{
+    auto fps = 30.;
+    bool close = false;
+    SDL_Event event;
+
+    auto& win = al.getWindow();
+    auto& aniStore = al.getAnimationStore();
+
+    // *INDENT-OFF*
+    while (!close) {
+        al.showCurrentPhaseAndAdvance();
+
+        win.update();
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) {close = true;}
+        }
         SDL_Delay(1000 / fps);
     }
     // *INDENT-ON*

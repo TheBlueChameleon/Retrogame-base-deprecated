@@ -77,6 +77,9 @@ namespace RetrogameBase
 
             // -------------------------------------------------------------- //
             // display
+
+            void put (int x, int y);
+            void put (int x, int y, int angle);
     };
 }
 #endif // ANIMATION_HPP

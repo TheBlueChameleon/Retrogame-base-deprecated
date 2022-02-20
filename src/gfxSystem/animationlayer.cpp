@@ -5,6 +5,9 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <vector>
+#include <set>
+
 #include <cstring>
 #include <string>
 using namespace std::string_literals;
@@ -75,6 +78,16 @@ namespace RetrogameBase
     size_t AnimationLayer::size() const
     {
         return elements.size();
+    }
+
+    Window& AnimationLayer::getWindow()
+    {
+        return window;
+    }
+
+    AnimationStore& AnimationLayer::getAnimationStore()
+    {
+        return animationStore;
     }
 
     const std::vector<AnimationLayer::Element> AnimationLayer::getElements() const
@@ -357,6 +370,40 @@ namespace RetrogameBase
         }
 
         return Element(ID, {x, y, angle});
+    }
+
+// ========================================================================== //
+// display
+
+    void AnimationLayer::showCurrentPhase()
+    {
+        for (auto& element : elements)
+        {
+            auto& ID            = element.first;
+            auto& [x, y, angle] = element.second;
+
+            animationStore.put(ID, x, y, angle);
+        }
+    }
+
+    void AnimationLayer::showCurrentPhaseAndAdvance()
+    {
+        std::set<size_t> uniqueAnimationIDs;
+
+        for (auto& element : elements)
+        {
+            auto& ID            = element.first;
+            auto& [x, y, angle] = element.second;
+
+            uniqueAnimationIDs.emplace(ID);
+
+            animationStore.put(ID, x, y, angle);
+        }
+
+        for (auto& ID : uniqueAnimationIDs)
+        {
+            animationStore.advanceAnimation(ID);
+        }
     }
 
 // ========================================================================== //

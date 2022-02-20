@@ -133,6 +133,12 @@ namespace RetrogameBase
         return animations.size() - 1;
     }
 
+    void AnimationStore::advanceAnimation(size_t ID)
+    {
+        CHECK_ANIMATION_INDEX(ID);
+        animations[ID].advanceFrame();
+    }
+
     void AnimationStore::advanceAll()
     {
         for (auto& animation : animations)
@@ -147,6 +153,22 @@ namespace RetrogameBase
         {
             animation.resetPhase();
         }
+    }
+
+// ========================================================================== //
+// display
+
+    void AnimationStore::put(int ID, int x, int y)
+    {
+        CHECK_ANIMATION_INDEX(ID);
+        animations[ID].put(x, y);
+
+    }
+
+    void AnimationStore::put(int ID, int x, int y, int angle)
+    {
+        CHECK_ANIMATION_INDEX(ID);
+        animations[ID].put(x, y, angle);
     }
 
 // ========================================================================== //
