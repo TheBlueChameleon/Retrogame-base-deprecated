@@ -38,6 +38,7 @@ namespace RetrogameBase
         public:
             // -------------------------------------------------------------- //
             // CTor, DTor
+
             AnimationLayer(RetrogameBase::Window& window);
 
             // -------------------------------------------------------------- //

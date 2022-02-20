@@ -19,7 +19,6 @@ namespace RetrogameBase
 {
     class Window;
     class TextureStore;
-    class Animation;
 
     class AnimationStore
     {
