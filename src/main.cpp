@@ -29,9 +29,9 @@ int main()
 
     RetrogameBase::Window win("Test Window");
 
-    //showcase_waitTillClose(win);
-    showcase_AnimationLayer(win);
-    showcase_screenshot(win);
+//    showcase_waitTillClose(win);
+//    showcase_AnimationLayer(win);
+//    showcase_screenshot(win);
 }
 
 // ========================================================================== //
@@ -70,7 +70,8 @@ void showcase_AnimationLayer(RetrogameBase::Window& win)
 
     win.setEventHandler(eventHandler_minimal);
     win.setIdleHandler(ildeHandler_AnimationLayer);
-    win.mainLoop(&win);
+    win.setUserData(&win);
+    win.mainLoop();
 }
 
 void showcase_screenshot(RetrogameBase::Window& win)

@@ -336,7 +336,7 @@ namespace RetrogameBase
         return idleHandler;
     }
 
-    bool Window::distributeEvents(void* userData)
+    bool Window::distributeEvents()
     {
         if (!eventHandler)
         {
@@ -354,7 +354,7 @@ namespace RetrogameBase
         return continueToLoop;
     }
 
-    void Window::mainLoop(void* userData, double fps)
+    void Window::mainLoop(double fps)
     {
         bool continueToLoop = bool(eventHandler);
 
@@ -366,7 +366,7 @@ namespace RetrogameBase
         {
             tic = toc;
 
-            continueToLoop = distributeEvents(userData);
+            continueToLoop = distributeEvents();
             update();
 
             if (idleHandler)
@@ -381,6 +381,16 @@ namespace RetrogameBase
 
             SDL_Delay(delayReal);
         }
+    }
+
+    void* Window::getUserData() const
+    {
+        return userData;
+    }
+
+    void Window::setUserData(void* const newUserData)
+    {
+        userData = newUserData;
     }
 
 

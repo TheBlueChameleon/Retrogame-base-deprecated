@@ -37,6 +37,7 @@ namespace RetrogameBase
 
             std::function<bool (SDL_Event& event, void* userData)> eventHandler;
             std::function<void (void* userData)> idleHandler;
+            void* userData;
 
         public:
             // ---------------------------------------------------------------------- //
@@ -134,8 +135,11 @@ namespace RetrogameBase
             void setIdleHandler(const std::function<void (void* userData)>& idleHandler);
             const std::function<void (void* userData)> getIdleHandler() const;
 
-            bool distributeEvents(void* userData = nullptr);
-            void mainLoop        (void* userData = nullptr, double fps = 30);
+            bool distributeEvents();
+            void mainLoop        (double fps = 30);
+
+            void* getUserData() const;
+            void setUserData(void* const newUserData);
     };
 }
 #endif // WINDOW_HPP
