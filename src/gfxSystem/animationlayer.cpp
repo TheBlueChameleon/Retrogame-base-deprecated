@@ -45,7 +45,7 @@ namespace fs = std::filesystem;
         } \
     }
 #else
-#define CHECK_ELEMENT_INDEX(ID) {}
+#define CHECK_ANIMATIONSTORE_INDEX(ID) {}
 #endif
 
 #define GET_COORDINATE_COMPONENT(coordinate, component) \
