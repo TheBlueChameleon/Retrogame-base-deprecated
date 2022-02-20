@@ -18,6 +18,7 @@
 #include "texturestore.hpp"
 #include "animationstore.hpp"
 #include "animationlayer.hpp"
+#include "animationlayerstore.hpp"
 
 // ========================================================================== //
 // Class
@@ -32,7 +33,7 @@ namespace RetrogameBase
 
             TextureStore                textureStore;
             AnimationStore              animationStore;
-            std::vector<AnimationLayer> animationLayers;
+            AnimationLayerStore         animationLayerStore;
 
         public:
             // ---------------------------------------------------------------------- //
@@ -106,15 +107,9 @@ namespace RetrogameBase
             // ---------------------------------------------------------------------- //
             // storage access
 
-            TextureStore&                      getTextureStore   ();
-            AnimationStore&                    getAnimationStore ();
-            const std::vector<AnimationLayer>& getAnimationLayers() const;
-
-            size_t          getLayerCount() const;
-            AnimationLayer& getLayer(size_t ID);
-
-            std::pair<size_t, AnimationLayer&> addLayer();
-            std::pair<size_t, AnimationLayer&> addLayer(const std::string& filename);
+            TextureStore&        getTextureStore       ();
+            AnimationStore&      getAnimationStore     ();
+            AnimationLayerStore& getAnimationLayerStore();
 
             enum class ResetStoresDepth
             {
@@ -122,7 +117,6 @@ namespace RetrogameBase
                 Animations,
                 Layers
             };
-
             void resetStores(ResetStoresDepth depth);
     };
 }

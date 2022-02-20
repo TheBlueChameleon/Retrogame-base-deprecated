@@ -25,7 +25,7 @@ using namespace std::string_literals;
         } \
     }
 #else
-#define CHECK_ANIMATION_INDEX(ID) {}
+#define CHECK_ANIMATIONLAYER_INDEX(ID) {}
 #endif
 
 // ========================================================================== //
@@ -39,7 +39,8 @@ namespace RetrogameBase
 
     Window::Window(const char* title, int width, int height, Uint32 render_flags) :
         textureStore(*this),
-        animationStore(*this)
+        animationStore(*this),
+        animationLayerStore(*this)
     {
         hwin = SDL_CreateWindow(title,
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,     // x, y
@@ -253,37 +254,9 @@ namespace RetrogameBase
         return animationStore;
     }
 
-    const std::vector<AnimationLayer>& Window::getAnimationLayers() const
+    AnimationLayerStore& Window::getAnimationLayerStore()
     {
-        return animationLayers;
-    }
-
-    size_t Window::getLayerCount() const
-    {
-        return animationLayers.size();
-    }
-
-    AnimationLayer& Window::getLayer(size_t ID)
-    {
-        CHECK_ANIMATIONLAYER_INDEX(ID);
-        return animationLayers[ID];
-    }
-
-    std::pair<size_t, AnimationLayer&>
-    Window::addLayer()
-    {
-        auto& layer = animationLayers.emplace_back(*this);
-        return std::make_pair(animationLayers.size() - 1, std::reference_wrapper(layer));
-    }
-
-    std::pair<size_t, AnimationLayer&> Window::addLayer(const std::string& filename)
-    {
-        auto& layer = animationLayers.emplace_back(*this);
-        size_t ID   = animationLayers.size() - 1;
-
-        layer.loadXML(filename);
-
-        return std::make_pair(ID, std::reference_wrapper(layer));
+        return animationLayerStore;
     }
 
     void Window::resetStores(ResetStoresDepth depth)
@@ -297,7 +270,7 @@ namespace RetrogameBase
                 animationStore.reset_private();
                 [[fallthrough]];
             case ResetStoresDepth::Layers:
-                animationLayers.clear();
+                animationLayerStore.reset_private();
         }
     }
 
