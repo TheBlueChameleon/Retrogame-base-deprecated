@@ -94,6 +94,9 @@ namespace RetrogameBase
                        SDL_Color color = color_white,
                        TTF_Font* font = nullptr);
 
+            void saveScreenshotPNG(const std::string& filename) const;
+            void saveScreenshotPNG(const std::string& filename, const SDL_Rect& coordinates) const;
+
             // ---------------------------------------------------------------------- //
             // fadeouts
 

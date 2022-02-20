@@ -10,6 +10,10 @@
 #include <string>
 using namespace std::string_literals;
 
+// SDL
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_image.h>
+
 // local
 #include "window.hpp"
 
@@ -236,6 +240,38 @@ namespace RetrogameBase
 
         SDL_FreeSurface(surfaceMessage);
         SDL_DestroyTexture(msg);
+    }
+
+    void Window::saveScreenshotPNG(const std::string& filename) const
+    {
+        const auto widthAndHeight = getDimension();
+        const SDL_Rect coordinates = {0, 0, widthAndHeight.first, widthAndHeight.second};
+
+        saveScreenshotPNG(filename, coordinates);
+    }
+
+    void Window::saveScreenshotPNG(const std::string& filename, const SDL_Rect& coordinates) const
+    {
+        SDL_Surface* sshot = SDL_CreateRGBSurface(
+                                 0,                                 // flags -- must be zero
+                                 coordinates.w, coordinates.h,      // dimensions
+                                 32,                                // bits per pixel
+                                 0x00ff0000,                        // masks for R, G, B, A
+                                 0x0000ff00,
+                                 0x000000ff,
+                                 0xff000000
+                             );
+
+        SDL_RenderReadPixels(
+            win_renderer,
+            &coordinates,
+            SDL_PIXELFORMAT_ARGB8888,
+            sshot->pixels,
+            sshot->pitch
+        );
+
+        IMG_SavePNG(sshot, filename.c_str());
+        SDL_FreeSurface(sshot);
     }
 
 // ========================================================================== //

@@ -38,6 +38,9 @@ int main()
     }
 
     showcase_driveAnimationLayer(al);
+    al.showCurrentPhase();
+    win.update();
+    // win.saveScreenshotPNG("../shot.png", {25, 25, 600, 300});
 
 //    RetrogameBase::Window win1("x");
 //    RetrogameBase::Window win2("y");
