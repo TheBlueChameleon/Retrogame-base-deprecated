@@ -8,6 +8,10 @@
 #include "gfxSystem/animation.hpp"
 #include "gfxSystem/animationstore.hpp"
 #include "gfxSystem/animationlayer.hpp"
+#include "gfxSystem/animationlayerstore.hpp"
+
+#include "gfxSystem/effects/visualeffect.hpp"
+#include "gfxSystem/effects/overlayfadeout.hpp"
 
 #include "xmlSystem/xmlwrapper.hpp"
 
