@@ -178,39 +178,45 @@ namespace RetrogameBase
 // ========================================================================== //
 // drawing primitives
 
-    void Window::clear(SDL_Color color)
+    void Window::clear(SDL_Color color) const
     {
         SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
         SDL_RenderClear       ( win_renderer );
     }
 
-    void Window::pset(int x, int y, SDL_Color color)
+    void Window::pset(int x, int y, SDL_Color color) const
     {
         SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
         SDL_RenderDrawPoint( win_renderer, x, y);
     }
 
-    void Window::line(int x1, int y1, int x2, int y2, SDL_Color color)
+    void Window::line(int x1, int y1, int x2, int y2, SDL_Color color) const
     {
         SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
         SDL_RenderDrawLine(win_renderer, x1, y1, x2, y2);
     }
 
-    void Window::box(int x, int y, int w, int h, SDL_Color color)
+    void Window::box(int x, int y, int w, int h, SDL_Color color) const
     {
         SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
         SDL_Rect rect = { x, y, w, h };
         SDL_RenderDrawRect(win_renderer, &rect);
     }
 
-    void Window::fbox(int x, int y, int w, int h, SDL_Color color)
+    void Window::fbox(int x, int y, int w, int h, SDL_Color color) const
     {
         SDL_SetRenderDrawColor( win_renderer, color.r, color.g, color.b, color.a );
         SDL_Rect rect = { x, y, w, h };
         SDL_RenderFillRect(win_renderer, &rect);
     }
 
-    void Window::print(const char* text, const int x, const int y, int width, int height, SDL_Color color, TTF_Font* font)
+    void Window::print(
+        const char* text,
+        const int x, const int y,
+        int width, int height,
+        SDL_Color color,
+        TTF_Font* font
+    ) const
     {
         if (!text)
         {
@@ -275,9 +281,6 @@ namespace RetrogameBase
     }
 
 // ========================================================================== //
-// fadeouts
-
-// ========================================================================== //
 // storage access
 
     TextureStore& Window::getTextureStore()
@@ -307,6 +310,76 @@ namespace RetrogameBase
                 [[fallthrough]];
             case ResetStoresDepth::Layers:
                 animationLayerStore.reset_private();
+        }
+    }
+
+// ========================================================================== //
+// event handling
+
+    void Window::setEventHandler(const std::function<bool (SDL_Event&, void*)>& eventHandler)
+    {
+        this->eventHandler = eventHandler;
+    }
+
+    const std::function<bool (SDL_Event& event, void* userData)> Window::getEventHandler() const
+    {
+        return eventHandler;
+    }
+
+    void Window::setIdleHandler(const std::function<void (void*)>& idleHandler)
+    {
+        this->idleHandler = idleHandler;
+    }
+
+    const std::function<void (void* userData)> Window::getIdleHandler() const
+    {
+        return idleHandler;
+    }
+
+    bool Window::distributeEvents(void* userData)
+    {
+        if (!eventHandler)
+        {
+            return false;
+        }
+
+        SDL_Event event;
+        bool continueToLoop = true;
+
+        while (SDL_PollEvent(&event))
+        {
+            continueToLoop &= eventHandler(event, userData);
+        }
+
+        return continueToLoop;
+    }
+
+    void Window::mainLoop(void* userData, double fps)
+    {
+        bool continueToLoop = bool(eventHandler);
+
+        const int ticsDelayMax = 1000 / fps;
+        int tic;
+        int toc = SDL_GetTicks();
+
+        while (continueToLoop)
+        {
+            tic = toc;
+
+            continueToLoop = distributeEvents(userData);
+            update();
+
+            if (idleHandler)
+            {
+                idleHandler(userData);
+            }
+
+            toc = SDL_GetTicks();
+            const auto ticsPassed = toc - tic;
+            const auto delayTheory = (ticsDelayMax - ticsPassed);
+            const auto delayReal = (delayTheory > 0) * delayTheory;
+
+            SDL_Delay(delayReal);
         }
     }
 

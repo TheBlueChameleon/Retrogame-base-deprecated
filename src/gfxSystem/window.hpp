@@ -31,9 +31,12 @@ namespace RetrogameBase
             SDL_Window*   hwin         = nullptr;
             SDL_Renderer* win_renderer = nullptr;
 
-            TextureStore                textureStore;
-            AnimationStore              animationStore;
-            AnimationLayerStore         animationLayerStore;
+            TextureStore        textureStore;
+            AnimationStore      animationStore;
+            AnimationLayerStore animationLayerStore;
+
+            std::function<bool (SDL_Event& event, void* userData)> eventHandler;
+            std::function<void (void* userData)> idleHandler;
 
         public:
             // ---------------------------------------------------------------------- //
@@ -81,31 +84,31 @@ namespace RetrogameBase
             // ---------------------------------------------------------------------- //
             // drawing primitives
 
-            void clear(SDL_Color color = color_black);
+            void clear(SDL_Color color = color_black) const;
 
-            void pset(int  x, int  y,                 SDL_Color color = color_white);
-            void line(int x1, int y1, int x2, int y2, SDL_Color color = color_white);
-            void  box(int  x, int  y, int  w, int  h, SDL_Color color = color_white);
-            void fbox(int  x, int  y, int  w, int  h, SDL_Color color = color_white);
+            void pset(int  x, int  y,                 SDL_Color color = color_white) const;
+            void line(int x1, int y1, int x2, int y2, SDL_Color color = color_white) const;
+            void  box(int  x, int  y, int  w, int  h, SDL_Color color = color_white) const;
+            void fbox(int  x, int  y, int  w, int  h, SDL_Color color = color_white) const;
 
             void print(const char* text,
                        const int x, const int y,
                        int width = -1, int height = -1,
                        SDL_Color color = color_white,
-                       TTF_Font* font = nullptr);
+                       TTF_Font* font = nullptr) const;
 
             void saveScreenshotPNG(const std::string& filename) const;
             void saveScreenshotPNG(const std::string& filename, const SDL_Rect& coordinates) const;
 
-            // ---------------------------------------------------------------------- //
-            // fadeouts
+//            // ---------------------------------------------------------------------- //
+//            // fadeouts
 
-            enum class FadeoutType
-            {
-                Stripes,
-                Pixelate,
-                Desaturate
-            };
+//            enum class FadeoutType
+//            {
+//                Stripes,
+//                Pixelate,
+//                Desaturate
+//            };
 
             // ---------------------------------------------------------------------- //
             // storage access
@@ -121,6 +124,18 @@ namespace RetrogameBase
                 Layers
             };
             void resetStores(ResetStoresDepth depth);
+
+            // ---------------------------------------------------------------------- //
+            // event handling
+
+            void setEventHandler(const std::function<bool (SDL_Event& event, void* userData)>& eventHandler);
+            const std::function<bool (SDL_Event& event, void* userData)> getEventHandler() const;
+
+            void setIdleHandler(const std::function<void (void* userData)>& idleHandler);
+            const std::function<void (void* userData)> getIdleHandler() const;
+
+            bool distributeEvents(void* userData = nullptr);
+            void mainLoop        (void* userData = nullptr, double fps = 30);
     };
 }
 #endif // WINDOW_HPP
