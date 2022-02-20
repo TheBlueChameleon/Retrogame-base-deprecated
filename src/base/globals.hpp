@@ -74,6 +74,11 @@ namespace RetrogameBase
     color_dark_cyan   = {  0, 128, 128,   0};
 
 // ========================================================================== //
+// angles
+
+    extern double valuesSin[360], valuesCos[360];
+
+// ========================================================================== //
 // fonts
 
     extern std::unordered_map<std::string, TTF_Font*> fonts;

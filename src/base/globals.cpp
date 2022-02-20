@@ -11,8 +11,10 @@
 using namespace std::string_literals;
 
 #include <cstdlib>
-#include <algorithm>
 #include <cctype>
+#include <cmath>
+
+#include <algorithm>
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -35,6 +37,11 @@ namespace fs = std::filesystem;
 
 namespace RetrogameBase
 {
+
+// ========================================================================== //
+// local proc definition
+
+    void initValuesTrigonometry();
 
 // ========================================================================== //
 // fonts
@@ -67,6 +74,7 @@ namespace RetrogameBase
         }
 
         initGlobals();
+        initValuesTrigonometry();
     }
 
     void initGlobals()
@@ -182,6 +190,20 @@ namespace RetrogameBase
         else
         {
             return std::string_view();
+        }
+    }
+
+// ========================================================================== //
+// angles
+
+    double valuesSin[360], valuesCos[360];
+
+    void initValuesTrigonometry()
+    {
+        for (auto alpha = 0; alpha < 360; ++alpha)
+        {
+            valuesSin[alpha] = std::sin(deg2rad(alpha));
+            valuesCos[alpha] = std::cos(deg2rad(alpha));
         }
     }
 
