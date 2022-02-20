@@ -80,13 +80,14 @@ add_executable(Retrogamebase-unittest
     src/main-unittest.cpp
     src/unittest-driver/unittest.hpp src/unittest-driver/unittest.cpp
     #
-    src/unittests/unittest-globals.hpp          src/unittests/unittest-globals.cpp
-    src/unittests/unittest-xmlsystem.hpp        src/unittests/unittest-xmlsystem.cpp
-    src/unittests/unittest-window.hpp           src/unittests/unittest-window.cpp
-    src/unittests/unittest-texturestore.hpp     src/unittests/unittest-texturestore.cpp
-    src/unittests/unittest-animation.hpp        src/unittests/unittest-animation.cpp
-    src/unittests/unittest-animationstore.hpp   src/unittests/unittest-animationstore.cpp
-    src/unittests/unittest-animationlayer.hpp   src/unittests/unittest-animationlayer.cpp
+    src/unittests/unittest-globals.hpp src/unittests/unittest-globals.cpp
+    src/unittests/unittest-xmlsystem.hpp src/unittests/unittest-xmlsystem.cpp
+    src/unittests/unittest-window.hpp src/unittests/unittest-window.cpp
+    src/unittests/unittest-texturestore.hpp src/unittests/unittest-texturestore.cpp
+    src/unittests/unittest-animation.hpp src/unittests/unittest-animation.cpp
+    src/unittests/unittest-animationstore.hpp src/unittests/unittest-animationstore.cpp
+    src/unittests/unittest-animationlayer.hpp src/unittests/unittest-animationlayer.cpp
+    src/unittests/unittest-animationlayerstore.hpp src/unittests/unittest-animationlayerstore.cpp
 )
 
 target_link_libraries(Retrogamebase-unittest
