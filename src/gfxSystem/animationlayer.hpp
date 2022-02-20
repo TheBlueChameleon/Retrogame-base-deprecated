@@ -25,7 +25,7 @@ namespace RetrogameBase
     class AnimationLayer
     {
         public:
-            using Coordinate        = std::tuple<int, int, double>;     // x, y, angle [rad]
+            using Coordinate        = std::tuple<int, int, int>;        // x, y, angle [deg]
             using Element           = std::pair<int, Coordinate>;       // storeID, Coordinate
             using ElementDescriptor = std::pair<int, int>;              // storeID, angle [deg]
 

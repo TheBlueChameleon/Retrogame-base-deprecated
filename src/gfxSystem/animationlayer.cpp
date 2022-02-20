@@ -278,7 +278,7 @@ namespace RetrogameBase
 
                 if (IdAndRotation != VOID_GRIDELEMENT)
                 {
-                    const Coordinate coord = {x, y, deg2rad(IdAndRotation.second)};
+                    const Coordinate coord = {x, y, IdAndRotation.second};
                     reVal.emplace_back(IdAndRotation.first, coord);
                 }
 
@@ -343,7 +343,7 @@ namespace RetrogameBase
             if (attributeFilename)
             {
                 ID = animationStore.addAnimation(attributeFilename.value());
-                return Element(ID, {x, y, deg2rad(angle)});
+                return Element(ID, {x, y, angle});
             }
             else
             {
@@ -356,7 +356,7 @@ namespace RetrogameBase
             return INVALID_ELEMENT;
         }
 
-        return Element(ID, {x, y, deg2rad(angle)});
+        return Element(ID, {x, y, angle});
     }
 
 // ========================================================================== //
