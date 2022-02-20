@@ -200,11 +200,7 @@ namespace RetrogameBase
     {
         CHECK_GFX_INDEX(ID);
 
-        auto w = dimensions[ID].first, h = dimensions[ID].second;
-        SDL_Rect dest = {x, y,
-                         static_cast<int>(w* valuesCos[angle]  +  h* valuesSin[angle]),
-                         static_cast<int>(w* valuesSin[angle]  +  h* valuesCos[angle])
-                        };
+        SDL_Rect dest = {x, y, dimensions[ID].first, dimensions[ID].second};
 
         SDL_RenderCopyEx(window.getRenderer(),
                          textures[ID],
