@@ -21,6 +21,15 @@ int main()
     RetrogameBase::AnimationLayer al(win);
 
     al.loadXML("../unittest-xml/animationlayers/scene.xml");
+    auto tiles = al.getElements();
+
+    for (auto& tile : tiles)
+    {
+        auto& coord = tile.second;
+        std::cout << tile.first << ": "
+                  << "(" << std::get<0>(coord) << ", " << std::get<1>(coord) << ") at " << std::get<2>(coord) << "°"
+                  << std::endl;
+    }
 
 //    RetrogameBase::Window win1("x");
 //    RetrogameBase::Window win2("y");
