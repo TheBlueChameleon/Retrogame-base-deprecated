@@ -7,6 +7,7 @@
 // own
 #include "../gfxSystem/window.hpp"
 #include "../gfxSystem/animationlayer.hpp"
+#include "../gfxSystem/animationlayerstore.hpp"
 
 #include "../unittest-driver/unittest.hpp"
 #include "unittest-animationlayer.hpp"
@@ -23,8 +24,9 @@ bool unittest_AnimationLayer_addElements()
     UNITTEST_VARS;
 
     Window win("test window");
-    TextureStore&   textureStore   = win.getTextureStore();
-    AnimationStore& animationStore = win.getAnimationStore();
+    TextureStore&        textureStore        = win.getTextureStore();
+    AnimationStore&      animationStore      = win.getAnimationStore();
+    AnimationLayerStore& animationLayerStore = win.getAnimationLayerStore();
 
     Unittest_RessorceList files =
     {
@@ -48,24 +50,24 @@ bool unittest_AnimationLayer_addElements()
     animationStore.addAnimation(files[0]);
 
     UNITTEST_DOESNT_THROW(
-        win.addLayer(),
+        animationLayerStore.addLayer(),
         std::exception,
         "construct empty layer"
     );
 
     UNITTEST_DOESNT_THROW(
-        win.addLayer(),
+        animationLayerStore.addLayer(),
         std::exception,
         "construct second empty layer"
     );
 
     UNITTEST_ASSERT(
-        win.getLayerCount() == 2,
+        animationLayerStore.size() == 2,
         "count layers correctly"
     );
 
-    auto& layer1 = win.getLayer(0);
-    auto& layer2 = win.getLayer(1);
+    auto& layer1 = animationLayerStore.getLayer(0);
+    auto& layer2 = animationLayerStore.getLayer(1);
 
     UNITTEST_ASSERT(
         layer1.size() == 0,

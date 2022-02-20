@@ -78,8 +78,9 @@ bool unittest_Window_Stores()
     UNITTEST_CAPTURE_CERR;
 
     Window win("test window");
-    TextureStore& textureStore     = win.getTextureStore();
-    AnimationStore& animationStore = win.getAnimationStore();
+    TextureStore&        textureStore        = win.getTextureStore();
+    AnimationStore&      animationStore      = win.getAnimationStore();
+    AnimationLayerStore& animationLayerStore = win.getAnimationLayerStore();
 
     Unittest_RessorceList files =
     {
@@ -107,119 +108,137 @@ bool unittest_Window_Stores()
     };
     unittest_check_files_present(files);
 
-    // ...................................................................... //
+    animationLayerStore.addLayer();
+    animationLayerStore.addLayer(files[0]);
+    UNITTEST_CLEAR_CERR;
 
-    {
-        auto [layerID, layer] = win.addLayer(files[0]);     // scope to protect variable layer which will be destroyed later on.
-        UNITTEST_CLEAR_CERR;
+    UNITTEST_ASSERT(
+        animationLayerStore.size() == 2,
+        "instantiate two AnimationLayers"
+    );
+    UNITTEST_CRITICAL_BARRIER;
 
-        UNITTEST_ASSERT(
-            layerID == 0,
-            "instantiate an AnimationLayer"
-        );
+    UNITTEST_ASSERT(
+        animationLayerStore.getLayer(1).size() == 54,
+        "load data into layers from xml"
+    );
+    UNITTEST_CRITICAL_BARRIER;
 
-        UNITTEST_ASSERT(
-            win.getLayerCount() == 1,
-            "correctly set up layers memory"
-        );
+    UNITTEST_ASSERT(
+        animationStore.size() == 4,
+        "correctly load test animations"
+    );
+    UNITTEST_CRITICAL_BARRIER;
 
-        UNITTEST_ASSERT(
-            animationStore.size() == 4,
-            "correctly load test animations"
-        );
-
-        UNITTEST_ASSERT(
-            textureStore.size() == 15,
-            "correctly load associated test frames"
-        );
-
-        // ...................................................................... //
-
-        UNITTEST_DOESNT_THROW(
-            win.resetStores(Window::ResetStoresDepth::Layers),              /* note that this does invoke the DTor on layer! */
-            std::exception,
-            "perform Window::ResetStoresDepth::Layers"
-        );
-
-        UNITTEST_ASSERT(
-            win.getLayerCount() == 0,
-            "actually clear layers"
-        );
-
-        UNITTEST_ASSERT(
-            animationStore.size() == 4,
-            "preserve animations"
-        );
-
-        UNITTEST_ASSERT(
-            textureStore.size() == 15,
-            "preserve associated test frames"
-        );
-    }
+    UNITTEST_ASSERT(
+        textureStore.size() == 15,
+        "correctly load associated test frames"
+    );
+    UNITTEST_CRITICAL_BARRIER;
 
     // ...................................................................... //
 
-    {
-        auto [layerID, layer] = win.addLayer(files[0]);
+    UNITTEST_DOESNT_THROW(
+        win.resetStores(Window::ResetStoresDepth::Layers),              /* note that this does invoke the DTor on layer! */
+        std::exception,
+        "perform Window::ResetStoresDepth::Layers"
+    );
 
-        UNITTEST_ASSERT(
-            layerID == 0,
-            "re-instantiate an AnimationLayer"
-        );
+    UNITTEST_ASSERT(
+        animationLayerStore.size() == 0,
+        "actually clear layers"
+    );
 
-        UNITTEST_ASSERT(
-            layer.size() == 54,
-            "restore data after reset"
-        );
+    UNITTEST_ASSERT(
+        animationStore.size() == 4,
+        "preserve animations"
+    );
 
-        UNITTEST_DOESNT_THROW(
-            win.resetStores(Window::ResetStoresDepth::Animations),              /* note that this does invoke the DTor on layer! */
-            std::exception,
-            "perform Window::ResetStoresDepth::Animations"
-        );
-
-        UNITTEST_ASSERT(
-            win.getLayerCount() == 0,
-            "actually clear layers"
-        );
-
-        UNITTEST_ASSERT(
-            animationStore.size() == 0,
-            "actually clear animations"
-        );
-
-        UNITTEST_ASSERT(
-            textureStore.size() == 15,
-            "preserve associated test frames"
-        );
-    }
+    UNITTEST_ASSERT(
+        textureStore.size() == 15,
+        "preserve associated test frames"
+    );
 
     // ...................................................................... //
 
-    {
-        win.addLayer(files[0]);
+    animationLayerStore.addLayer();
+    animationLayerStore.addLayer(files[0]);
+    UNITTEST_CLEAR_CERR;
 
-        UNITTEST_DOESNT_THROW(
-            win.resetStores(Window::ResetStoresDepth::Textures),              /* note that this does invoke the DTor on layer! */
-            std::exception,
-            "perform Window::ResetStoresDepth::Textures"
-        );
+    UNITTEST_ASSERT(
+        animationLayerStore.size() == 2,
+        "re-instantiate two AnimationLayers"
+    );
+    UNITTEST_CRITICAL_BARRIER;
 
-        UNITTEST_ASSERT(
-            win.getLayerCount() == 0,
-            "actually clear layers"
-        );
+    // ...................................................................... //
 
-        UNITTEST_ASSERT(
-            animationStore.size() == 0,
-            "actually clear animations"
-        );
+    UNITTEST_ASSERT(
+        animationLayerStore.getLayer(1).size() == 54,
+        "restore data after reset"
+    );
 
-        UNITTEST_ASSERT(
-            textureStore.size() == 0,
-            "actually clear associated test frames"
-        );
-    }
+    UNITTEST_DOESNT_THROW(
+        win.resetStores(Window::ResetStoresDepth::Animations),              /* note that this does invoke the DTor on layer! */
+        std::exception,
+        "perform Window::ResetStoresDepth::Animations"
+    );
+
+    UNITTEST_ASSERT(
+        animationLayerStore.size() == 0,
+        "actually clear layers"
+    );
+
+    UNITTEST_ASSERT(
+        animationStore.size() == 0,
+        "actually clear animations"
+    );
+
+    UNITTEST_ASSERT(
+        textureStore.size() == 15,
+        "preserve associated test frames"
+    );
+
+    // ...................................................................... //
+
+    animationLayerStore.addLayer();
+    animationLayerStore.addLayer(files[0]);
+    UNITTEST_CLEAR_CERR;
+
+    UNITTEST_ASSERT(
+        animationLayerStore.size() == 2,
+        "re-instantiate two AnimationLayers"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    UNITTEST_ASSERT(
+        animationStore.size() == 4,
+        "re-instantiate two AnimationStore"
+    );
+    UNITTEST_CRITICAL_BARRIER;
+
+    // ...................................................................... //
+
+    UNITTEST_DOESNT_THROW(
+        win.resetStores(Window::ResetStoresDepth::Textures),              /* note that this does invoke the DTor on layer! */
+        std::exception,
+        "perform Window::ResetStoresDepth::Textures"
+    );
+
+    UNITTEST_ASSERT(
+        animationLayerStore.size() == 0,
+        "actually clear layers"
+    );
+
+    UNITTEST_ASSERT(
+        animationStore.size() == 0,
+        "actually clear animations"
+    );
+
+    UNITTEST_ASSERT(
+        textureStore.size() == 0,
+        "actually clear associated test frames"
+    );
 
     // ...................................................................... //
 
