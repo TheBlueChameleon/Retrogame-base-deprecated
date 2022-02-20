@@ -11,14 +11,19 @@
 #include "Retrogamebase.h"
 
 // ========================================================================== //
+// showcase defs
 
+void showcase_waitTillClose(RetrogameBase::Window& win);
+
+// ========================================================================== //
+// main
 
 int main()
 {
     RetrogameBase::initAll();
 
-    RetrogameBase::Window win("x");
-    RetrogameBase::AnimationLayer al(win);
+    RetrogameBase::Window win("Test Window");
+    RetrogameBase::AnimationLayer& al =win.getAnimationLayerStore().addLayer().second;
 
     al.loadXML("../unittest-xml/animationlayers/scene.xml");
     auto tiles = al.getElements();
@@ -30,6 +35,12 @@ int main()
                   << "(" << std::get<0>(coord) << ", " << std::get<1>(coord) << ") at " << std::get<2>(coord) << "°"
                   << std::endl;
     }
+
+    win.getTextureStore().put(0, 300, 300);
+    win.getTextureStore().put(0, 350, 350);
+    win.getTextureStore().put(1, 300, 300, 30);
+
+    showcase_waitTillClose(win);
 
 //    RetrogameBase::Window win1("x");
 //    RetrogameBase::Window win2("y");
@@ -66,4 +77,26 @@ int main()
 
 //        SDL_Delay(1000 / fps);
 //    }
+}
+
+// ========================================================================== //
+// showcase implementation
+
+void showcase_waitTillClose(RetrogameBase::Window& win)
+{
+    auto fps = 30.;
+    bool close = false;
+    SDL_Event event;
+
+    // *INDENT-OFF*
+    while (!close) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) {close = true;}
+        }
+
+        win.update();
+
+        SDL_Delay(1000 / fps);
+    }
+    // *INDENT-ON*
 }
