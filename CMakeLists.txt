@@ -45,6 +45,7 @@ add_library(Retrogamebase-lib SHARED
     src/gfxSystem/animation.hpp src/gfxSystem/animation.cpp
     src/gfxSystem/animationstore.hpp src/gfxSystem/animationstore.cpp
     src/gfxSystem/animationlayer.hpp src/gfxSystem/animationlayer.cpp
+    src/gfxSystem/animationlayerstore.hpp src/gfxSystem/animationlayerstore.cpp
     #
     src/xmlSystem/pugixml.hpp src/xmlSystem/pugiconfig.hpp src/xmlSystem/pugixml.cpp
     src/xmlSystem/xmlwrapper.hpp src/xmlSystem/xmlwrapper.cpp
