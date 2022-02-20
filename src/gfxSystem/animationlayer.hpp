@@ -34,6 +34,7 @@ namespace RetrogameBase
             AnimationStore& animationStore;
 
             std::vector<Element> elements;
+            bool noRotatedAnimatins = true;
 
         public:
             // -------------------------------------------------------------- //

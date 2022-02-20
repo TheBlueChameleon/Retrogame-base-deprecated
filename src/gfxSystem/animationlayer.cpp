@@ -130,6 +130,7 @@ namespace RetrogameBase
     void AnimationLayer::addElement(const Element& element)
     {
         CHECK_ANIMATIONSTORE_INDEX(element.first);
+        noRotatedAnimatins &= (std::get<2>(element.second));
         elements.push_back(element);
     }
 
@@ -188,10 +189,11 @@ namespace RetrogameBase
             if ( std::strcmp(subNode.name(), "grid") == 0 )
             {
                 auto gridElements = parseGridNode(subNode, paletteIndexToStoreIndex,filename);
-                elements.insert(
-                    elements.end(),
-                    gridElements.begin(), gridElements.end()
-                );
+                for (auto& gridElement : gridElements)
+                {
+                    addElement(gridElement);
+                }
+
             }
             else if ( std::strcmp(subNode.name(), "element") == 0 )
             {
@@ -201,7 +203,7 @@ namespace RetrogameBase
                     std::cerr << "Warning: element tag in Scene definition " << filename << std::endl;
                     continue;
                 }
-                elements.push_back( data );
+                addElement(data);
             }
             else
             {
@@ -397,7 +399,14 @@ namespace RetrogameBase
 
             uniqueAnimationIDs.emplace(ID);
 
-            animationStore.put(ID, x, y, angle);
+            if (noRotatedAnimatins)
+            {
+                animationStore.put(ID, x, y);
+            }
+            else
+            {
+                animationStore.put(ID, x, y, angle);
+            }
         }
 
         for (auto& ID : uniqueAnimationIDs)
