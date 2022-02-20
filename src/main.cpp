@@ -13,8 +13,12 @@
 // ========================================================================== //
 // showcase defs
 
+bool eventHandler_minimal(SDL_Event& event, void* userData);
+void ildeHandler_AnimationLayer(void* userData);
+
 void showcase_waitTillClose(RetrogameBase::Window& win);
-void showcase_driveAnimationLayer(RetrogameBase::AnimationLayer& al);
+void showcase_AnimationLayer(RetrogameBase::Window& win);
+void showcase_screenshot(RetrogameBase::Window& win);
 
 // ========================================================================== //
 // main
@@ -24,59 +28,29 @@ int main()
     RetrogameBase::initAll();
 
     RetrogameBase::Window win("Test Window");
-    RetrogameBase::AnimationLayer& al =win.getAnimationLayerStore().addLayer().second;
 
-    al.loadXML("../unittest-xml/animationlayers/scene.xml");
-    auto tiles = al.getElements();
+    //showcase_waitTillClose(win);
+    showcase_AnimationLayer(win);
+    showcase_screenshot(win);
+}
 
-    for (auto& tile : tiles)
+// ========================================================================== //
+// example handlers
+
+bool eventHandler_minimal(SDL_Event& event, void* userData)
+{
+    if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE)
     {
-        auto& coord = tile.second;
-        std::cout << tile.first << ": "
-                  << "(" << std::get<0>(coord) << ", " << std::get<1>(coord) << ") at " << std::get<2>(coord) << "°"
-                  << std::endl;
+        return false;
     }
 
-    showcase_driveAnimationLayer(al);
-    al.showCurrentPhase();
-    win.update();
-    // win.saveScreenshotPNG("../shot.png", {25, 25, 600, 300});
+    return true;
+}
 
-//    RetrogameBase::Window win1("x");
-//    RetrogameBase::Window win2("y");
-
-//    SDL_Surface* surface = IMG_Load("../gfx/sea01.png");
-//    SDL_Texture* tex = SDL_CreateTextureFromSurface(win1.getRenderer(), surface);
-//    SDL_FreeSurface(surface);
-
-//    SDL_Rect dest;
-//    SDL_QueryTexture(tex, NULL, NULL, &dest.w, &dest.h);
-//    dest.x = (800 - dest.w) / 2;
-//    dest.y = (600 - dest.h) / 2;
-
-//    SDL_RenderCopy(win1.getRenderer(), tex, NULL, &dest);
-//    SDL_RenderCopy(win2.getRenderer(), tex, NULL, &dest);
-
-//    std::cout << surface << std::endl;
-//    std::cout << tex << std::endl;
-
-//    auto fps = 30.;
-//    bool close = false;
-//    SDL_Event event;
-
-//    while (!close) {
-//        while (SDL_PollEvent(&event)) {
-//            //std::cout << event.type << std::endl;
-//            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) {
-//                close = true;
-//            }
-//        }
-
-//        win1.update();
-//        win2.update();
-
-//        SDL_Delay(1000 / fps);
-//    }
+void ildeHandler_AnimationLayer(void* userData)
+{
+    RetrogameBase::Window& win = *reinterpret_cast<RetrogameBase::Window*>(userData);
+    win.getAnimationLayerStore().getLayer(0).showCurrentPhaseAndAdvance();
 }
 
 // ========================================================================== //
@@ -84,42 +58,23 @@ int main()
 
 void showcase_waitTillClose(RetrogameBase::Window& win)
 {
-    auto fps = 30.;
-    bool close = false;
-    SDL_Event event;
-
-    // *INDENT-OFF*
-    while (!close) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) {close = true;}
-        }
-
-        win.update();
-
-        SDL_Delay(1000 / fps);
-    }
-    // *INDENT-ON*
+    win.setEventHandler(eventHandler_minimal);
+    win.mainLoop();
 }
 
-void showcase_driveAnimationLayer(RetrogameBase::AnimationLayer& al)
+void showcase_AnimationLayer(RetrogameBase::Window& win)
 {
-    auto fps = 30.;
-    bool close = false;
-    SDL_Event event;
+    RetrogameBase::AnimationLayer& al = win.getAnimationLayerStore().addLayer().second;
 
-    auto& win = al.getWindow();
-    auto& aniStore = al.getAnimationStore();
+    al.loadXML("../unittest-xml/animationlayers/scene.xml");
 
-    // *INDENT-OFF*
-    while (!close) {
-        al.showCurrentPhaseAndAdvance();
-
-        win.update();
-
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) {close = true;}
-        }
-        SDL_Delay(1000 / fps);
-    }
-    // *INDENT-ON*
+    win.setEventHandler(eventHandler_minimal);
+    win.setIdleHandler(ildeHandler_AnimationLayer);
+    win.mainLoop(&win);
 }
+
+void showcase_screenshot(RetrogameBase::Window& win)
+{
+    win.saveScreenshotPNG("../shot.png", {25, 25, 600, 300});
+}
+
