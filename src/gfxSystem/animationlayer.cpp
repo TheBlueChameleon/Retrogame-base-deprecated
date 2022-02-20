@@ -48,6 +48,13 @@ namespace fs = std::filesystem;
 #define CHECK_ELEMENT_INDEX(ID) {}
 #endif
 
+#define GET_COORDINATE_COMPONENT(coordinate, component) \
+    std::get< \
+    static_cast<size_t>(CoordinateComponentIndex::component) \
+    >(coordinate)
+
+//std::get< std::static_cast<int>(component) >(coordinate)
+
 // ========================================================================== //
 // namespace
 
@@ -119,6 +126,11 @@ namespace RetrogameBase
         return elements[index].second;
     }
 
+    bool AnimationLayer::hasNoRotatedAnimatins() const
+    {
+        return noRotatedAnimatins;
+    }
+
 // ========================================================================== //
 // setters/modifiers
 
@@ -130,7 +142,7 @@ namespace RetrogameBase
     void AnimationLayer::addElement(const Element& element)
     {
         CHECK_ANIMATIONSTORE_INDEX(element.first);
-        noRotatedAnimatins &= (std::get<2>(element.second));
+        noRotatedAnimatins &= (GET_COORDINATE_COMPONENT(element.second, angle) != 0);
         elements.push_back(element);
     }
 
@@ -372,6 +384,17 @@ namespace RetrogameBase
         }
 
         return Element(ID, {x, y, angle});
+    }
+
+    void AnimationLayer::computeHasNoRotatedAnimatins()
+    {
+        noRotatedAnimatins = std::all_of(
+                                 elements.begin(), elements.end(),
+                                 [] (const auto element)
+        {
+            return GET_COORDINATE_COMPONENT(element.second, angle) == 0;
+        }
+                             );
     }
 
 // ========================================================================== //

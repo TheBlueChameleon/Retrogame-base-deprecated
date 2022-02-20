@@ -25,6 +25,11 @@ namespace RetrogameBase
     class AnimationLayer
     {
         public:
+            enum class CoordinateComponentIndex
+            {
+                x, y, angle
+            };
+
             using Coordinate        = std::tuple<int, int, int>;        // x, y, angle [deg]
             using Element           = std::pair<int, Coordinate>;       // AniStoreID, Coordinate
             using ElementDescriptor = std::pair<int, int>;              // AniStoreID, angle [deg]
@@ -56,6 +61,8 @@ namespace RetrogameBase
             Animation& getAnimation  (const int index) const;
             Coordinate getCoordinate (const int index) const;
 
+            bool hasNoRotatedAnimatins() const;
+
             // -------------------------------------------------------------- //
             // setters/modifiers
 
@@ -68,6 +75,8 @@ namespace RetrogameBase
             void moveElement   (const int index, const Coordinate& coordinate);
 
             void loadXML (const std::string& filename);
+
+            void computeHasNoRotatedAnimatins();
 
         private:
             std::vector<std::string> getPaletteEntries(pugi::xml_node node) const;
