@@ -117,6 +117,11 @@ namespace RetrogameBase
         return SDL_GetWindowFlags(hwin);
     }
 
+    SDL_Window* Window::getSdlWindow() const
+    {
+        return hwin;
+    }
+
     SDL_Renderer* Window::getRenderer() const
     {
         return win_renderer;
@@ -366,13 +371,15 @@ namespace RetrogameBase
         {
             tic = toc;
 
-            continueToLoop = distributeEvents();
-            update();
+            SDL_RenderClear(win_renderer);
 
             if (idleHandler)
             {
                 idleHandler(userData);
             }
+
+            continueToLoop = distributeEvents();
+            update();
 
             toc = SDL_GetTicks();
             const auto ticsPassed = toc - tic;

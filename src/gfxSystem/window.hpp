@@ -62,6 +62,7 @@ namespace RetrogameBase
 
             Uint32 GetWindowFlags() const;
 
+            SDL_Window*   getSdlWindow() const;
             SDL_Renderer* getRenderer() const;
 
             // ---------------------------------------------------------------------- //
@@ -100,16 +101,6 @@ namespace RetrogameBase
 
             void saveScreenshotPNG(const std::string& filename) const;
             void saveScreenshotPNG(const std::string& filename, const SDL_Rect& coordinates) const;
-
-//            // ---------------------------------------------------------------------- //
-//            // fadeouts
-
-//            enum class FadeoutType
-//            {
-//                Stripes,
-//                Pixelate,
-//                Desaturate
-//            };
 
             // ---------------------------------------------------------------------- //
             // storage access
