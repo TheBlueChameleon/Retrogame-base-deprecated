@@ -32,8 +32,6 @@ namespace RetrogameBase
     void initGlobals();
     void freeGlobals();
 
-    void loadFont(const std::string& alias, const std::string& filename, int size);
-
 // ========================================================================== //
 // convenience
 
@@ -74,14 +72,23 @@ namespace RetrogameBase
     color_dark_cyan   = {  0, 128, 128,   0};
 
 // ========================================================================== //
-// angles
+// trigonometry
 
     extern double valuesSin[360], valuesCos[360];
 
 // ========================================================================== //
 // fonts
 
+    void loadFont(const std::string& alias, const std::string& filename, int size);
+
     extern std::unordered_map<std::string, TTF_Font*> fonts;
+
+// ========================================================================== //
+// user defined events
+
+    extern Uint32 SDL_UserEventID;
+
+    void pushUserEvent(Sint32 eventCode, void* eventData);
 
 // ========================================================================== //
 // namespace

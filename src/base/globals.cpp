@@ -44,11 +44,6 @@ namespace RetrogameBase
     void initValuesTrigonometry();
 
 // ========================================================================== //
-// fonts
-
-    std::unordered_map<std::string, TTF_Font*> fonts;
-
-// ========================================================================== //
 // SDL ressources
 
     void initAll()
@@ -83,6 +78,13 @@ namespace RetrogameBase
         loadFont("fixed-medium","../font/FreeMono.ttf", 16);
         loadFont("fixed-big","../font/FreeMono.ttf", 24);
 
+        SDL_UserEventID = SDL_RegisterEvents(1);
+        if ( SDL_UserEventID == static_cast<Uint32>(-1) )
+        {
+            std::cerr << "error registering SDL Userdefined Event" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+
         std::atexit(freeGlobals);
     }
 
@@ -91,31 +93,6 @@ namespace RetrogameBase
         for (auto & [name, fontPtr] : fonts)
         {
             TTF_CloseFont(fontPtr);
-        }
-    }
-
-    void loadFont(const std::string& alias, const std::string& filename, int size)
-    {
-        auto fontPtr = TTF_OpenFont(filename.c_str(), size);
-
-        CHECK_FILE_EXISTS(filename);
-
-        if (fonts.contains(alias))
-        {
-            throw MemoryManagementError("Font alias '"s + alias + "' is already in use");
-        }
-
-        if (!fontPtr)
-        {
-            throw SdlInternalError("Could not load font '"s + filename + "'");
-        }
-
-        auto [it, success] = fonts.emplace(alias, fontPtr);
-
-        if (!success)
-        {
-            TTF_CloseFont(fontPtr);
-            throw MemoryManagementError("FontMap could not be updated");
         }
     }
 
@@ -194,7 +171,7 @@ namespace RetrogameBase
     }
 
 // ========================================================================== //
-// angles
+// trigonometry
 
     double valuesSin[360], valuesCos[360];
 
@@ -204,6 +181,61 @@ namespace RetrogameBase
         {
             valuesSin[alpha] = std::sin(deg2rad(alpha));
             valuesCos[alpha] = std::cos(deg2rad(alpha));
+        }
+    }
+
+// ========================================================================== //
+// fonts
+
+    std::unordered_map<std::string, TTF_Font*> fonts;
+
+    void loadFont(const std::string& alias, const std::string& filename, int size)
+    {
+        auto fontPtr = TTF_OpenFont(filename.c_str(), size);
+
+        CHECK_FILE_EXISTS(filename);
+
+        if (fonts.contains(alias))
+        {
+            throw MemoryManagementError("Font alias '"s + alias + "' is already in use");
+        }
+
+        if (!fontPtr)
+        {
+            throw SdlInternalError("Could not load font '"s + filename + "'");
+        }
+
+        auto [it, success] = fonts.emplace(alias, fontPtr);
+
+        if (!success)
+        {
+            TTF_CloseFont(fontPtr);
+            throw MemoryManagementError("FontMap could not be updated");
+        }
+    }
+
+// ========================================================================== //
+// user defined events
+
+    Uint32 SDL_UserEventID = 0;
+
+    void pushUserEvent(Sint32 eventCode, void* eventData)
+    {
+        SDL_Event event;
+        SDL_memset(&event, 0, sizeof(event));
+        event.type = SDL_UserEventID;
+        event.user.code = eventCode;
+        event.user.data1 = eventData;
+        event.user.data2 = nullptr;
+        auto success = SDL_PushEvent(&event);
+
+        if (success < 0)
+        {
+            throw SdlInternalError(THROWTEXT(
+                                       "  Could not push user defined event\n"s +
+                                       "    Event Code: " + std::to_string(eventCode) +
+                                       SDL_GetError()
+                                   ));
         }
     }
 
