@@ -31,20 +31,15 @@ namespace RetrogameBase
 
         private:
             const FadeoutType   fadeoutType;
-            const double        fps;
-            const size_t        totalFrames;
 
         protected:
             virtual void install(Window& win);
-            virtual void restore(Window& win);
 
         public:
             OverlayFadeout() = delete;
-            OverlayFadeout(const FadeoutType fadeoutType, size_t milliseconds, double fps);
+            OverlayFadeout(const FadeoutType fadeoutType, size_t totalFrames, double fps);
+            OverlayFadeout(const FadeoutType fadeoutType, double milliseconds, double fps);
 
-            virtual void apply(Window& win);
-
-            static bool eventhandler_fadeout(SDL_Event& event, void* userData);
             static void render_fadeout(void* userData);
     };
 }

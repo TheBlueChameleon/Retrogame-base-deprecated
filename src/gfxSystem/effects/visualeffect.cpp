@@ -25,22 +25,35 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    VisualEffect::UserData::UserData(Window* window) :
-        window          ( window ),
-        sdlWindow       ( window->getSdlWindow() ),
-        windowRenderer  ( window->getRenderer() ),
-        progress        ( 0. ),
-        specificUserdata( nullptr )
+    VisualEffect::VisualEffect(
+        const double fps,
+        size_t totalFrames
+    ) :
+        fps(fps),
+        totalFrames(totalFrames),
+        progressPerFrame(1. / totalFrames)
+    {}
+
+    VisualEffect::UserData::UserData(
+        VisualEffect* effectInstanceData,
+        Window*       window
+    ) :
+        window            ( window ),
+        sdlWindow         ( window->getSdlWindow() ),
+        windowRenderer    ( window->getRenderer() ),
+        progress          ( 0. ),
+        effectInstanceData( effectInstanceData )
     {
-        const auto widthAndHeight = window->getDimension();
-        const SDL_Rect coordinates = {0, 0, widthAndHeight.first, widthAndHeight.second};
+        const auto windowDimensions = window->getDimension();
+        const SDL_Rect coordinates = {0, 0, windowDimensions.first, windowDimensions.second};
 
         auto format = SDL_GetWindowPixelFormat(sdlWindow);
 
         windowSurface = SDL_CreateRGBSurfaceWithFormat(
-                            0,                                              // flags
-                            widthAndHeight.first, widthAndHeight.second,
-                            SDL_BITSPERPIXEL(format),                       // color depth
+                            0,                          // flags (unused)
+                            windowDimensions.first,     // width
+                            windowDimensions.second,    // height
+                            SDL_BITSPERPIXEL(format),   // color depth
                             format
                         );
 
@@ -69,9 +82,10 @@ namespace RetrogameBase
         oldIdleHandler  = win.getIdleHandler();
         oldUserData     = win.getUserData();
 
-        userdata = std::unique_ptr<UserData>(new UserData(&win));
+        userdata = std::unique_ptr<UserData>(new UserData(this, &win));
 
-        win.setUserData(userdata.get());
+        win.setUserData    (userdata.get());
+        win.setEventHandler(VisualEffect::eventhandler_default);
     }
 
     void VisualEffect::restore(Window& win)
@@ -79,6 +93,30 @@ namespace RetrogameBase
         win.setEventHandler(oldEventHandler);
         win.setIdleHandler (oldIdleHandler );
         win.setUserData    (oldUserData    );
+    }
+
+    void VisualEffect::apply(Window& win)
+    {
+        install(win);
+        win.mainLoop(fps);
+        restore(win);
+    }
+
+    void VisualEffect::progress()
+    {
+        userdata->progress += progressPerFrame;
+        pushUserEvent(0, nullptr);
+    }
+
+    VisualEffect::UserData& VisualEffect::castToUserData(void* userData)
+    {
+        return *reinterpret_cast<UserData*>(userData);
+    }
+
+    bool VisualEffect::eventhandler_default(SDL_Event& event, void* userData)
+    {
+        UserData& userDataStruct = castToUserData(userData);
+        return userDataStruct.progress < 1;
     }
 
 }

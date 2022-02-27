@@ -21,10 +21,14 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    OverlayFadeout::OverlayFadeout(const FadeoutType fadeoutType, size_t milliseconds, double fps) :
-        fadeoutType(fadeoutType),
-        fps(fps),
-        totalFrames(milliseconds / fps)
+    OverlayFadeout::OverlayFadeout(const FadeoutType fadeoutType, double milliseconds, double fps) :
+        VisualEffect(fps, fps * milliseconds / 1000.),
+        fadeoutType(fadeoutType)
+    {}
+
+    OverlayFadeout::OverlayFadeout(const FadeoutType fadeoutType, size_t totalFrames, double fps) :
+        VisualEffect(fps, totalFrames),
+        fadeoutType(fadeoutType)
     {}
 
 // ========================================================================== //
@@ -46,31 +50,10 @@ namespace RetrogameBase
                 win.setIdleHandler(render_fadeout);
                 break;
         }
-
-        win.setEventHandler(eventhandler_fadeout);
-    }
-
-    void OverlayFadeout::restore(Window& win)
-    {
-        VisualEffect::restore(win);
-    }
-
-    void OverlayFadeout::apply(Window& win)
-    {
-        install(win);
-        win.mainLoop(fps);
-        restore(win);
     }
 
 // ========================================================================== //
 // fadeout rendering
-
-    bool OverlayFadeout::eventhandler_fadeout(SDL_Event& event, void* userData)
-    {
-        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
-
-        return userDataStruct.progress < 1;
-    }
 
     void OverlayFadeout::render_fadeout(void* userData)
     {
@@ -88,8 +71,7 @@ namespace RetrogameBase
 
         SDL_UpdateWindowSurface(userDataStruct.sdlWindow);
 
-        userDataStruct.progress += .005;
-        pushUserEvent(0, nullptr);
+        userDataStruct.effectInstanceData->progress();
     }
 
 
