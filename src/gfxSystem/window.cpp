@@ -54,6 +54,8 @@ namespace RetrogameBase
         win_renderer = SDL_CreateRenderer(hwin, -1, render_flags);
         // -1 is "index of driver"; -1 stands for "first supporting driver"
 
+        SDL_SetRenderDrawBlendMode(win_renderer, SDL_BLENDMODE_BLEND);
+
         if (!(hwin && win_renderer))
         {
             throw SdlInternalError("Window could not be initialized.");
