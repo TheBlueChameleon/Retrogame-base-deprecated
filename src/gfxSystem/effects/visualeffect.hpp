@@ -56,6 +56,8 @@ namespace RetrogameBase
 
         public:
             virtual void apply  (Window& win);
+
+            void renderStoredState();
             virtual void progress();
 
             static UserData& castToUserData(void* userData);

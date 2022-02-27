@@ -102,6 +102,15 @@ namespace RetrogameBase
         restore(win);
     }
 
+    void VisualEffect::renderStoredState()
+    {
+        userdata->window->clear(color_black);
+
+        SDL_RenderCopy(userdata->windowRenderer,
+                       userdata->windowTexture,
+                       nullptr, nullptr);
+    }
+
     void VisualEffect::progress()
     {
         userdata->progress += progressPerFrame;

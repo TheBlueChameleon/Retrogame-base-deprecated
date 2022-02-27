@@ -50,13 +50,13 @@ namespace RetrogameBase
         switch (fadeoutType)
         {
             case FadeoutType::Stripes:
-                win.setIdleHandler(render_fadeout);
+                win.setIdleHandler(render_stripes);
                 break;
             case FadeoutType::Pixelate:
-                win.setIdleHandler(render_fadeout);
+                win.setIdleHandler(render_desaturate);
                 break;
             case FadeoutType::Desaturate:
-                win.setIdleHandler(render_fadeout);
+                win.setIdleHandler(render_desaturate);
                 break;
         }
     }
@@ -64,25 +64,39 @@ namespace RetrogameBase
 // ========================================================================== //
 // fadeout rendering
 
-    void OverlayFadeout::render_fadeout(void* userData)
+    void OverlayFadeout::render_stripes(void* userData)
     {
         UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
-        auto& win = *userDataStruct.window;
-        auto [width, height] = userDataStruct.window->getDimension();
 
-        SDL_Color color = reinterpret_cast<OverlayFadeout*>(userDataStruct.effectInstanceData)->getColor();
+        auto& win = *userDataStruct.window;
+        auto& self = *reinterpret_cast<OverlayFadeout*>(userDataStruct.effectInstanceData);
+
+        auto [width, height] = win.getDimension();
+        SDL_Color color = self.getColor();
+
+        int currentWidth = width * userDataStruct.progress;
+
+        self.renderStoredState();
+        win.fbox(0, 0, currentWidth, height, color);
+
+        self.progress();
+    }
+
+    void OverlayFadeout::render_desaturate(void* userData)
+    {
+        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
+
+        auto& win  = *userDataStruct.window;
+        auto& self = *reinterpret_cast<OverlayFadeout*>(userDataStruct.effectInstanceData);
+
+        auto [width, height] = win.getDimension();
+
+        SDL_Color color = self.getColor();
         color.a = userDataStruct.progress * 255;
 
-        win.clear(color_black);
-
-        SDL_RenderCopy(userDataStruct.windowRenderer,
-                       userDataStruct.windowTexture,
-                       nullptr, nullptr);
-
+        self.renderStoredState();
         win.fbox(0, 0, width, height, color);
 
-        SDL_UpdateWindowSurface(userDataStruct.sdlWindow);
-
-        userDataStruct.effectInstanceData->progress();
+        self.progress();
     }
 }

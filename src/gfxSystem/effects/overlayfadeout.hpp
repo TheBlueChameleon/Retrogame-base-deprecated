@@ -43,7 +43,8 @@ namespace RetrogameBase
 
             const SDL_Color& getColor() const;
 
-            static void render_fadeout(void* userData);
+            static void render_stripes(void* userData);
+            static void render_desaturate(void* userData);
     };
 }
 
