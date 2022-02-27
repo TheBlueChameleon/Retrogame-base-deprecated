@@ -12,6 +12,7 @@
 #include <SDL2/SDL.h>
 
 // own
+#include "../../base/globals.hpp"
 #include "visualeffect.hpp"
 
 // ========================================================================== //
@@ -31,14 +32,16 @@ namespace RetrogameBase
 
         private:
             const FadeoutType   fadeoutType;
+            const SDL_Color     color;
 
         protected:
             virtual void install(Window& win);
 
         public:
             OverlayFadeout() = delete;
-            OverlayFadeout(const FadeoutType fadeoutType, size_t totalFrames, double fps);
-            OverlayFadeout(const FadeoutType fadeoutType, double milliseconds, double fps);
+            OverlayFadeout(const FadeoutType fadeoutType, double milliseconds, double fps, const SDL_Color color = color_black);
+
+            const SDL_Color& getColor() const;
 
             static void render_fadeout(void* userData);
     };

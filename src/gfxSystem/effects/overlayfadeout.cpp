@@ -21,15 +21,24 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    OverlayFadeout::OverlayFadeout(const FadeoutType fadeoutType, double milliseconds, double fps) :
+    OverlayFadeout::OverlayFadeout(
+        const FadeoutType fadeoutType,
+        double milliseconds,
+        double fps,
+        const SDL_Color color
+    ) :
         VisualEffect(fps, fps * milliseconds / 1000.),
-        fadeoutType(fadeoutType)
+        fadeoutType(fadeoutType),
+        color(color)
     {}
 
-    OverlayFadeout::OverlayFadeout(const FadeoutType fadeoutType, size_t totalFrames, double fps) :
-        VisualEffect(fps, totalFrames),
-        fadeoutType(fadeoutType)
-    {}
+// ========================================================================== //
+// Getters
+
+    const SDL_Color& OverlayFadeout::getColor() const
+    {
+        return color;
+    }
 
 // ========================================================================== //
 // visualEffect interface
@@ -58,21 +67,22 @@ namespace RetrogameBase
     void OverlayFadeout::render_fadeout(void* userData)
     {
         UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
+        auto& win = *userDataStruct.window;
+        auto [width, height] = userDataStruct.window->getDimension();
 
-        userDataStruct.window->clear(color_black);
+        SDL_Color color = reinterpret_cast<OverlayFadeout*>(userDataStruct.effectInstanceData)->getColor();
+        color.a = userDataStruct.progress * 255;
+
+        win.clear(color_black);
 
         SDL_RenderCopy(userDataStruct.windowRenderer,
                        userDataStruct.windowTexture,
                        nullptr, nullptr);
 
-        Uint8 alpha = userDataStruct.progress * 255;
-        SDL_Color color = {255,0,255, alpha};
-        userDataStruct.window->fbox(10, 10, 400, 300, color);
+        win.fbox(0, 0, width, height, color);
 
         SDL_UpdateWindowSurface(userDataStruct.sdlWindow);
 
         userDataStruct.effectInstanceData->progress();
     }
-
-
 }
