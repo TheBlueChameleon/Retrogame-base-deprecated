@@ -25,7 +25,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    VisualEffect::VisualEffectUserData::VisualEffectUserData(Window* window) :
+    VisualEffect::UserData::UserData(Window* window) :
         window          ( window ),
         sdlWindow       ( window->getSdlWindow() ),
         windowRenderer  ( window->getRenderer() ),
@@ -51,9 +51,11 @@ namespace RetrogameBase
             windowSurface->pixels,
             windowSurface->pitch
         );
+
+        windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
     }
 
-    VisualEffect::VisualEffectUserData::~VisualEffectUserData()
+    VisualEffect::UserData::~UserData()
     {
         SDL_FreeSurface(windowSurface);
     }
@@ -67,7 +69,7 @@ namespace RetrogameBase
         oldIdleHandler  = win.getIdleHandler();
         oldUserData     = win.getUserData();
 
-        userdata = std::unique_ptr<VisualEffectUserData>(new VisualEffectUserData(&win));
+        userdata = std::unique_ptr<UserData>(new UserData(&win));
 
         win.setUserData(userdata.get());
     }

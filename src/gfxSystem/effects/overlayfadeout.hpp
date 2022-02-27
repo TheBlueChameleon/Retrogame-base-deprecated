@@ -29,23 +29,10 @@ namespace RetrogameBase
                 Desaturate
             };
 
-//            struct FadeoutUserData
-//            {
-//                Window*       window;
-//                SDL_Window*   hwin;
-//                SDL_Renderer* windowRenderer;
-//                SDL_Surface*  windowSurface;
-//                double        progress;
-
-//                FadeoutUserData(Window* window);
-//            };
-
         private:
             const FadeoutType   fadeoutType;
             const double        fps;
             const size_t        totalFrames;
-
-//            std::unique_ptr<FadeoutUserData> userdata;
 
         protected:
             virtual void install(Window& win);

@@ -23,17 +23,18 @@ namespace RetrogameBase
     class VisualEffect
     {
         public:
-            struct VisualEffectUserData
+            struct UserData
             {
                 Window*       window;
                 SDL_Window*   sdlWindow;
                 SDL_Renderer* windowRenderer;
                 SDL_Surface*  windowSurface;
+                SDL_Texture*  windowTexture;
                 double        progress;
                 void*         specificUserdata;
 
-                VisualEffectUserData(Window* window);
-                ~VisualEffectUserData();
+                UserData(Window* window);
+                ~UserData();
             };
 
         private:
@@ -41,7 +42,7 @@ namespace RetrogameBase
             std::function<void (void* userData)> oldIdleHandler;
             void* oldUserData;
 
-            std::unique_ptr<VisualEffectUserData> userdata;
+            std::unique_ptr<UserData> userdata;
 
         protected:
             virtual void install(Window& win);

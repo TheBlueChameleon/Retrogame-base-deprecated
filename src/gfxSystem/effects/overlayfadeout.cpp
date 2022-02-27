@@ -40,8 +40,10 @@ namespace RetrogameBase
                 win.setIdleHandler(render_fadeout);
                 break;
             case FadeoutType::Pixelate:
+                win.setIdleHandler(render_fadeout);
                 break;
             case FadeoutType::Desaturate:
+                win.setIdleHandler(render_fadeout);
                 break;
         }
 
@@ -65,22 +67,29 @@ namespace RetrogameBase
 
     bool OverlayFadeout::eventhandler_fadeout(SDL_Event& event, void* userData)
     {
-//        FadeoutUserData& userDataStruct = *reinterpret_cast<FadeoutUserData*>(userData);
+        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
 
-//        std::cout << (userDataStruct.progress < 1) << std::endl;
-//        return userDataStruct.progress < 1;
-
-        return false;
+        return userDataStruct.progress < 1;
     }
 
     void OverlayFadeout::render_fadeout(void* userData)
     {
-        VisualEffectUserData& userDataStruct = *reinterpret_cast<VisualEffectUserData*>(userData);
+        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
 
-//        auto& surface = userDataStruct.windowSurface;
-//        std::cout << userDataStruct.progress << std::endl;
+        userDataStruct.window->clear(color_black);
 
-        userDataStruct.progress += .1;
+        SDL_RenderCopy(userDataStruct.windowRenderer,
+                       userDataStruct.windowTexture,
+                       nullptr, nullptr);
+
+        Uint8 alpha = userDataStruct.progress * 255;
+        SDL_Color color = {255,0,255, alpha};
+        userDataStruct.window->fbox(10, 10, 400, 300, color);
+
+        SDL_UpdateWindowSurface(userDataStruct.sdlWindow);
+
+        userDataStruct.progress += .005;
+        pushUserEvent(0, nullptr);
     }
 
 
