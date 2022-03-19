@@ -25,9 +25,13 @@ add_definitions(-DCODEVERSION_MINOR=1)
 # ============================================================================ #
 # load SDL2
 
-find_package(SDL2 REQUIRED)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-sdl2)
 
-set(SDL2_LIBRARIES "${SDL2_LIBRARIES} -lSDL2_image -lSDL2_ttf")
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+
+#set(SDL2_LIBRARIES "${SDL2_LIBRARIES} -lSDL2_image -lSDL2_ttf")
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
@@ -61,7 +65,9 @@ set_target_properties(Retrogamebase-lib PROPERTIES
 )
 
 target_link_libraries(Retrogamebase-lib
-    ${SDL2_LIBRARIES}
+    SDL2::Main
+    SDL2::Image
+    SDL2::TTF
 )
 
 # ============================================================================ #
