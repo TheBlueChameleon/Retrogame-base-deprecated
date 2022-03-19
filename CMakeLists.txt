@@ -52,7 +52,7 @@ add_library(Retrogamebase-lib SHARED
     src/gfxSystem/animationlayerstore.hpp src/gfxSystem/animationlayerstore.cpp
     #
     src/gfxSystem/effects/visualeffect.hpp src/gfxSystem/effects/visualeffect.cpp
-    src/gfxSystem/effects/overlayfadeout.hpp src/gfxSystem/effects/overlayfadeout.cpp
+    src/gfxSystem/effects/simplefadeout.hpp src/gfxSystem/effects/simplefadeout.cpp
     #
     src/xmlSystem/pugixml.hpp src/xmlSystem/pugiconfig.hpp src/xmlSystem/pugixml.cpp
     src/xmlSystem/xmlwrapper.hpp src/xmlSystem/xmlwrapper.cpp

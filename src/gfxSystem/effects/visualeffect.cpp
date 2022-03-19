@@ -25,7 +25,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    VisualEffect::VisualEffect(
+VisualEffect::VisualEffect(
         const double fps,
         size_t totalFrames
     ) :
@@ -128,4 +128,16 @@ namespace RetrogameBase
         return userDataStruct.progress < 1;
     }
 
+    // ========================================================================== //
+    // Getter
+
+    double VisualEffect::getFps() const
+    {
+        return fps;
+    }
+
+    size_t VisualEffect::getTotalFrames() const
+    {
+        return totalFrames;
+    }
 }

@@ -11,7 +11,7 @@
 #include "gfxSystem/animationlayerstore.hpp"
 
 #include "gfxSystem/effects/visualeffect.hpp"
-#include "gfxSystem/effects/overlayfadeout.hpp"
+#include "gfxSystem/effects/simplefadeout.hpp"
 
 #include "xmlSystem/xmlwrapper.hpp"
 

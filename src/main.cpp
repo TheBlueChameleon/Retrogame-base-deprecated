@@ -103,7 +103,7 @@ void showcase_OverlayFadeout(RetrogameBase::Window& win)
 
     win.getIdleHandler()(&win);
 
-    RetrogameBase::OverlayFadeout effect(RetrogameBase::OverlayFadeout::FadeoutType::Stripes, 1000., 30);
+    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Stripes, 1000., 30);
     effect.apply(win);
 
     win.update();

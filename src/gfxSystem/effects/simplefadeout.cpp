@@ -7,7 +7,7 @@
 // own
 #include "../window.hpp"
 #include "visualeffect.hpp"
-#include "overlayfadeout.hpp"
+#include "simplefadeout.hpp"
 
 // ========================================================================== //
 // local macro
@@ -21,7 +21,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-    OverlayFadeout::OverlayFadeout(
+    SimpleFadeout::SimpleFadeout(
         const FadeoutType fadeoutType,
         double milliseconds,
         double fps,
@@ -35,7 +35,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // Getters
 
-    const SDL_Color& OverlayFadeout::getColor() const
+    const SDL_Color& SimpleFadeout::getColor() const
     {
         return color;
     }
@@ -43,7 +43,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // visualEffect interface
 
-    void OverlayFadeout::install(Window& win)
+    void SimpleFadeout::install(Window& win)
     {
         VisualEffect::install(win);
 
@@ -64,12 +64,12 @@ namespace RetrogameBase
 // ========================================================================== //
 // fadeout rendering
 
-    void OverlayFadeout::render_stripes(void* userData)
+    void SimpleFadeout::render_stripes(void* userData)
     {
         UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
 
         auto& win = *userDataStruct.window;
-        auto& self = *reinterpret_cast<OverlayFadeout*>(userDataStruct.effectInstanceData);
+        auto& self = *reinterpret_cast<SimpleFadeout*>(userDataStruct.effectInstanceData);
 
         auto [width, height] = win.getDimension();
         SDL_Color color = self.getColor();
@@ -82,12 +82,12 @@ namespace RetrogameBase
         self.progress();
     }
 
-    void OverlayFadeout::render_desaturate(void* userData)
+    void SimpleFadeout::render_desaturate(void* userData)
     {
         UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
 
         auto& win  = *userDataStruct.window;
-        auto& self = *reinterpret_cast<OverlayFadeout*>(userDataStruct.effectInstanceData);
+        auto& self = *reinterpret_cast<SimpleFadeout*>(userDataStruct.effectInstanceData);
 
         auto [width, height] = win.getDimension();
 

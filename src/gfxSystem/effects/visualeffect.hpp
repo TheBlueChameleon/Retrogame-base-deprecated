@@ -63,6 +63,9 @@ namespace RetrogameBase
             static UserData& castToUserData(void* userData);
 
             static bool eventhandler_default(SDL_Event& event, void* userData);
+
+            double getFps() const;
+            size_t getTotalFrames() const;
     };
 }
 
