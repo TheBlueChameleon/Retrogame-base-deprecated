@@ -76,4 +76,5 @@ CMakeLists.txt.user
 build*/
 
 # Settings file
+CMakeLists.txt.user
 CMakeLists.txt.user*

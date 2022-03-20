@@ -81,6 +81,7 @@ namespace RetrogameBase
             void maximize() const;
             void restore() const;
 
+            void render() const;
             void update() const;
 
             // ---------------------------------------------------------------------- //

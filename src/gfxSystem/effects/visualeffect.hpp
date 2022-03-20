@@ -45,11 +45,17 @@ namespace RetrogameBase
             std::unique_ptr<UserData> userdata;
 
         protected:
-            const double        fps;
-            const size_t        totalFrames;
-            const double        progressPerFrame;
+            double        fps;
+            size_t        totalFrames;
+            double        progressPerFrame;
 
-            VisualEffect(const double fps, size_t totalFrames);                                     // forces use of derived class
+            // -------------------------------------------------------------- //
+            // CTor, DTor
+
+            VisualEffect(const double fps, size_t totalFrames);                                     // making this protected forces use of derived class
+
+            // -------------------------------------------------------------- //
+            // VisualEffect interface
 
             virtual void install(Window& win);
             virtual void restore(Window& win);
@@ -64,8 +70,16 @@ namespace RetrogameBase
 
             static bool eventhandler_default(SDL_Event& event, void* userData);
 
+            // -------------------------------------------------------------- //
+            // Getters, Setters
+
             double getFps() const;
+            void   setFps(double newFps);
+
             size_t getTotalFrames() const;
+            void   setTotalFrames(size_t newTotalFrames);
+
+            double getProgressPerFrame() const;
     };
 }
 

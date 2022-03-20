@@ -51,6 +51,11 @@ namespace RetrogameBase
         return (deg / 180.) * std::numbers::pi;
     }
 
+    inline bool isBetween(double x, double a, double b)
+    {
+        return (a <= x) && (x <= b);
+    }
+
 // ========================================================================== //
 // colors
 
@@ -71,6 +76,8 @@ namespace RetrogameBase
     color_dark_purple = {128,   0, 128, 255},
     color_dark_cyan   = {  0, 128, 128, 255};
 
+    SDL_Color getColorFromHSL(double hue, double saturation, double lightness);
+
 // ========================================================================== //
 // trigonometry
 
@@ -89,6 +96,11 @@ namespace RetrogameBase
     extern Uint32 SDL_UserEventID;
 
     void pushUserEvent(Sint32 eventCode, void* eventData);
+
+// ========================================================================== //
+// SDL helper funcs
+
+    SDL_Color getPixelFromSurface(SDL_Surface* surface, int x, int y);
 
 // ========================================================================== //
 // namespace

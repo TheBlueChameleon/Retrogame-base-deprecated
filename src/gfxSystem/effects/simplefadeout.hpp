@@ -31,8 +31,8 @@ namespace RetrogameBase
             };
 
         private:
-            const FadeoutType   fadeoutType;
-            const SDL_Color     color;
+            FadeoutType   fadeoutType;
+            SDL_Color     color;
 
         protected:
             virtual void install(Window& win);
@@ -42,8 +42,16 @@ namespace RetrogameBase
             SimpleFadeout(const FadeoutType fadeoutType, double milliseconds, double fps, const SDL_Color color = color_black);
 
             const SDL_Color& getColor() const;
+            void setColor(const SDL_Color& newColor);
+
+            FadeoutType getFadeoutType() const;
+            void setFadeoutType(FadeoutType newFadeoutType);
+
+            double getDuration() const;
+            void setDuration(const double milliseconds);
 
             static void render_stripes(void* userData);
+            static void render_pixelate(void* userData);
             static void render_desaturate(void* userData);
     };
 }

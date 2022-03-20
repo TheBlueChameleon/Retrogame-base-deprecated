@@ -171,6 +171,61 @@ namespace RetrogameBase
     }
 
 // ========================================================================== //
+// colors
+
+    SDL_Color getColorFromHSL(double H, double S, double L)
+    {
+        // formulae from https://www.rapidtables.com/convert/color/hsl-to-rgb.html
+
+        double C = (1 - std::abs(2 * L - 1)) * S;
+        double X = C * (1 - std::abs(std::fmod(H / 60.0, 2.0) - 1));
+        double m = L - C/2.0;
+
+        double r = 0;
+        double g = 0;
+        double b = 0;
+
+        if      (isBetween(H,   0,  60))
+        {
+            r = C;
+            g = X;
+        }
+        else if (isBetween(H,  60, 120))
+        {
+            r = X;
+            g = C;
+        }
+        else if (isBetween(H, 120, 180))
+        {
+            g = C;
+            b = X;
+        }
+        else if (isBetween(H, 180, 240))
+        {
+            g = X;
+            b = C;
+        }
+        else if (isBetween(H, 240, 300))
+        {
+            r = X;
+            b = C;
+        }
+        else if (isBetween(H, 300, 360))
+        {
+            r = C;
+            b = X;
+        }
+
+        SDL_Color reVal;
+        reVal.r = (r + m) * 255;
+        reVal.g = (g + m) * 255;
+        reVal.b = (b + m) * 255;
+        reVal.a = 255;
+
+        return reVal;
+    }
+
+// ========================================================================== //
 // trigonometry
 
     double valuesSin[360], valuesCos[360];
@@ -237,6 +292,56 @@ namespace RetrogameBase
                                        SDL_GetError()
                                    ));
         }
+    }
+
+// ========================================================================== //
+// SDL helper funcs
+
+    SDL_Color getPixelFromSurface(SDL_Surface* surface, int x, int y)
+    {
+        // adopted from https://stackoverflow.com/questions/53033971/how-to-get-the-color-of-a-specific-pixel-from-sdl-surface
+
+        int       bytesPerPixel = surface->format->BytesPerPixel;
+        Uint8*    pixelAddress = static_cast<Uint8*>(surface->pixels) + y * surface->pitch + x * bytesPerPixel;
+        Uint32    pixelColorPack;
+        SDL_Color pixelColorStruct;
+
+        switch (bytesPerPixel)
+        {
+            case 1:
+                pixelColorPack = *pixelAddress;
+                break;
+
+            case 2:
+                pixelColorPack = *reinterpret_cast<Uint16*>(pixelAddress);
+                break;
+
+            case 3:
+                if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+                {
+                    pixelColorPack = pixelAddress[0] << 16 | pixelAddress[1] << 8 | pixelAddress[2];
+                }
+                else
+                {
+                    pixelColorPack = pixelAddress[0] | pixelAddress[1] << 8 | pixelAddress[2] << 16;
+                }
+                break;
+
+            [[likely]] case 4:
+                pixelColorPack = *(Uint32*)pixelAddress;
+                break;
+
+            default:
+                pixelColorPack = 0;       /* shouldn't happen, but avoids warnings */
+        }
+
+        SDL_GetRGBA(pixelColorPack, surface->format,
+                    &pixelColorStruct.r,
+                    &pixelColorStruct.g,
+                    &pixelColorStruct.b,
+                    &pixelColorStruct.a);
+
+        return pixelColorStruct;
     }
 
 // ========================================================================== //

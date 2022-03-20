@@ -25,7 +25,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // CTor, DTor
 
-VisualEffect::VisualEffect(
+    VisualEffect::VisualEffect(
         const double fps,
         size_t totalFrames
     ) :
@@ -47,7 +47,7 @@ VisualEffect::VisualEffect(
         const auto windowDimensions = window->getDimension();
         const SDL_Rect coordinates = {0, 0, windowDimensions.first, windowDimensions.second};
 
-        auto format = SDL_GetWindowPixelFormat(sdlWindow);
+        const auto format = SDL_GetWindowPixelFormat(sdlWindow);
 
         windowSurface = SDL_CreateRGBSurfaceWithFormat(
                             0,                          // flags (unused)
@@ -74,7 +74,7 @@ VisualEffect::VisualEffect(
     }
 
 // ========================================================================== //
-// visualEffect interface
+// VisualEffect interface
 
     void VisualEffect::install(Window& win)
     {
@@ -129,15 +129,31 @@ VisualEffect::VisualEffect(
     }
 
     // ========================================================================== //
-    // Getter
+    // Getters, Setters
 
     double VisualEffect::getFps() const
     {
         return fps;
     }
 
+    void VisualEffect::setFps(double newFps)
+    {
+        fps = newFps;
+    }
+
     size_t VisualEffect::getTotalFrames() const
     {
         return totalFrames;
+    }
+
+    void VisualEffect::setTotalFrames(size_t newTotalFrames)
+    {
+        totalFrames = newTotalFrames;
+        progressPerFrame = 1. / totalFrames;
+    }
+
+    double VisualEffect::getProgressPerFrame() const
+    {
+        return progressPerFrame;
     }
 }

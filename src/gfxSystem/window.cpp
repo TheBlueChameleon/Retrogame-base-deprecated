@@ -177,6 +177,14 @@ namespace RetrogameBase
         SDL_RestoreWindow(hwin);
     }
 
+    void Window::render() const
+    {
+        if (idleHandler)
+        {
+            idleHandler(userData);
+        }
+    }
+
     void Window::update() const
     {
         SDL_RenderPresent(win_renderer);
@@ -375,11 +383,7 @@ namespace RetrogameBase
 
             SDL_RenderClear(win_renderer);
 
-            if (idleHandler)
-            {
-                idleHandler(userData);
-            }
-
+            render();
             continueToLoop = distributeEvents();
             update();
 
