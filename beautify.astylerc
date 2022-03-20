@@ -1,0 +1,13 @@
+style=allman
+
+indent=spaces=4
+indent-classes
+indent-modifiers
+indent-switches
+indent-namespaces
+indent-labels
+
+align-pointer=type
+align-reference=type
+
+add-braces
