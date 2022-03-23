@@ -163,4 +163,14 @@ namespace RetrogameBase
     {
         return progressPerFrame;
     }
+
+    double VisualEffect::getDuration() const
+    {
+        return totalFrames / fps * 1000;
+    }
+
+    void VisualEffect::setDuration(const double milliseconds)
+    {
+        this->setTotalFrames(fps * milliseconds / 1000.);
+    }
 }

@@ -63,16 +63,6 @@ namespace RetrogameBase
         fadeoutType = newFadeoutType;
     }
 
-    double SimpleFadeout::getDuration() const
-    {
-        return totalFrames / fps * 1000;
-    }
-
-    void SimpleFadeout::setDuration(const double milliseconds)
-    {
-        this->setTotalFrames(fps * milliseconds / 1000.);
-    }
-
 // ========================================================================== //
 // visualEffect interface
 

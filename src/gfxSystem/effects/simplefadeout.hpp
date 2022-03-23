@@ -47,9 +47,6 @@ namespace RetrogameBase
             FadeoutType getFadeoutType() const;
             void setFadeoutType(FadeoutType newFadeoutType);
 
-            double getDuration() const;
-            void setDuration(const double milliseconds);
-
             static void render_stripes(void* userData);
 
             static void render_blur(void* userData);

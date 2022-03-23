@@ -81,6 +81,9 @@ namespace RetrogameBase
             size_t getTotalFrames() const;
             void   setTotalFrames(size_t newTotalFrames);
 
+            double getDuration() const;
+            void   setDuration(const double milliseconds);
+
             double getProgressPerFrame() const;
     };
 }
