@@ -35,6 +35,8 @@ namespace RetrogameBase
 
                 UserData(VisualEffect* effectInstanceData, Window* window);
                 ~UserData();
+
+                void updateTexture();
             };
 
         private:

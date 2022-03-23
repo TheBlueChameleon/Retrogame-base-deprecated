@@ -116,11 +116,7 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
 
     win.getIdleHandler()(&win);
 
-    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Pixelate, 2000., 30);
-    effect.apply(win);
-
-    win.render();
-    effect.setDuration(1000);
+    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Blur, 1000., 30);
     effect.apply(win);
 
     win.mainLoop();

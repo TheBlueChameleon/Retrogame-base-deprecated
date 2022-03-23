@@ -70,7 +70,14 @@ namespace RetrogameBase
 
     VisualEffect::UserData::~UserData()
     {
-        SDL_FreeSurface(windowSurface);
+        SDL_FreeSurface   (windowSurface);
+        SDL_DestroyTexture(windowTexture);
+    }
+
+    void VisualEffect::UserData::updateTexture()
+    {
+        SDL_DestroyTexture(windowTexture);
+        windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
     }
 
 // ========================================================================== //

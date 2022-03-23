@@ -25,7 +25,7 @@ namespace RetrogameBase
         public:
             enum class FadeoutType
             {
-                Stripes,
+                Blur,
                 Pixelate,
                 Desaturate
             };
@@ -51,6 +51,8 @@ namespace RetrogameBase
             void setDuration(const double milliseconds);
 
             static void render_stripes(void* userData);
+
+            static void render_blur(void* userData);
             static void render_pixelate(void* userData);
             static void render_desaturate(void* userData);
     };
