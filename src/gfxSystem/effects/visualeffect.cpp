@@ -41,6 +41,7 @@ namespace RetrogameBase
         window            ( window ),
         sdlWindow         ( window->getSdlWindow() ),
         windowRenderer    ( window->getRenderer() ),
+        frameID           ( 0 ),
         progress          ( 0. ),
         effectInstanceData( effectInstanceData )
     {
@@ -120,6 +121,7 @@ namespace RetrogameBase
 
     void VisualEffect::progress()
     {
+        ++userdata->frameID;
         userdata->progress += progressPerFrame;
         pushUserEvent(0, nullptr);
     }

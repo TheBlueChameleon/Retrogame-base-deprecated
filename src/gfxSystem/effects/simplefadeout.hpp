@@ -1,5 +1,5 @@
-#ifndef OVERLAYFADEOUT_HPP
-#define OVERLAYFADEOUT_HPP
+#ifndef SIMPLEFADEOUT_HPP
+#define SIMPLEFADEOUT_HPP
 
 // ========================================================================== //
 // Depenencies
@@ -55,4 +55,4 @@ namespace RetrogameBase
     };
 }
 
-#endif // OVERLAYFADEOUT_HPP
+#endif // SIMPLEFADEOUT_HPP

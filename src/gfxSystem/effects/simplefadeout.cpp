@@ -140,6 +140,16 @@ namespace RetrogameBase
 
         const auto [width, height] = win.getDimension();
 
+        // if last frame: simply show final colour
+        if (userDataStruct.frameID + 1 == self.totalFrames)
+        {
+            SDL_Color color = self.getColor();
+            win.fbox(0, 0, width, height, color);
+            self.progress();
+            return;
+        }
+
+        // actual blur code
 
         // create buffer into which to sum pixels as well as views to the individual lines within.
         // for the blur, a pixel and its 8 neighbours are considered and need to be summed up.
@@ -263,6 +273,16 @@ namespace RetrogameBase
         const int pixelWidth  = width  * userDataStruct.progress + 1;
         const int pixelHeight = height * userDataStruct.progress + 1;
 
+        // if last frame: simply show final colour
+        if (userDataStruct.frameID + 1 == self.totalFrames)
+        {
+            SDL_Color color = self.getColor();
+            win.fbox(0, 0, width, height, color);
+            self.progress();
+            return;
+        }
+
+        // acutal pixelate code
         auto getAverageColor = [](SDL_Surface* surface, const int startX, const int startY, const int width, const int height)
         {
             long long r = 0, g = 0, b = 0;

@@ -30,6 +30,7 @@ namespace RetrogameBase
                 SDL_Renderer* windowRenderer;
                 SDL_Surface*  windowSurface;
                 SDL_Texture*  windowTexture;
+                size_t        frameID;
                 double        progress;
                 VisualEffect* effectInstanceData;
 
