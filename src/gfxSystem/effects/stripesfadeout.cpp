@@ -155,6 +155,32 @@ namespace RetrogameBase
         return reVal;
     }
 
+// .......................................................................... //
+
+    std::tuple<int, int, int, int> getOrientedMeasures (const StripesFadeout::Orientation& orientation, const int width, const int height)
+    {
+        int length, coLength, dx, dy;
+        switch (orientation)
+        {
+            case StripesFadeout::Orientation::Horizontal :
+                length = width;
+                coLength = height;
+                dx = 1;
+                dy = 0;
+                break;
+
+            case StripesFadeout::Orientation::Vertical :
+                length = height;
+                coLength = width;
+                dx = 0;
+                dy = 1;
+                break;
+        }
+
+        return std::make_tuple(length, coLength, dx, dy);
+    }
+// -------------------------------------------------------------------------- //
+
     void StripesFadeout::renderStripesContra(void* userDataPointer)
     {
         auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
@@ -164,23 +190,23 @@ namespace RetrogameBase
 
         auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
 
-        int length, coLength, dx, dy;
-        switch (self.orientation)
-        {
-            case Orientation::Horizontal :
-                length = width;
-                coLength = height;
-                dx = 1;
-                dy = 0;
-                break;
+        auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+//        switch (self.orientation)
+//        {
+//            case Orientation::Horizontal :
+//                length = width;
+//                coLength = height;
+//                dx = 1;
+//                dy = 0;
+//                break;
 
-            case Orientation::Vertical :
-                length = height;
-                coLength = width;
-                dx = 0;
-                dy = 1;
-                break;
-        }
+//            case Orientation::Vertical :
+//                length = height;
+//                coLength = width;
+//                dx = 0;
+//                dy = 1;
+//                break;
+//        }
 
         for (auto i = 0u; i < self.nStripes; ++i)
         {
@@ -207,5 +233,15 @@ namespace RetrogameBase
         self.progress();
     }
 
-// .......................................................................... //
+// -------------------------------------------------------------------------- //
+
+    void StripesFadeout::renderStripesCloseCenter(void* userDataPointer)
+    {
+        auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
+        const auto [width, height] = win.getDimension();
+
+        self.renderStoredState();
+
+        self.progress();
+    }
 }
