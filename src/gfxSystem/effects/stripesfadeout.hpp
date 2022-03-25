@@ -40,6 +40,13 @@ namespace RetrogameBase
             SDL_Color colorInitial = color_transparent;
             SDL_Color colorFinal = color_black;
 
+            size_t nStripes = 1;
+
+            std::vector<int> splitPointsX;
+            std::vector<int> splitPointsY;
+
+            void computeSplitPoints(const Window& win);
+
         protected:
             virtual void install(Window& win);
 
@@ -64,6 +71,9 @@ namespace RetrogameBase
 
             const SDL_Color& getColorFinal() const;
             void setColorFinal(const SDL_Color& newColorFinal);
+
+            size_t getNStripes() const;
+            void setNStripes(size_t newNStripes);
 
             // -------------------------------------------------------------- //
             // renderers

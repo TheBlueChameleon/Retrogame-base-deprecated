@@ -116,8 +116,12 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
 
     win.getIdleHandler()(&win);
 
-    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Pixelate, 1000., 30);
+    RetrogameBase::StripesFadeout effect(RetrogameBase::StripesFadeout::FadeoutType::Contra,
+                                         RetrogameBase::StripesFadeout::Orientation::Vertical,
+                                         2000., 30);
+    effect.setNStripes(5);
+
     effect.apply(win);
 
-    win.mainLoop();
+    //win.mainLoop();
 }

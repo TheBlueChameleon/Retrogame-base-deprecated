@@ -243,24 +243,6 @@ namespace RetrogameBase
 
 // .......................................................................... //
 
-    void SimpleFadeout::render_stripes(void* userData)
-    {
-        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
-
-        auto& win = *userDataStruct.window;
-        auto& self = *reinterpret_cast<SimpleFadeout*>(userDataStruct.effectInstanceData);
-
-        const auto [width, height] = win.getDimension();
-        SDL_Color color = self.getColor();
-
-        int currentWidth = width * userDataStruct.progress;
-
-        self.renderStoredState();
-        win.fbox(0, 0, currentWidth, height, color);
-
-        self.progress();
-    }
-
     void SimpleFadeout::renderPixelate(void* userDataPointer)
     {
         auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
