@@ -373,26 +373,17 @@ namespace RetrogameBase
     {
         bool continueToLoop = bool(eventHandler);
 
-        const int ticsDelayMax = 1000 / fps;
-        int tic;
-        int toc = SDL_GetTicks();
+        const int delay = 1000 / fps;
 
         while (continueToLoop)
         {
-            tic = toc;
-
             SDL_RenderClear(win_renderer);
 
             render();
             continueToLoop = distributeEvents();
             update();
 
-            toc = SDL_GetTicks();
-            const auto ticsPassed = toc - tic;
-            const auto delayTheory = (ticsDelayMax - ticsPassed);
-            const auto delayReal = (delayTheory > 0) * delayTheory;
-
-            SDL_Delay(delayReal);
+            SDL_Delay(delay);
         }
     }
 
