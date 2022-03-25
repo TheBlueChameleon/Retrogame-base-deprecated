@@ -1,7 +1,35 @@
+// ========================================================================== //
+// Depenencies
+
+// STL
+
+// own
+#include "visualeffect.hpp"
 #include "stripesfadeout.hpp"
+
+// ========================================================================== //
+// local macro
+
+#define THROWTEXT(msg) ("RUNTIME EXCEPTION IN "s + (__PRETTY_FUNCTION__) + "\n"s + msg)
+
+// ========================================================================== //
+// namespace
 
 namespace RetrogameBase
 {
+
+// ========================================================================== //
+// CTor, DTor
+
+    StripesFadeout::StripesFadeout(const FadeoutType fadeoutType, const Orientation orientation, double milliseconds, double fps) :
+        VisualEffect(fps, fps * milliseconds / 1000.),
+        fadeoutType(fadeoutType),
+        orientation(orientation)
+    {}
+
+// ========================================================================== //
+// Getters, Setters
+
     StripesFadeout::FadeoutType StripesFadeout::getFadeoutType() const
     {
         return fadeoutType;
@@ -11,6 +39,8 @@ namespace RetrogameBase
     {
         fadeoutType = newFadeoutType;
     }
+
+// .......................................................................... //
 
     StripesFadeout::Orientation StripesFadeout::getOrientation() const
     {
@@ -22,6 +52,8 @@ namespace RetrogameBase
         orientation = newOrientation;
     }
 
+// .......................................................................... //
+
     const SDL_Color& StripesFadeout::getColorInitial() const
     {
         return colorInitial;
@@ -32,6 +64,8 @@ namespace RetrogameBase
         colorInitial = newColorInitial;
     }
 
+// .......................................................................... //
+
     const SDL_Color& StripesFadeout::getColorFinal() const
     {
         return colorFinal;
@@ -41,4 +75,12 @@ namespace RetrogameBase
     {
         colorFinal = newColorFinal;
     }
+
+// ========================================================================== //
+// visualEffect interface
+
+// ========================================================================== //
+// renderers
+
+// .......................................................................... //
 }

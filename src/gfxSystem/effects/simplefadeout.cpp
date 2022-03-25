@@ -128,12 +128,9 @@ namespace RetrogameBase
 
     void SimpleFadeout::renderBlur(void* userDataPointer)
     {
-        UserData& userData = *reinterpret_cast<UserData*>(userDataPointer);
+        auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
 
-        auto& win = *userData.window;
-        auto& self = *reinterpret_cast<SimpleFadeout*>(userData.effectInstanceData);
         auto& surface = *userData.windowSurface;
-
         const auto surfaceData = reinterpret_cast<Uint8*>(surface.pixels);
         const auto pitch = surface.pitch;
         const auto bytesPerPixel = surface.format->BytesPerPixel;
@@ -244,6 +241,8 @@ namespace RetrogameBase
         self.progress();
     }
 
+// .......................................................................... //
+
     void SimpleFadeout::render_stripes(void* userData)
     {
         UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
@@ -319,6 +318,8 @@ namespace RetrogameBase
 
         self.progress();
     }
+
+// .......................................................................... //
 
     void SimpleFadeout::renderDesaturate(void* userDataPointer)
     {

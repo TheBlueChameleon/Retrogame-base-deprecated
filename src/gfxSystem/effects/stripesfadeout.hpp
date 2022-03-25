@@ -68,7 +68,9 @@ namespace RetrogameBase
             // -------------------------------------------------------------- //
             // renderers
 
-            static void renderStripesContra(void* userData);
+            static void renderStripesContra(void* userDataPointer);
+            static void renderStripesCloseCenter(void* userDataPointer);
+            static void renderStripesRandom(void* userDataPointer);
     };
 }
 
