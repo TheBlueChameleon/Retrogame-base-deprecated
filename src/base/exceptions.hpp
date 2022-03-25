@@ -31,6 +31,8 @@ namespace RetrogameBase
     ERROR(InvalidVersionError);
 
     ERROR(InvalidFrameError);
+
+    ERROR(PositiveValueExpectedError);
 }
 
 // ========================================================================== //

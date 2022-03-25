@@ -4,7 +4,11 @@
 // STL
 #include <iostream>
 
+#include <string>
+using namespace std::string_literals;
+
 // own
+#include "../../base/exceptions.hpp"
 #include "../window.hpp"
 #include "visualeffect.hpp"
 #include "stripesfadeout.hpp"
@@ -87,6 +91,11 @@ namespace RetrogameBase
 
     void StripesFadeout::setNStripes(size_t newNStripes)
     {
+        if (newNStripes < 1)
+        {
+            throw PositiveValueExpectedError(THROWTEXT("Number of stripes needs to be positive"));
+        }
+
         nStripes = newNStripes;
     }
 
@@ -159,26 +168,21 @@ namespace RetrogameBase
 
     std::tuple<int, int, int, int> getOrientedMeasures (const StripesFadeout::Orientation& orientation, const int width, const int height)
     {
-        int length, coLength, dx, dy;
+        // returns length, coLength, dx, dy
+
         switch (orientation)
         {
             case StripesFadeout::Orientation::Horizontal :
-                length = width;
-                coLength = height;
-                dx = 1;
-                dy = 0;
-                break;
+                return std::make_tuple(width, height, 1, 0);
 
             case StripesFadeout::Orientation::Vertical :
-                length = height;
-                coLength = width;
-                dx = 0;
-                dy = 1;
-                break;
+                return std::make_tuple(height, width, 0, 1);
         }
 
-        return std::make_tuple(length, coLength, dx, dy);
+        // this never happens but appeases the compiler:
+        return std::make_tuple(0, 0, 0, 0);
     }
+
 // -------------------------------------------------------------------------- //
 
     void StripesFadeout::renderStripesContra(void* userDataPointer)
@@ -189,29 +193,12 @@ namespace RetrogameBase
         self.renderStoredState();
 
         auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
-
         auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
-//        switch (self.orientation)
-//        {
-//            case Orientation::Horizontal :
-//                length = width;
-//                coLength = height;
-//                dx = 1;
-//                dy = 0;
-//                break;
-
-//            case Orientation::Vertical :
-//                length = height;
-//                coLength = width;
-//                dx = 0;
-//                dy = 1;
-//                break;
-//        }
 
         for (auto i = 0u; i < self.nStripes; ++i)
         {
-            auto x = self.splitPointsX[i];
-            auto y = self.splitPointsY[i];
+            const auto x = self.splitPointsX[i];
+            const auto y = self.splitPointsY[i];
 
             /* if (even stripe) :
              *     endCoordinate =  animationProgress * length
@@ -222,10 +209,10 @@ namespace RetrogameBase
             const int  sign[2] = {1, -1};
             const auto factor = sign[parity] * userData.progress;
 
-            int endCoordinate = factor * length;
+            const int endCoordinate = factor * length;
 
-            auto w = dx * endCoordinate + dy * coLength / self.nStripes;
-            auto h = dy * endCoordinate + dx * coLength / self.nStripes;
+            const auto w = dx * endCoordinate + dy * coLength / self.nStripes;
+            const auto h = dy * endCoordinate + dx * coLength / self.nStripes;
 
             win.fbox(x, y, w, h, color);
         }
@@ -241,6 +228,23 @@ namespace RetrogameBase
         const auto [width, height] = win.getDimension();
 
         self.renderStoredState();
+
+        auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
+        auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+
+        for (auto i = 0u; i < self.nStripes; ++i)
+        {
+            const auto x1 = self.splitPointsX[i];
+            const auto y1 = self.splitPointsY[i];
+            const auto x2 = dx * length + dy * x1;
+            const auto y2 = dx * y1     + dy * length;
+
+            const auto parity = i & 1;
+            const int  sign[2] = {1, -1};
+            const auto factor = sign[parity] * userData.progress;
+
+            const auto offset = length * (i+1) / self.nStripes;
+        }
 
         self.progress();
     }
