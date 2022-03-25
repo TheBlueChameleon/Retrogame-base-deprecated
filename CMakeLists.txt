@@ -57,6 +57,7 @@ add_library(Retrogamebase-lib SHARED
     #
     src/gfxSystem/effects/visualeffect.hpp src/gfxSystem/effects/visualeffect.cpp
     src/gfxSystem/effects/simplefadeout.hpp src/gfxSystem/effects/simplefadeout.cpp
+    src/gfxSystem/effects/stripesfadeout.hpp src/gfxSystem/effects/stripesfadeout.cpp
     #
     src/xmlSystem/pugixml.hpp src/xmlSystem/pugiconfig.hpp src/xmlSystem/pugixml.cpp
     src/xmlSystem/xmlwrapper.hpp src/xmlSystem/xmlwrapper.cpp

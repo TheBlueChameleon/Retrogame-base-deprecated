@@ -74,7 +74,8 @@ namespace RetrogameBase
     color_dark_blue   = {  0,   0, 128, 255},
     color_brown       = {128, 128,   0, 255},
     color_dark_purple = {128,   0, 128, 255},
-    color_dark_cyan   = {  0, 128, 128, 255};
+    color_dark_cyan   = {  0, 128, 128, 255},
+    color_transparent = {  0,   0,   0,   0};
 
     SDL_Color getColorFromHSL(double hue, double saturation, double lightness);
 

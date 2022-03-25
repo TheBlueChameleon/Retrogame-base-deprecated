@@ -12,6 +12,7 @@
 
 #include "gfxSystem/effects/visualeffect.hpp"
 #include "gfxSystem/effects/simplefadeout.hpp"
+#include "gfxSystem/effects/stripesfadeout.hpp"
 
 #include "xmlSystem/xmlwrapper.hpp"
 
