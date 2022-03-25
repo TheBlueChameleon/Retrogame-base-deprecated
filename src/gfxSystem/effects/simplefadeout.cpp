@@ -73,19 +73,19 @@ namespace RetrogameBase
         switch (fadeoutType)
         {
             case FadeoutType::Blur:
-                win.setIdleHandler(render_blur);
+                win.setIdleHandler(renderBlur);
                 break;
             case FadeoutType::Pixelate:
-                win.setIdleHandler(render_pixelate);
+                win.setIdleHandler(renderPixelate);
                 break;
             case FadeoutType::Desaturate:
-                win.setIdleHandler(render_desaturate);
+                win.setIdleHandler(renderDesaturate);
                 break;
         }
     }
 
 // ========================================================================== //
-// fadeout rendering
+// renderers
 
     void accumulatePixelValuesForBlur(std::span<Uint16>& buffer, const std::span<Uint8>& surfacePixels, const Uint8 bpp, const int offsetX)
     {
@@ -126,13 +126,13 @@ namespace RetrogameBase
         }
     }
 
-    void SimpleFadeout::render_blur(void* userData)
+    void SimpleFadeout::renderBlur(void* userDataPointer)
     {
-        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
+        UserData& userData = *reinterpret_cast<UserData*>(userDataPointer);
 
-        auto& win = *userDataStruct.window;
-        auto& self = *reinterpret_cast<SimpleFadeout*>(userDataStruct.effectInstanceData);
-        auto& surface = *userDataStruct.windowSurface;
+        auto& win = *userData.window;
+        auto& self = *reinterpret_cast<SimpleFadeout*>(userData.effectInstanceData);
+        auto& surface = *userData.windowSurface;
 
         const auto surfaceData = reinterpret_cast<Uint8*>(surface.pixels);
         const auto pitch = surface.pitch;
@@ -141,7 +141,7 @@ namespace RetrogameBase
         const auto [width, height] = win.getDimension();
 
         // if last frame: simply show final colour
-        if (userDataStruct.frameID + 1 == self.totalFrames)
+        if (userData.frameID + 1 == self.totalFrames)
         {
             SDL_Color color = self.getColor();
             win.fbox(0, 0, width, height, color);
@@ -238,7 +238,7 @@ namespace RetrogameBase
             }
         }
 
-        userDataStruct.updateTexture();
+        userData.updateTexture();
         self.renderStoredState();
 
         self.progress();
@@ -262,19 +262,16 @@ namespace RetrogameBase
         self.progress();
     }
 
-    void SimpleFadeout::render_pixelate(void* userData)
+    void SimpleFadeout::renderPixelate(void* userDataPointer)
     {
-        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
-
-        auto& win  = *userDataStruct.window;
-        auto& self = *reinterpret_cast<SimpleFadeout*>(userDataStruct.effectInstanceData);
+        auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
 
         const auto [width, height]  = win.getDimension();
-        const int pixelWidth  = width  * userDataStruct.progress + 1;
-        const int pixelHeight = height * userDataStruct.progress + 1;
+        const int pixelWidth  = width  * userData.progress + 1;
+        const int pixelHeight = height * userData.progress + 1;
 
         // if last frame: simply show final colour
-        if (userDataStruct.frameID + 1 == self.totalFrames)
+        if (userData.frameID + 1 == self.totalFrames)
         {
             SDL_Color color = self.getColor();
             win.fbox(0, 0, width, height, color);
@@ -315,7 +312,7 @@ namespace RetrogameBase
         {
             for (auto y=0u; y < height; y+= pixelHeight)
             {
-                auto color = getAverageColor(userDataStruct.windowSurface, x, y, pixelWidth, pixelHeight);
+                auto color = getAverageColor(userData.windowSurface, x, y, pixelWidth, pixelHeight);
                 win.fbox(x, y, pixelWidth, pixelHeight, color);
             }
         }
@@ -323,17 +320,13 @@ namespace RetrogameBase
         self.progress();
     }
 
-    void SimpleFadeout::render_desaturate(void* userData)
+    void SimpleFadeout::renderDesaturate(void* userDataPointer)
     {
-        UserData& userDataStruct = *reinterpret_cast<UserData*>(userData);
-
-        auto& win  = *userDataStruct.window;
-        auto& self = *reinterpret_cast<SimpleFadeout*>(userDataStruct.effectInstanceData);
-
+        auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
         const auto [width, height] = win.getDimension();
 
         SDL_Color color = self.getColor();
-        color.a = userDataStruct.progress * 255;
+        color.a = userData.progress * 255;
 
         self.renderStoredState();
         win.fbox(0, 0, width, height, color);

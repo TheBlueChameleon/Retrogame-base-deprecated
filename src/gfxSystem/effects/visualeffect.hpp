@@ -87,6 +87,19 @@ namespace RetrogameBase
 
             double getProgressPerFrame() const;
     };
+
+    template <class T>
+    std::tuple<VisualEffect::UserData&, Window&, T&> unpackUserdataPointer(void* userData)
+    {
+        VisualEffect::UserData& userDataStruct = *reinterpret_cast<VisualEffect::UserData*>(userData);
+
+        auto& win = *userDataStruct.window;
+        auto& self = *reinterpret_cast<T*>(userDataStruct.effectInstanceData);
+
+        return std::make_tuple(std::reference_wrapper(userDataStruct),
+                               std::reference_wrapper(win),
+                               std::reference_wrapper(self));
+    }
 }
 
 #endif // VISUALEFFECT_HPP
