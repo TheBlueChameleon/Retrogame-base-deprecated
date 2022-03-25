@@ -132,21 +132,27 @@ namespace RetrogameBase
 // ========================================================================== //
 // visualEffect interface
 
-    void StripesFadeout::install(Window& win)
+    void StripesFadeout::prepareInstance(Window& win)
     {
         computeSplitPoints(win);
-        VisualEffect::install(win);
+    }
 
+    // .......................................................................... //
+
+    std::function<void (void*)> StripesFadeout::getRenderer()
+    {
         switch (fadeoutType)
         {
             case FadeoutType::Contra:
-                win.setIdleHandler(renderStripesContra);
-                break;
+                return renderStripesContra;
             case FadeoutType::CloseCenter:
-                break;
+                return nullptr;
             case FadeoutType::Random:
-                break;
+                return nullptr;
         }
+
+        // cannot happen, appeases compiler
+        return nullptr;
     }
 
 // ========================================================================== //

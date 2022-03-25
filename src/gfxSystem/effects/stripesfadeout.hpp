@@ -48,7 +48,8 @@ namespace RetrogameBase
             void computeSplitPoints(const Window& win);
 
         protected:
-            virtual void install(Window& win);
+            virtual void prepareInstance(Window& win);
+            virtual std::function<void (void*)> getRenderer();
 
         public:
             // -------------------------------------------------------------- //

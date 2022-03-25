@@ -8,7 +8,6 @@
 
 #include <string>
 using namespace std::string_literals;
-#include <span>
 
 // own
 #include "../window.hpp"
@@ -66,20 +65,80 @@ namespace RetrogameBase
 // ========================================================================== //
 // visualEffect interface
 
-    void SimpleFadeout::install(Window& win)
+    std::function<void (void*)> SimpleFadeout::getRenderer()
     {
-        VisualEffect::install(win);
-
         switch (fadeoutType)
         {
             case FadeoutType::Blur:
-                win.setIdleHandler(renderBlur);
-                break;
+                return renderBlur;
             case FadeoutType::Pixelate:
-                win.setIdleHandler(renderPixelate);
+                return renderPixelate;
+            case FadeoutType::Desaturate:
+                return renderDesaturate;
+        }
+
+        // cannot happen, but appeases compiler
+        return nullptr;
+    }
+
+// -------------------------------------------------------------------------- //
+
+    void SimpleFadeout::prepareInstance(UserData& userData)
+    {
+        switch (fadeoutType)
+        {
+            case FadeoutType::Blur:
+            {
+                // extract metadata
+                auto& win = *userData.window;
+                const auto [width, height] = win.getDimension();
+
+                const auto surface = userData.windowSurface;
+                const auto surfaceData = reinterpret_cast<Uint8*>(surface->pixels);
+
+                const auto bytesPerPixel = surface->format->BytesPerPixel;
+                const auto pitch = surface->pitch;
+
+                // construct buffer and bufferViews
+                buffer.resize(height * width * bytesPerPixel);
+                const auto bufferData = buffer.begin();
+
+                for (auto row = 0; row < height; ++row)
+                {
+                    bufferViews.emplace_back(bufferData +  row      * width * bytesPerPixel,
+                                             bufferData + (row + 1) * width * bytesPerPixel);
+                }
+
+                // construct surfaceViews
+                for (auto row = 0; row < height; ++row)
+                {
+                    surfaceViews.emplace_back(surfaceData + row * pitch,
+                                              width * bytesPerPixel);
+                }
+            }
+            break;
+            case FadeoutType::Pixelate:
                 break;
             case FadeoutType::Desaturate:
-                win.setIdleHandler(renderDesaturate);
+                break;
+        }
+    }
+
+// .......................................................................... //
+
+    void SimpleFadeout::tidyUpInstance(UserData& userData)
+    {
+        switch (fadeoutType)
+        {
+            case FadeoutType::Blur:
+                buffer      .resize(0);
+                bufferViews .resize(0);
+                surfaceViews.resize(0);
+                break;
+
+            case FadeoutType::Pixelate:
+                break;
+            case FadeoutType::Desaturate:
                 break;
         }
     }
@@ -129,13 +188,10 @@ namespace RetrogameBase
     void SimpleFadeout::renderBlur(void* userDataPointer)
     {
         auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
+        const auto [width, height] = win.getDimension();
 
         auto& surface = *userData.windowSurface;
-        const auto surfaceData = reinterpret_cast<Uint8*>(surface.pixels);
-        const auto pitch = surface.pitch;
         const auto bytesPerPixel = surface.format->BytesPerPixel;
-
-        const auto [width, height] = win.getDimension();
 
         // if last frame: simply show final colour
         if (userData.frameID + 1 == self.totalFrames)
@@ -147,87 +203,62 @@ namespace RetrogameBase
         }
 
         // actual blur code
-
-        // create buffer into which to sum pixels as well as views to the individual lines within.
-        // for the blur, a pixel and its 8 neighbours are considered and need to be summed up.
-        // maximum value 9 * 255 < 2¹⁶
-        std::vector<Uint16> buffer(height * width * bytesPerPixel, 0);
-        const auto bufferData = buffer.begin();
-
-        std::vector<std::span<Uint16>> bufferViews;
-        for (auto row = 0; row < height; ++row)
-        {
-            bufferViews.emplace_back(bufferData +  row      * width * bytesPerPixel,
-                                     bufferData + (row + 1) * width * bytesPerPixel);
-        }
-
-
-        // create views onto the current surface pixel data
-        std::vector<std::span<Uint8>> surfaceViews;
-        for (auto row = 0; row < height; ++row)
-        {
-            surfaceViews.emplace_back(surfaceData + row * pitch,
-                                      width * bytesPerPixel);
-        }
-
         const auto repeats = std::max(1ul, std::min(height, width) / (10 * self.totalFrames));
         for (auto i = 0u; i < repeats; ++i)
         {
-            std::fill(buffer.begin(), buffer.end(), 0);
+            std::fill(self.buffer.begin(), self.buffer.end(), 0);
 
             // sum up pixels in buffer
             for (auto row = 0; row < height; ++row)
             {
                 // same row blur
-                accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel,  0);
-                accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel,  1);
-                accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel, -1);
+                accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
+                accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
+                accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
 
                 // blur to above
                 if (row)
                 {
-                    accumulatePixelValuesForBlur(bufferViews[row - 1], surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(bufferViews[row - 1], surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(bufferViews[row - 1], surfaceViews[row], bytesPerPixel, -1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel,  0);
+                    accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel,  1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel, -1);
                 }
                 else
                 {
-                    accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel, -1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
+                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
                 }
 
                 // blur to below
                 if (row < height - 1)
                 {
-                    accumulatePixelValuesForBlur(bufferViews[row + 1], surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(bufferViews[row + 1], surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(bufferViews[row + 1], surfaceViews[row], bytesPerPixel, -1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel,  0);
+                    accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel,  1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel, -1);
                 }
                 else
                 {
-                    accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(bufferViews[row], surfaceViews[row], bytesPerPixel, -1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
+                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
+                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
                 }
             }
 
-
             // rescale
-            std::transform(buffer.begin(), buffer.end(),
-                           buffer.begin(),
+            std::transform(self.buffer.begin(), self.buffer.end(),
+                           self.buffer.begin(),
                            [] (const auto& input)
             {
                 return input / 9;
             });
 
-
             // copy back into SDL buffer
             // std::copy won't do, as we need conversion back from Uint16 -> Uint8
             for (auto row = 0; row < height; ++row)
             {
-                std::transform(bufferViews[row].begin(), bufferViews[row].end(),
-                               surfaceViews[row].begin(),
+                std::transform(self.bufferViews [row].begin(), self.bufferViews[row].end(),
+                               self.surfaceViews[row].begin(),
                                [] (const auto& x)
                 {
                     return x;

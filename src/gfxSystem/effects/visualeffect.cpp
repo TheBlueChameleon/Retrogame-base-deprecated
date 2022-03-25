@@ -34,6 +34,8 @@ namespace RetrogameBase
         progressPerFrame(1. / totalFrames)
     {}
 
+// -------------------------------------------------------------------------- //
+
     VisualEffect::UserData::UserData(
         VisualEffect* effectInstanceData,
         Window*       window
@@ -50,6 +52,8 @@ namespace RetrogameBase
 
         const auto format = SDL_GetWindowPixelFormat(sdlWindow);
 
+        // deliberately, make a copy instead of using the existing window surface (https://wiki.libsdl.org/SDL_GetWindowSurface)
+        // blur and other mem-poking effects wouldn't work otherwise.
         windowSurface = SDL_CreateRGBSurfaceWithFormat(
                             0,                          // flags (unused)
                             windowDimensions.first,     // width
@@ -66,6 +70,7 @@ namespace RetrogameBase
             windowSurface->pitch
         );
 
+
         windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
     }
 
@@ -74,6 +79,8 @@ namespace RetrogameBase
         SDL_FreeSurface   (windowSurface);
         SDL_DestroyTexture(windowTexture);
     }
+
+// .......................................................................... //
 
     void VisualEffect::UserData::updateTexture()
     {
@@ -96,6 +103,9 @@ namespace RetrogameBase
         win.setEventHandler(VisualEffect::eventhandler_default);
     }
 
+    void VisualEffect::prepareInstance(UserData& userData) {}
+    void VisualEffect::tidyUpInstance (UserData& userData) {}
+
     void VisualEffect::restore(Window& win)
     {
         win.setEventHandler(oldEventHandler);
@@ -103,12 +113,21 @@ namespace RetrogameBase
         win.setUserData    (oldUserData    );
     }
 
+// .......................................................................... //
+
     void VisualEffect::apply(Window& win)
     {
         install(win);
+        prepareInstance(*userdata);
+
+        win.setIdleHandler(getRenderer());
         win.mainLoop(fps);
+
+        tidyUpInstance(*userdata);
         restore(win);
     }
+
+// -------------------------------------------------------------------------- //
 
     void VisualEffect::renderStoredState()
     {
@@ -126,19 +145,14 @@ namespace RetrogameBase
         pushUserEvent(0, nullptr);
     }
 
-    VisualEffect::UserData& VisualEffect::castToUserData(void* userData)
-    {
-        return *reinterpret_cast<UserData*>(userData);
-    }
-
     bool VisualEffect::eventhandler_default(SDL_Event& event, void* userData)
     {
         UserData& userDataStruct = castToUserData(userData);
         return userDataStruct.progress < 1;
     }
 
-    // ========================================================================== //
-    // Getters, Setters
+// ========================================================================== //
+// Getters, Setters
 
     double VisualEffect::getFps() const
     {
@@ -174,5 +188,13 @@ namespace RetrogameBase
     void VisualEffect::setDuration(const double milliseconds)
     {
         this->setTotalFrames(fps * milliseconds / 1000.);
+    }
+
+// ========================================================================== //
+// Helper Functions
+
+    VisualEffect::UserData& castToUserData(void* userData)
+    {
+        return *reinterpret_cast<VisualEffect::UserData*>(userData);
     }
 }

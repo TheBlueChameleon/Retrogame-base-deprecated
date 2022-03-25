@@ -5,6 +5,7 @@
 // Depenencies
 
 // STL
+#include <span>
 #include <functional>
 #include <memory>
 
@@ -34,8 +35,14 @@ namespace RetrogameBase
             FadeoutType   fadeoutType;
             SDL_Color     color;
 
+            std::vector<Uint16>            buffer;
+            std::vector<std::span<Uint16>> bufferViews;
+            std::vector<std::span<Uint8>>  surfaceViews;
+
         protected:
-            virtual void install(Window& win);
+            virtual std::function<void (void*)> getRenderer();
+            virtual void prepareInstance(UserData& userData);
+            virtual void tidyUpInstance (UserData& userData);
 
         public:
             // -------------------------------------------------------------- //
@@ -55,8 +62,6 @@ namespace RetrogameBase
 
             // -------------------------------------------------------------- //
             // renderers
-
-            static void render_stripes(void* userData);
 
             static void renderBlur(void* userData);
             static void renderPixelate(void* userData);

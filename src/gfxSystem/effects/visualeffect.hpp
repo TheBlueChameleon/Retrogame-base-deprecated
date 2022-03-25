@@ -47,6 +47,9 @@ namespace RetrogameBase
 
             std::unique_ptr<UserData> userdata;
 
+            void install(Window& win);
+            void restore(Window& win);
+
         protected:
             double        fps;
             size_t        totalFrames;
@@ -60,16 +63,15 @@ namespace RetrogameBase
             // -------------------------------------------------------------- //
             // VisualEffect interface
 
-            virtual void install(Window& win);
-            virtual void restore(Window& win);
+            virtual std::function<void (void*)> getRenderer() = 0;
+            virtual void prepareInstance(UserData& userData);
+            virtual void tidyUpInstance (UserData& userData);
 
         public:
-            virtual void apply  (Window& win);
+            virtual void apply(Window& win);
 
             void renderStoredState();
             virtual void progress();
-
-            static UserData& castToUserData(void* userData);
 
             static bool eventhandler_default(SDL_Event& event, void* userData);
 
@@ -88,10 +90,15 @@ namespace RetrogameBase
             double getProgressPerFrame() const;
     };
 
+// ========================================================================== //
+// Helper Functions
+
+    VisualEffect::UserData& castToUserData(void* userData);
+
     template <class T>
     std::tuple<VisualEffect::UserData&, Window&, T&> unpackUserdataPointer(void* userData)
     {
-        VisualEffect::UserData& userDataStruct = *reinterpret_cast<VisualEffect::UserData*>(userData);
+        auto& userDataStruct = castToUserData(userData);
 
         auto& win = *userDataStruct.window;
         auto& self = *reinterpret_cast<T*>(userDataStruct.effectInstanceData);
