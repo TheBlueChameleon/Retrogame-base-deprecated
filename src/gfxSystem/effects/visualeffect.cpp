@@ -193,7 +193,7 @@ namespace RetrogameBase
 // ========================================================================== //
 // Helper Functions
 
-    VisualEffect::UserData& castToUserData(void* userData)
+    VisualEffect::UserData& VisualEffect::castToUserData(void* userData)
     {
         return *reinterpret_cast<VisualEffect::UserData*>(userData);
     }
