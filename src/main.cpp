@@ -117,13 +117,13 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
 
     win.getIdleHandler()(&win);
 
-//    RetrogameBase::StripesFadeout effect(RetrogameBase::StripesFadeout::FadeoutType::Contra,
-//                                         RetrogameBase::StripesFadeout::Orientation::Vertical,
-//                                         1000., 30);
-//    effect.setNStripes(200);
+//    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Blur,
+//                                        1000., 10);
 
-    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Blur,
-                                        1000., 10);
+    RetrogameBase::StripesFadeout effect(RetrogameBase::StripesFadeout::FadeoutType::Contra,
+                                         RetrogameBase::StripesFadeout::Orientation::Vertical,
+                                         2000., 30);
+    effect.setNStripes(200);
 
     auto tic = std::chrono::high_resolution_clock::now();
     effect.apply(win);
@@ -132,5 +132,5 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
 
     std::cout << dur.count() / 1000000 << " ms" << std::endl;
 
-    //win.mainLoop();
+    win.mainLoop();
 }

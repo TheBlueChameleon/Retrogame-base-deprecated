@@ -45,10 +45,10 @@ namespace RetrogameBase
             std::vector<int> splitPointsX;
             std::vector<int> splitPointsY;
 
-            void computeSplitPoints(const Window& win);
+            void computeSplitPoints(const UserData& userData);
 
         protected:
-            virtual void prepareInstance(Window& win);
+            virtual void prepareInstance(UserData& userData);
             virtual std::function<void (void*)> getRenderer();
 
         public:
