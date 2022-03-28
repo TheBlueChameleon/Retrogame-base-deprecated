@@ -134,31 +134,24 @@ namespace RetrogameBase
 
     void StripesFadeout::prepareInstance(UserData& userData)
     {
-        std::cout << "### prepare..." << std::flush;
         computeSplitPoints(userData);
-        std::cout << " ... ok" << std::endl;
     }
 
     // .......................................................................... //
 
     std::function<void (void*)> StripesFadeout::getRenderer()
     {
-        std::cout << "### select..." << std::flush;
         switch (fadeoutType)
         {
             case FadeoutType::Contra:
-                std::cout << " ... ok" << std::endl;
                 return renderStripesContra;
             case FadeoutType::CloseCenter:
-                std::cout << " ... ok" << std::endl;
                 return nullptr;
             case FadeoutType::Random:
-                std::cout << " ... ok" << std::endl;
                 return nullptr;
         }
 
         // cannot happen, appeases compiler
-        std::cout << " ... fallthrough" << std::endl;
         return nullptr;
     }
 

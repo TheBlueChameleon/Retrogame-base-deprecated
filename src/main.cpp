@@ -18,10 +18,14 @@ bool eventHandler_minimal(SDL_Event& event, void* userData);
 void ildeHandler_AnimationLayer(void* userData);
 void idleHanlder_Testimages(void* userData);
 
+void install_TestImage(RetrogameBase::Window& win);
+
 void showcase_waitTillClose(RetrogameBase::Window& win);
 void showcase_AnimationLayer(RetrogameBase::Window& win);
 void showcase_screenshot(RetrogameBase::Window& win);
 void showcase_SimpleFadeout(RetrogameBase::Window& win);
+void showcase_StripesFadeout(RetrogameBase::Window& win);
+void showcase_StripesFadeout(RetrogameBase::Window& win);
 
 // ========================================================================== //
 // main
@@ -36,7 +40,8 @@ int main()
 //    showcase_AnimationLayer(win);
 //    showcase_screenshot(win);
 
-    showcase_SimpleFadeout(win);
+//    showcase_SimpleFadeout(win);
+    showcase_StripesFadeout(win);
 }
 
 // ========================================================================== //
@@ -84,6 +89,27 @@ void idleHanlder_Testimages(void* userData)
 }
 
 // ========================================================================== //
+// convenience
+
+void install_TestImage(RetrogameBase::Window& win)
+{
+    win.setEventHandler(eventHandler_minimal);
+    win.setUserData(&win);
+    win.setIdleHandler(idleHanlder_Testimages);
+}
+
+void timeAndApplyEffect(RetrogameBase::VisualEffect& effect, RetrogameBase::Window& win, const std::string& effectName = "Effect")
+{
+    auto tic = std::chrono::high_resolution_clock::now();
+    effect.apply(win);
+    auto toc = std::chrono::high_resolution_clock::now();
+    auto dur = toc - tic;
+
+    auto timeActual_ms = dur.count() / 1000000;
+    std::cout << effectName << " took " << timeActual_ms << " ms while planned animation time was " << effect.getDuration() << " ms" << std::endl;
+}
+
+// ========================================================================== //
 // showcase implementation
 
 void showcase_waitTillClose(RetrogameBase::Window& win)
@@ -115,22 +141,41 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
     win.setUserData(&win);
     win.setIdleHandler(idleHanlder_Testimages);
 
-    win.getIdleHandler()(&win);
+    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Desaturate,
+                                        1000., 10);
 
-//    RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Blur,
-//                                        1000., 10);
+    win.render();
+    timeAndApplyEffect(effect, win, "Desaturate");
+
+    effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Pixelate);
+    win.render();
+    timeAndApplyEffect(effect, win, "Pixelate");
+
+    effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Blur);
+    win.render();
+    timeAndApplyEffect(effect, win, "Blur");
+
+    win.mainLoop();
+}
+
+void showcase_StripesFadeout(RetrogameBase::Window& win)
+{
+    win.setEventHandler(eventHandler_minimal);
+    win.setUserData(&win);
+    win.setIdleHandler(idleHanlder_Testimages);
 
     RetrogameBase::StripesFadeout effect(RetrogameBase::StripesFadeout::FadeoutType::Contra,
                                          RetrogameBase::StripesFadeout::Orientation::Vertical,
                                          2000., 30);
     effect.setNStripes(200);
 
-    auto tic = std::chrono::high_resolution_clock::now();
-    effect.apply(win);
-    auto toc = std::chrono::high_resolution_clock::now();
-    auto dur = toc - tic;
+    win.render();
+    timeAndApplyEffect(effect, win, "Stripes:Contra, Vertical, 200");
 
-    std::cout << dur.count() / 1000000 << " ms" << std::endl;
+    effect.setNStripes(1);
+    effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Horizontal);
+    win.render();
+    timeAndApplyEffect(effect, win, "Stripes:Contra, Horizontal, 1");
 
     win.mainLoop();
 }

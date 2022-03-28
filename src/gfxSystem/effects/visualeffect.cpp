@@ -61,7 +61,6 @@ namespace RetrogameBase
                             SDL_BITSPERPIXEL(format),   // color depth
                             format
                         );
-
         SDL_RenderReadPixels(
             windowRenderer,
             &coordinates,
