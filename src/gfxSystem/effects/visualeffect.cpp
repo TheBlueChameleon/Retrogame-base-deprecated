@@ -116,6 +116,12 @@ namespace RetrogameBase
 
     void VisualEffect::apply(Window& win)
     {
+        const auto oldEffectWidth  = effectWidth;
+        const auto oldEffectHeight = effectHeight;
+
+        effectWidth  = effectWidth  == -1 ? win.getWidth () : effectWidth;
+        effectHeight = effectHeight == -1 ? win.getHeight() : effectHeight;
+
         install(win);
         prepareInstance(*userdata);
 
@@ -124,6 +130,9 @@ namespace RetrogameBase
 
         tidyUpInstance(*userdata);
         restore(win);
+
+        effectWidth  = oldEffectWidth ;
+        effectHeight = oldEffectHeight;
     }
 
 // -------------------------------------------------------------------------- //
@@ -187,6 +196,42 @@ namespace RetrogameBase
     void VisualEffect::setDuration(const double milliseconds)
     {
         this->setTotalFrames(fps * milliseconds / 1000.);
+    }
+
+    int VisualEffect::getEffectWidth() const
+    {
+        return effectWidth;
+    }
+
+    void VisualEffect::setEffectWidth(int newEffectWidth)
+    {
+        effectWidth = newEffectWidth;
+    }
+
+    int VisualEffect::getEffectHeight() const
+    {
+        return effectHeight;
+    }
+
+    void VisualEffect::setEffectHeight(int newEffectHeight)
+    {
+        effectHeight = newEffectHeight;
+    }
+
+    std::pair<int, int> VisualEffect::getEffectDimension() const
+    {
+        return std::make_pair(effectWidth, effectHeight);
+    }
+
+    void VisualEffect::setEffectDimension(const std::pair<int, int> newDimension)
+    {
+        std::tie(effectWidth, effectHeight) = newDimension;
+    }
+
+    void VisualEffect::setEffectToFullWindow()
+    {
+        effectWidth  = EFFECT_FULLWINDOW;
+        effectHeight = EFFECT_FULLWINDOW;
     }
 
 // ========================================================================== //
