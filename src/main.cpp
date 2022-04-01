@@ -162,26 +162,41 @@ void showcase_StripesFadeout(RetrogameBase::Window& win)
                                          RetrogameBase::StripesFadeout::Orientation::Vertical,
                                          1000., 30);
     effect.setNStripes(200);
-
-    /*
     win.render();
     timeAndApplyEffect(effect, win, "Stripes:Contra, Vertical, 200");
 
     effect.setNStripes(1);
     effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Horizontal);
-
     win.render();
     timeAndApplyEffect(effect, win, "Stripes:Contra, Horizontal, 1");
-    */
+
+
 
     effect.setFadeoutType(RetrogameBase::StripesFadeout::FadeoutType::CloseCenter);
     effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Vertical);
     effect.setNStripes(4);
-
     win.render();
     timeAndApplyEffect(effect, win, "Stripes:CloseCenter, Vertical, 4");
+
+
 
     effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Horizontal);
     win.render();
     timeAndApplyEffect(effect, win, "Stripes:CloseCenter, Horizontal, 4");
+
+    effect.setNStripes(1);
+    win.render();
+    timeAndApplyEffect(effect, win, "Stripes:CloseCenter, Horizontal, 1");
+
+
+
+    effect.setFadeoutType(RetrogameBase::StripesFadeout::FadeoutType::Random);
+    effect.setNStripes(50);
+    win.render();
+    timeAndApplyEffect(effect, win, "Stripes:Random, Horizontal, 50");
+
+
+    effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Vertical);
+    win.render();
+    timeAndApplyEffect(effect, win, "Stripes:Random, Vertical, 50");
 }

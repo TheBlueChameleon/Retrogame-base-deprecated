@@ -45,7 +45,8 @@ namespace RetrogameBase
             std::vector<int> splitPointsX;
             std::vector<int> splitPointsY;
 
-            void computeSplitPoints(const UserData& userData);
+            void computeSplitPoints (const UserData& userData);
+            void computeRandomPoints(const UserData& userData);
 
         protected:
             virtual void prepareInstance(UserData& userData);

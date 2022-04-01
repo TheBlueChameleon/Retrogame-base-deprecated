@@ -129,15 +129,60 @@ namespace RetrogameBase
         }
     }
 
+// .......................................................................... //
+
+    void insertRandomPoints(std::vector<int>& random, std::vector<int>& equidistant, size_t nStripes, int length, int coLength)
+    {
+        const auto stripeWidth = coLength / nStripes;
+
+        for (auto i = 0u; i < nStripes; ++i)
+        {
+            const double r = std::rand() / static_cast<double>(RAND_MAX);
+
+            equidistant.push_back(i * stripeWidth);
+            random     .push_back(r * length);
+        }
+    }
+
+
+    void StripesFadeout::computeRandomPoints(const UserData& userData)
+    {
+        splitPointsX.clear();
+        splitPointsY.clear();
+
+        auto [width, height] = userData.window->getDimension();
+
+        switch (orientation)
+        {
+            case Orientation::Horizontal :
+                insertRandomPoints(splitPointsX, splitPointsY, nStripes, width, height);
+                break;
+
+            case Orientation::Vertical :
+                insertRandomPoints(splitPointsY, splitPointsX, nStripes, height, width);
+                break;
+        }
+    }
+
 // ========================================================================== //
 // visualEffect interface
 
     void StripesFadeout::prepareInstance(UserData& userData)
     {
-        computeSplitPoints(userData);
+        switch (fadeoutType)
+        {
+            case FadeoutType::Contra:
+            case FadeoutType::CloseCenter:
+                computeSplitPoints(userData);
+                break;
+
+            case FadeoutType::Random:
+                computeRandomPoints(userData);
+                break;
+        }
     }
 
-    // .......................................................................... //
+// .......................................................................... //
 
     std::function<void (void*)> StripesFadeout::getRenderer()
     {
@@ -148,7 +193,7 @@ namespace RetrogameBase
             case FadeoutType::CloseCenter:
                 return renderStripesCloseCenter;
             case FadeoutType::Random:
-                return nullptr;
+                return renderStripesRandom;
         }
 
         // cannot happen, appeases compiler
@@ -198,8 +243,8 @@ namespace RetrogameBase
 
         self.renderStoredState();
 
-        auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
-        auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+        const auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
+        const auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
 
         const int  sign[2] = {1, -1};
         const auto stripeWidth = coLength / self.nStripes;
@@ -228,7 +273,7 @@ namespace RetrogameBase
         self.progress();
     }
 
-// -------------------------------------------------------------------------- //
+// .......................................................................... //
 
     void StripesFadeout::renderStripesCloseCenter(void* userDataPointer)
     {
@@ -237,8 +282,8 @@ namespace RetrogameBase
 
         self.renderStoredState();
 
-        auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
-        auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+        const auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
+        const auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
 
         const int  sign[2] = {1, -1};
         const auto offset = (self.nStripes > 1) * length * 0.2;
@@ -246,14 +291,14 @@ namespace RetrogameBase
 
         for (auto i = 0u; i < self.nStripes; ++i)
         {
-            const auto x1 = self.splitPointsX[i];
-            const auto y1 = self.splitPointsY[i];
-            const auto x2 = dy * x1   +   dx * length * !(i & 1);
-            const auto y2 = dx * y1   +   dy * length * !(i & 1);
-
             const auto parity = i & 1;
             const auto factor = sign[parity] * userData.progress;
-            const auto center = (length >> 1) - offset; //(sign[parity] * offset);
+            const auto center = (length >> 1) - offset;
+
+            const auto x1 = self.splitPointsX[i];
+            const auto y1 = self.splitPointsY[i];
+            const auto x2 = dy * x1   +   dx * length * !parity;
+            const auto y2 = dx * y1   +   dy * length * !parity;
 
             const int w1 =  dx * factor *  center             +   dy * stripeWidth;
             const int w2 = -dx * factor * (length - center)   +   dy * stripeWidth;
@@ -263,6 +308,34 @@ namespace RetrogameBase
             win.fbox(x1, y1, w1, h1, color);
             win.fbox(x2, y2, w2, h2, color);
         }
+
+        self.progress();
+    }
+
+    // .......................................................................... //
+
+    void StripesFadeout::renderStripesRandom(void* userDataPointer)
+    {
+        auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
+        const auto [width, height] = win.getDimension();
+
+        self.renderStoredState();
+
+        const auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
+        const auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+        const auto stripeWidth = coLength / self.nStripes;
+
+        for (auto i = 0u; i < self.nStripes; ++i)
+        {
+            const int x = self.splitPointsX[i] - dx * userData.progress * length;
+            const int y = self.splitPointsY[i] - dy * userData.progress * length;
+
+            const int w = dx * 2 * length * userData.progress   +   dy * stripeWidth;
+            const int h = dy * 2 * length * userData.progress   +   dx * stripeWidth;
+
+            win.fbox(x, y, w, h, color);
+        }
+        std::cout << std::endl;
 
         self.progress();
     }

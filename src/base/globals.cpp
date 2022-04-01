@@ -74,6 +74,8 @@ namespace RetrogameBase
 
     void initGlobals()
     {
+        std::srand(std::time(nullptr));
+
         loadFont("fixed-small","../font/FreeMono.ttf", 8);
         loadFont("fixed-medium","../font/FreeMono.ttf", 16);
         loadFont("fixed-big","../font/FreeMono.ttf", 24);
