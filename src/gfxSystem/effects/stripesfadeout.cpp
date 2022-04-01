@@ -146,7 +146,7 @@ namespace RetrogameBase
             case FadeoutType::Contra:
                 return renderStripesContra;
             case FadeoutType::CloseCenter:
-                return nullptr;
+                return renderStripesCloseCenter;
             case FadeoutType::Random:
                 return nullptr;
         }
@@ -201,6 +201,9 @@ namespace RetrogameBase
         auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
         auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
 
+        const int  sign[2] = {1, -1};
+        const auto stripeWidth = coLength / self.nStripes;
+
         for (auto i = 0u; i < self.nStripes; ++i)
         {
             const auto x = self.splitPointsX[i];
@@ -212,13 +215,12 @@ namespace RetrogameBase
              *     endCoordinate = -animationProgress * length
              */
             const auto parity = i & 1;
-            const int  sign[2] = {1, -1};
             const auto factor = sign[parity] * userData.progress;
 
             const int endCoordinate = factor * length;
 
-            const auto w = dx * endCoordinate + dy * coLength / self.nStripes;
-            const auto h = dy * endCoordinate + dx * coLength / self.nStripes;
+            const auto w = dx * endCoordinate + dy * stripeWidth;
+            const auto h = dy * endCoordinate + dx * stripeWidth;
 
             win.fbox(x, y, w, h, color);
         }
@@ -238,18 +240,28 @@ namespace RetrogameBase
         auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
         auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
 
+        const int  sign[2] = {1, -1};
+        const auto offset = (self.nStripes > 1) * length * 0.2;
+        const auto stripeWidth = coLength / self.nStripes;
+
         for (auto i = 0u; i < self.nStripes; ++i)
         {
             const auto x1 = self.splitPointsX[i];
             const auto y1 = self.splitPointsY[i];
-            const auto x2 = dx * length + dy * x1;
-            const auto y2 = dx * y1     + dy * length;
+            const auto x2 = dy * x1   +   dx * length * !(i & 1);
+            const auto y2 = dx * y1   +   dy * length * !(i & 1);
 
             const auto parity = i & 1;
-            const int  sign[2] = {1, -1};
             const auto factor = sign[parity] * userData.progress;
+            const auto center = (length >> 1) - offset; //(sign[parity] * offset);
 
-            const auto offset = length * (i+1) / self.nStripes;
+            const int w1 =  dx * factor *  center             +   dy * stripeWidth;
+            const int w2 = -dx * factor * (length - center)   +   dy * stripeWidth;
+            const int h1 =  dy * factor *  center             +   dx * stripeWidth;
+            const int h2 = -dy * factor * (length - center)   +   dx * stripeWidth;
+
+            win.fbox(x1, y1, w1, h1, color);
+            win.fbox(x2, y2, w2, h2, color);
         }
 
         self.progress();

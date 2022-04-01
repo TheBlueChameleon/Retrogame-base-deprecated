@@ -137,9 +137,7 @@ void showcase_screenshot(RetrogameBase::Window& win)
 
 void showcase_SimpleFadeout(RetrogameBase::Window& win)
 {
-    win.setEventHandler(eventHandler_minimal);
-    win.setUserData(&win);
-    win.setIdleHandler(idleHanlder_Testimages);
+    install_TestImage(win);
 
     RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Desaturate,
                                         1000., 10);
@@ -154,28 +152,36 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
     effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Blur);
     win.render();
     timeAndApplyEffect(effect, win, "Blur");
-
-    win.mainLoop();
 }
 
 void showcase_StripesFadeout(RetrogameBase::Window& win)
 {
-    win.setEventHandler(eventHandler_minimal);
-    win.setUserData(&win);
-    win.setIdleHandler(idleHanlder_Testimages);
+    install_TestImage(win);
 
     RetrogameBase::StripesFadeout effect(RetrogameBase::StripesFadeout::FadeoutType::Contra,
                                          RetrogameBase::StripesFadeout::Orientation::Vertical,
-                                         2000., 30);
+                                         1000., 30);
     effect.setNStripes(200);
 
+    /*
     win.render();
     timeAndApplyEffect(effect, win, "Stripes:Contra, Vertical, 200");
 
     effect.setNStripes(1);
     effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Horizontal);
+
     win.render();
     timeAndApplyEffect(effect, win, "Stripes:Contra, Horizontal, 1");
+    */
 
-    win.mainLoop();
+    effect.setFadeoutType(RetrogameBase::StripesFadeout::FadeoutType::CloseCenter);
+    effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Vertical);
+    effect.setNStripes(4);
+
+    win.render();
+    timeAndApplyEffect(effect, win, "Stripes:CloseCenter, Vertical, 4");
+
+    effect.setOrientation(RetrogameBase::StripesFadeout::Orientation::Horizontal);
+    win.render();
+    timeAndApplyEffect(effect, win, "Stripes:CloseCenter, Horizontal, 4");
 }
