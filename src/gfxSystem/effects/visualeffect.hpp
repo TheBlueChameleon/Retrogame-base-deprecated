@@ -40,8 +40,6 @@ namespace RetrogameBase
                 void updateTexture();
             };
 
-            static constexpr int EFFECT_FULLWINDOW = -1;
-
         private:
             std::function<bool (SDL_Event& event, void* userData)>  oldEventHandler;
             std::function<void (void* userData)>                    oldIdleHandler;
@@ -56,9 +54,6 @@ namespace RetrogameBase
             double        fps;
             size_t        totalFrames;
             double        progressPerFrame;
-
-            int           effectWidth  = -1;
-            int           effectHeight = -1;
 
             // -------------------------------------------------------------- //
             // CTor, DTor
@@ -93,17 +88,6 @@ namespace RetrogameBase
             void   setDuration(const double milliseconds);
 
             double getProgressPerFrame() const;
-
-            int  getEffectWidth() const;
-            void setEffectWidth(int newEffectWidth);
-
-            int  getEffectHeight() const;
-            void setEffectHeight(int newEffectHeight);
-
-            std::pair<int, int> getEffectDimension() const;
-            void                setEffectDimension(const std::pair<int, int> newDimension);
-
-            void   setEffectToFullWindow();
 
             // -------------------------------------------------------------- //
             // Helper Functions
