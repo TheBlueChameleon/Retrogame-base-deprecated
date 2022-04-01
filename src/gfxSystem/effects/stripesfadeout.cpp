@@ -150,7 +150,7 @@ namespace RetrogameBase
         splitPointsX.clear();
         splitPointsY.clear();
 
-        auto [width, height] = userData.window->getDimension();
+        auto [width, height] = userData.effectInstanceData->getEffectDimension();
 
         switch (orientation)
         {
@@ -239,7 +239,7 @@ namespace RetrogameBase
     void StripesFadeout::renderStripesContra(void* userDataPointer)
     {
         auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
+        const auto [width, height] = self.getEffectDimension();
 
         self.renderStoredState();
 
@@ -278,7 +278,7 @@ namespace RetrogameBase
     void StripesFadeout::renderStripesCloseCenter(void* userDataPointer)
     {
         auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
+        const auto [width, height] = self.getEffectDimension();
 
         self.renderStoredState();
 
@@ -317,7 +317,7 @@ namespace RetrogameBase
     void StripesFadeout::renderStripesRandom(void* userDataPointer)
     {
         auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
+        const auto [width, height] = self.getEffectDimension();
 
         self.renderStoredState();
 
@@ -330,12 +330,11 @@ namespace RetrogameBase
             const int x = self.splitPointsX[i] - dx * userData.progress * length;
             const int y = self.splitPointsY[i] - dy * userData.progress * length;
 
-            const int w = dx * 2 * length * userData.progress   +   dy * stripeWidth;
+            const int w = dx * 2 * length * userData.progress   +   dy * stripeWidth;       // TODO: adjust for effectDimension consequences
             const int h = dy * 2 * length * userData.progress   +   dx * stripeWidth;
 
             win.fbox(x, y, w, h, color);
         }
-        std::cout << std::endl;
 
         self.progress();
     }
