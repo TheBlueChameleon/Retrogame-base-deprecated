@@ -30,8 +30,6 @@ namespace RetrogameBase
             std::function<void (void* userData)>                    oldIdleHandler;
             void*                                                   oldUserData;
 
-            bool resetW, resetH;
-
             void install(Window& win);
             void restore(Window& win);
 
@@ -109,9 +107,20 @@ namespace RetrogameBase
             // Helper Functions
 
             template <class T>
-            static T& castToVisualEffect(void* userData)
+            static T& castToVisualEffect(void* instanceData)
             {
-                return *reinterpret_cast<T*>(userData);
+                return *reinterpret_cast<T*>(instanceData);
+            }
+
+            template <class T>
+            static std::pair<T&, Window&> unpackSelfAndWin(void* instanceData)
+            {
+                auto& self = castToVisualEffect<T>(instanceData);
+                auto& win  = *self.window;
+
+                return std::make_pair( std::reference_wrapper(self),
+                                       std::reference_wrapper(win)
+                                     );
             }
     };
 }

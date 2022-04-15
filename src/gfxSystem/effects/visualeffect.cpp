@@ -37,7 +37,6 @@ namespace RetrogameBase
         effectX(0), effectY(0),
         effectWidth(USE_FULL_WINDOW),
         effectHeight(USE_FULL_WINDOW),
-        resetW(false), resetH(false),
 
         window(nullptr),
         sdlWindow(nullptr),
@@ -61,16 +60,10 @@ namespace RetrogameBase
         frameID           = 0 ;
         progress          = 0.;
 
-        if (effectWidth == USE_FULL_WINDOW)
-        {
-            effectWidth = win.getWidth();
-            resetW = true;
-        }
-        if (effectHeight == USE_FULL_WINDOW)
-        {
-            effectHeight = win.getHeight();
-            resetH = true;
-        }
+        // *INDENT-OFF*
+        if (effectWidth  == USE_FULL_WINDOW) {effectWidth  = win.getWidth ();}
+        if (effectHeight == USE_FULL_WINDOW) {effectHeight = win.getHeight();}
+        // *INDENT-ON*
 
         const SDL_Rect coordinates = {effectX, effectY, effectWidth, effectHeight};
         const auto format = SDL_GetWindowPixelFormat(sdlWindow);
