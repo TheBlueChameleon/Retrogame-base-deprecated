@@ -117,6 +117,9 @@ namespace RetrogameBase
 // ========================================================================== //
 // renderers
 
+    // ...................................................................... //
+    // Blur
+
     void SimpleFadeout::prepareInstanceBlur()
     {
         // extract metadata
@@ -284,13 +287,69 @@ namespace RetrogameBase
             }
     */
 
-    // .......................................................................... //
+    // ...................................................................... //
+    // Pixelate
+
+    SDL_Color getAverageColor  (SDL_Surface* surface,
+                                const int startX, const int startY,
+                                const int width, const int height)
+    {
+        SDL_Color reVal;
+
+        long long r = 0, g = 0, b = 0;
+        const long long area = width * height;
+
+        for     (auto x=startX; x < startX+width ; ++x)
+        {
+            for (auto y=startY; y < startY+height; ++y)
+            {
+                const auto thisPixel = getPixelFromSurface(surface, x, y);
+
+                r += thisPixel.r;
+                g += thisPixel.g;
+                b += thisPixel.b;
+            }
+        }
+
+        reVal.r = r / area;
+        reVal.g = g / area;
+        reVal.b = b / area;
+        reVal.a = 255;
+
+        return reVal;
+    }
 
     void SimpleFadeout::renderPixelate(void* instanceData)
     {
         auto& self = castToVisualEffect<SimpleFadeout>(instanceData);
+        auto& win = *self.window;
+
+        const int pixelWidth  = self.effectWidth  * self.progress + 1;
+        const int pixelHeight = self.effectHeight * self.progress + 1;
+
+        // if last frame: simply show final colour
+        if (self.frameID + 1 == self.totalFrames)
+        {
+            SDL_Color color = self.getColor();
+            win.fbox(self.effectX, self.effectY, self.effectWidth, self.effectHeight, color);
+            self.advanceFrame();
+            return;
+        }
+
+        self.renderStoredState();
+
+        for     (auto x=self.effectX; x < self.effectWidth ; x+= pixelWidth)
+        {
+            for (auto y=self.effectY; y < self.effectHeight; y+= pixelHeight)
+            {
+                auto color = getAverageColor(self.windowSurface, x, y, pixelWidth, pixelHeight);
+                win.fbox(x, y, pixelWidth, pixelHeight, color);
+            }
+        }
+
         self.advanceFrame();
     }
+
     /*
         void SimpleFadeout::renderPixelate(void* userDataPointer)
         {
@@ -309,48 +368,48 @@ namespace RetrogameBase
                 return;
             }
 
-            // acutal pixelate code
-            auto getAverageColor = [](SDL_Surface* surface, const int startX, const int startY, const int width, const int height)
+        // acutal pixelate code
+        auto getAverageColor = [](SDL_Surface* surface, const int startX, const int startY, const int width, const int height)
+        {
+            long long r = 0, g = 0, b = 0;
+            const long long area = width * height;
+
+            for     (auto x=startX; x < startX+width ; ++x)
             {
-                long long r = 0, g = 0, b = 0;
-                const long long area = width * height;
-
-                for     (auto x=startX; x < startX+width ; ++x)
+                for (auto y=startY; y < startY+height; ++y)
                 {
-                    for (auto y=startY; y < startY+height; ++y)
-                    {
-                        const auto thisPixel = getPixelFromSurface(surface, x, y);
+                    const auto thisPixel = getPixelFromSurface(surface, x, y);
 
-                        r += thisPixel.r;
-                        g += thisPixel.g;
-                        b += thisPixel.b;
-                    }
-                }
-
-                SDL_Color reVal;
-                reVal.r = r / area;
-                reVal.g = g / area;
-                reVal.b = b / area;
-                reVal.a = 255;
-
-                return reVal;
-            };
-
-            self.renderStoredState();
-
-            for     (auto x=0u; x < width ; x+= pixelWidth)
-            {
-                for (auto y=0u; y < height; y+= pixelHeight)
-                {
-                    auto color = getAverageColor(userData.windowSurface, x, y, pixelWidth, pixelHeight);
-                    win.fbox(x, y, pixelWidth, pixelHeight, color);
+                    r += thisPixel.r;
+                    g += thisPixel.g;
+                    b += thisPixel.b;
                 }
             }
 
-            self.progress();
+            SDL_Color reVal;
+            reVal.r = r / area;
+            reVal.g = g / area;
+            reVal.b = b / area;
+            reVal.a = 255;
+
+            return reVal;
+        };
+
+        self.renderStoredState();
+
+        for     (auto x=0u; x < width ; x+= pixelWidth)
+        {
+            for (auto y=0u; y < height; y+= pixelHeight)
+            {
+                auto color = getAverageColor(userData.windowSurface, x, y, pixelWidth, pixelHeight);
+                win.fbox(x, y, pixelWidth, pixelHeight, color);
+            }
         }
+
+        self.progress();
+    }
     */
-    // .......................................................................... //
+    // ...................................................................... //
 
     void SimpleFadeout::renderDesaturate(void* instanceData)
     {

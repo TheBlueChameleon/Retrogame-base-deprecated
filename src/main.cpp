@@ -140,27 +140,34 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
 {
     install_TestImage(win);
 
+    // Fullscreen
     RetrogameBase::SimpleFadeout effect(RetrogameBase::SimpleFadeout::FadeoutType::Desaturate,
                                         1000., 10);
-
     win.render();
     timeAndApplyEffect(effect, win, "Desaturate");
 
-    /*
     effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Pixelate);
     win.render();
     timeAndApplyEffect(effect, win, "Pixelate");
 
+    /*
     effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Blur);
     win.render();
     timeAndApplyEffect(effect, win, "Blur");
     */
 
 
+    // Partial
     effect.setEffectWidth(400);
     effect.setEffectX(50);
+
+    effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Desaturate);
     win.render();
     timeAndApplyEffect(effect, win, "Desaturate");
+
+    effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Pixelate);
+    win.render();
+    timeAndApplyEffect(effect, win, "Pixelate");
 }
 
 /*
