@@ -90,8 +90,11 @@ namespace RetrogameBase
             case FadeoutType::Blur:
                 prepareInstanceBlur();
                 break;
+
             case FadeoutType::Pixelate:
+                prepareInstancePixelate();
                 break;
+
             case FadeoutType::Desaturate:
                 break;
         }
@@ -108,7 +111,9 @@ namespace RetrogameBase
                 break;
 
             case FadeoutType::Pixelate:
+                tidyUpInstancePixelate();
                 break;
+
             case FadeoutType::Desaturate:
                 break;
         }
@@ -329,6 +334,24 @@ namespace RetrogameBase
     // ...................................................................... //
     // Pixelate
 
+    void SimpleFadeout::prepareInstancePixelate()
+    {
+        const SDL_Rect rgn = {effectX, effectY, effectWidth, effectHeight};
+        SDL_RenderSetClipRect(
+            windowRenderer,
+            &rgn
+        );
+    }
+
+    void SimpleFadeout::tidyUpInstancePixelate()
+    {
+        const SDL_Rect rgn = {0, 0, window->getWidth(), window->getHeight()};
+        SDL_RenderSetClipRect(
+            windowRenderer,
+            &rgn
+        );
+    }
+
     SDL_Color getAverageColor  (SDL_Surface* surface,
                                 const int startX, const int startY,
                                 const int width, const int height)
@@ -386,6 +409,7 @@ namespace RetrogameBase
                 win.fbox(x, y, pixelWidth, pixelHeight, color);
             }
         }
+        // SDL_RenderSetClipRect()
 
         self.advanceFrame();
     }

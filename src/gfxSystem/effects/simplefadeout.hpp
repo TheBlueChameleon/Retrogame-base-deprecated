@@ -39,6 +39,9 @@ namespace RetrogameBase
             std::vector<std::span<Uint16>> bufferViews;
             std::vector<std::span<Uint8>>  surfaceViews;
 
+            void prepareInstancePixelate();
+            void tidyUpInstancePixelate ();
+
             void prepareInstanceBlur();
             void tidyUpInstanceBlur ();
 
