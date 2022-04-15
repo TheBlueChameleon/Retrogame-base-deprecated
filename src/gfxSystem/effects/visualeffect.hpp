@@ -22,10 +22,15 @@ namespace RetrogameBase
 
     class VisualEffect
     {
+        public:
+            static constexpr int USE_FULL_WINDOW = -1;
+
         private:
             std::function<bool (SDL_Event& event, void* userData)>  oldEventHandler;
             std::function<void (void* userData)>                    oldIdleHandler;
             void*                                                   oldUserData;
+
+            bool resetW, resetH;
 
             void install(Window& win);
             void restore(Window& win);
@@ -34,16 +39,16 @@ namespace RetrogameBase
             double        fps;
             size_t        totalFrames;
             double        progressPerFrame;
-
             size_t        frameID;
             double        progress;
 
-            SDL_Surface*  windowSurface;
-            SDL_Texture*  windowTexture;
+            int    x, y, w, h;
 
             Window*       window;
             SDL_Window*   sdlWindow;
             SDL_Renderer* windowRenderer;
+            SDL_Surface*  windowSurface;
+            SDL_Texture*  windowTexture;
 
             void updateStoredTexture();
             void renderStoredState();
@@ -80,6 +85,24 @@ namespace RetrogameBase
             void   setDuration(const double milliseconds);
 
             double getProgressPerFrame() const;
+
+            int  getX() const;
+            void setX(int newX);
+
+            int  getY() const;
+            void setY(int newY);
+
+            std::pair<int, int> getEffectCoordinates() const;
+            void setEffectCoordinates(std::pair<int, int> coords);
+
+            size_t getW() const;
+            void   setW(size_t newW);
+
+            size_t getH() const;
+            void   setH(size_t newH);
+
+            std::pair<int, int> getEffectDimension() const;
+            void setEffectDimension(std::pair<int, int> dimension);
 
             // -------------------------------------------------------------- //
             // Helper Functions

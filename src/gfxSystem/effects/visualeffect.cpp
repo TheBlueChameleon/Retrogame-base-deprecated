@@ -32,16 +32,18 @@ namespace RetrogameBase
         fps(fps),
         totalFrames(totalFrames),
         progressPerFrame(1. / totalFrames),
+        frameID(0), progress(0),
 
-        frameID(0),
-        progress(0),
-
-        windowSurface(nullptr),
-        windowTexture(nullptr),
+        x(0), y(0),
+        w(USE_FULL_WINDOW),
+        h(USE_FULL_WINDOW),
+        resetW(false), resetH(false),
 
         window(nullptr),
         sdlWindow(nullptr),
-        windowRenderer(nullptr)
+        windowRenderer(nullptr),
+        windowSurface(nullptr),
+        windowTexture(nullptr)
     {}
 
 // ========================================================================== //
@@ -59,17 +61,25 @@ namespace RetrogameBase
         frameID           = 0 ;
         progress          = 0.;
 
-        const auto windowDimensions = window->getDimension();
-        const SDL_Rect coordinates = {0, 0, windowDimensions.first, windowDimensions.second};
+        if (w == USE_FULL_WINDOW)
+        {
+            w = win.getWidth();
+            resetW = true;
+        }
+        if (h == USE_FULL_WINDOW)
+        {
+            h = win.getHeight();
+            resetH = true;
+        }
 
+        const SDL_Rect coordinates = {x, y, w, h};
         const auto format = SDL_GetWindowPixelFormat(sdlWindow);
 
         // deliberately, make a copy instead of using the existing window surface (https://wiki.libsdl.org/SDL_GetWindowSurface)
         // blur and other mem-poking effects wouldn't work otherwise.
         windowSurface = SDL_CreateRGBSurfaceWithFormat(
                             0,                          // flags (unused)
-                            windowDimensions.first,     // width
-                            windowDimensions.second,    // height
+                            w, h,                       // width and height of effect on screen
                             SDL_BITSPERPIXEL(format),   // color depth
                             format
                         );
@@ -195,7 +205,63 @@ namespace RetrogameBase
         this->setTotalFrames(fps * milliseconds / 1000.);
     }
 
-// ========================================================================== //
-// Helper Functions
+    int VisualEffect::getX() const
+    {
+        return x;
+    }
 
+    void VisualEffect::setX(int newX)
+    {
+        x = newX;
+    }
+
+    int VisualEffect::getY() const
+    {
+        return y;
+    }
+
+    void VisualEffect::setY(int newY)
+    {
+        y = newY;
+    }
+
+    std::pair<int, int> VisualEffect::getEffectCoordinates() const
+    {
+        return std::make_pair(x, y);
+    }
+
+    void VisualEffect::setEffectCoordinates(std::pair<int, int> coords)
+    {
+        std::tie(x, y) = coords;
+    }
+
+    size_t VisualEffect::getW() const
+    {
+        return w;
+    }
+
+    void VisualEffect::setW(size_t newW)
+    {
+        w = newW;
+    }
+
+    size_t VisualEffect::getH() const
+    {
+        return h;
+    }
+
+    void VisualEffect::setH(size_t newH)
+    {
+        h = newH;
+    }
+
+    std::pair<int, int> VisualEffect::getEffectDimension() const
+    {
+        return std::make_pair(w, h);
+    }
+
+    void VisualEffect::setEffectDimension(std::pair<int, int> dimension)
+    {
+        std::tie(w, h) = dimension;
+    }
 }
