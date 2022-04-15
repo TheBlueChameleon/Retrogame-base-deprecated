@@ -1,3 +1,4 @@
+/*
 // ========================================================================== //
 // Depenencies
 
@@ -254,11 +255,11 @@ namespace RetrogameBase
             const auto x = self.splitPointsX[i];
             const auto y = self.splitPointsY[i];
 
-            /* if (even stripe) :
-             *     endCoordinate =  animationProgress * length
-             * else :
-             *     endCoordinate = -animationProgress * length
-             */
+//             if (even stripe) :
+//                  endCoordinate =  animationProgress * length
+//             else :
+//                  endCoordinate = -animationProgress * length
+
             const auto parity = i & 1;
             const auto factor = sign[parity] * userData.progress;
 
@@ -335,8 +336,8 @@ namespace RetrogameBase
 
             win.fbox(x, y, w, h, color);
         }
-        std::cout << std::endl;
 
         self.progress();
     }
 }
+*/

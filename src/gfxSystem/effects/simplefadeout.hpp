@@ -1,3 +1,4 @@
+/*
 #ifndef SIMPLEFADEOUT_HPP
 #define SIMPLEFADEOUT_HPP
 
@@ -70,3 +71,4 @@ namespace RetrogameBase
 }
 
 #endif // SIMPLEFADEOUT_HPP
+*/

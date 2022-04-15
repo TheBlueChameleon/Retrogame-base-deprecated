@@ -397,7 +397,6 @@ namespace RetrogameBase
         userData = newUserData;
     }
 
-
 // ========================================================================== //
 // namespace
 

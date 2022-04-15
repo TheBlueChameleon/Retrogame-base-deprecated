@@ -1,3 +1,4 @@
+/*
 #ifndef STRIPESFADEOUT_HPP
 #define STRIPESFADEOUT_HPP
 
@@ -87,3 +88,4 @@ namespace RetrogameBase
 }
 
 #endif // STRIPESFADEOUT_HPP
+*/
