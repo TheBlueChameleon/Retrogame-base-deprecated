@@ -31,22 +31,34 @@ namespace RetrogameBase
     ) :
         fps(fps),
         totalFrames(totalFrames),
-        progressPerFrame(1. / totalFrames)
+        progressPerFrame(1. / totalFrames),
+
+        frameID(0),
+        progress(0),
+
+        windowSurface(nullptr),
+        windowTexture(nullptr),
+
+        window(nullptr),
+        sdlWindow(nullptr),
+        windowRenderer(nullptr)
     {}
 
-// -------------------------------------------------------------------------- //
+// ========================================================================== //
+// VisualEffect interface
 
-    VisualEffect::UserData::UserData(
-        VisualEffect* effectInstanceData,
-        Window*       window
-    ) :
-        window            ( window ),
-        sdlWindow         ( window->getSdlWindow() ),
-        windowRenderer    ( window->getRenderer() ),
-        frameID           ( 0 ),
-        progress          ( 0. ),
-        effectInstanceData( effectInstanceData )
+    void VisualEffect::install(Window& win)
     {
+        oldEventHandler = win.getEventHandler();
+        oldIdleHandler  = win.getIdleHandler();
+        oldUserData     = win.getUserData();
+
+        window            = &win;
+        sdlWindow         = win.getSdlWindow();
+        windowRenderer    = win.getRenderer();
+        frameID           = 0 ;
+        progress          = 0.;
+
         const auto windowDimensions = window->getDimension();
         const SDL_Rect coordinates = {0, 0, windowDimensions.first, windowDimensions.second};
 
@@ -69,47 +81,33 @@ namespace RetrogameBase
             windowSurface->pitch
         );
 
-
         windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
-    }
 
-    VisualEffect::UserData::~UserData()
-    {
-        SDL_FreeSurface   (windowSurface);
-        SDL_DestroyTexture(windowTexture);
-    }
-
-// .......................................................................... //
-
-    void VisualEffect::UserData::updateTexture()
-    {
-        SDL_DestroyTexture(windowTexture);
-        windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
-    }
-
-// ========================================================================== //
-// VisualEffect interface
-
-    void VisualEffect::install(Window& win)
-    {
-        oldEventHandler = win.getEventHandler();
-        oldIdleHandler  = win.getIdleHandler();
-        oldUserData     = win.getUserData();
-
-        userdata = std::unique_ptr<UserData>(new UserData(this, &win));
-
-        win.setUserData    (userdata.get());
+        win.setUserData    (this);
         win.setEventHandler(VisualEffect::eventhandler_default);
     }
 
-    void VisualEffect::prepareInstance(UserData& userData) {}
-    void VisualEffect::tidyUpInstance (UserData& userData) {}
+    void VisualEffect::prepareInstance() {}
+    void VisualEffect::tidyUpInstance () {}
 
     void VisualEffect::restore(Window& win)
     {
         win.setEventHandler(oldEventHandler);
         win.setIdleHandler (oldIdleHandler );
         win.setUserData    (oldUserData    );
+
+        SDL_FreeSurface    (windowSurface);
+        SDL_DestroyTexture (windowTexture);
+
+        frameID        = 0;
+        progress       = 0;
+
+        windowSurface  = nullptr;
+        windowTexture  = nullptr;
+
+        window         = nullptr;
+        sdlWindow      = nullptr;
+        windowRenderer = nullptr;
     }
 
 // .......................................................................... //
@@ -117,37 +115,45 @@ namespace RetrogameBase
     void VisualEffect::apply(Window& win)
     {
         install(win);
-        prepareInstance(*userdata);
+        prepareInstance();
 
-        win.setIdleHandler(getRenderer());
+        win.setIdleHandler( getRenderer() );
         win.mainLoop(fps);
 
-        tidyUpInstance(*userdata);
+        tidyUpInstance();
         restore(win);
     }
 
 // -------------------------------------------------------------------------- //
 
-    void VisualEffect::renderStoredState()
+    void VisualEffect::updateStoredTexture()
     {
-        userdata->window->clear(color_black);
-
-        SDL_RenderCopy(userdata->windowRenderer,
-                       userdata->windowTexture,
-                       nullptr, nullptr);
+        SDL_DestroyTexture(windowTexture);
+        windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
     }
 
-    void VisualEffect::progress()
+    void VisualEffect::renderStoredState()
     {
-        ++userdata->frameID;
-        userdata->progress += progressPerFrame;
+        SDL_RenderCopy(windowRenderer,
+                       windowTexture,
+                       nullptr,     // source rect
+                       nullptr      // dest rect
+                      );
+    }
+
+// .......................................................................... //
+
+    void VisualEffect::advanceFrame()
+    {
+        ++frameID;
+        progress += progressPerFrame;
         pushUserEvent(0, nullptr);
     }
 
     bool VisualEffect::eventhandler_default(SDL_Event& event, void* userData)
     {
-        UserData& userDataStruct = castToUserData(userData);
-        return userDataStruct.progress < 1;
+        auto self = reinterpret_cast<VisualEffect*>(userData);
+        return self->frameID < self->totalFrames;
     }
 
 // ========================================================================== //
@@ -192,8 +198,4 @@ namespace RetrogameBase
 // ========================================================================== //
 // Helper Functions
 
-    VisualEffect::UserData& VisualEffect::castToUserData(void* userData)
-    {
-        return *reinterpret_cast<VisualEffect::UserData*>(userData);
-    }
 }

@@ -41,7 +41,7 @@ int main()
 //    showcase_screenshot(win);
 
 //    showcase_SimpleFadeout(win);
-    showcase_StripesFadeout(win);
+//    showcase_StripesFadeout(win);
 }
 
 // ========================================================================== //
@@ -69,9 +69,9 @@ void idleHanlder_Testimages(void* userData)
 
     win.clear(RetrogameBase::color_blue);
 
-    for     (auto y=20u; y<580; y+=20)
+    for     (auto y=20; y<580; y+=20)
     {
-        for (auto x= 0u; x<800; x+=20)
+        for (auto x= 0; x<800; x+=20)
         {
             const double hue       = (x / 800.0) * 360.0;
             const double lightness =  y / 600.0;
@@ -135,6 +135,7 @@ void showcase_screenshot(RetrogameBase::Window& win)
     win.saveScreenshotPNG("../shot.png", {25, 25, 600, 300});
 }
 
+/*
 void showcase_SimpleFadeout(RetrogameBase::Window& win)
 {
     install_TestImage(win);
@@ -200,3 +201,4 @@ void showcase_StripesFadeout(RetrogameBase::Window& win)
     win.render();
     timeAndApplyEffect(effect, win, "Stripes:Random, Vertical, 50");
 }
+*/

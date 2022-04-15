@@ -22,30 +22,10 @@ namespace RetrogameBase
 
     class VisualEffect
     {
-        public:
-            struct UserData
-            {
-                Window*       window;
-                SDL_Window*   sdlWindow;
-                SDL_Renderer* windowRenderer;
-                SDL_Surface*  windowSurface;
-                SDL_Texture*  windowTexture;
-                size_t        frameID;
-                double        progress;
-                VisualEffect* effectInstanceData;
-
-                UserData(VisualEffect* effectInstanceData, Window* window);
-                ~UserData();
-
-                void updateTexture();
-            };
-
         private:
             std::function<bool (SDL_Event& event, void* userData)>  oldEventHandler;
             std::function<void (void* userData)>                    oldIdleHandler;
             void*                                                   oldUserData;
-
-            std::unique_ptr<UserData> userdata;
 
             void install(Window& win);
             void restore(Window& win);
@@ -54,6 +34,19 @@ namespace RetrogameBase
             double        fps;
             size_t        totalFrames;
             double        progressPerFrame;
+
+            size_t        frameID;
+            double        progress;
+
+            SDL_Surface*  windowSurface;
+            SDL_Texture*  windowTexture;
+
+            Window*       window;
+            SDL_Window*   sdlWindow;
+            SDL_Renderer* windowRenderer;
+
+            void updateStoredTexture();
+            void renderStoredState();
 
             // -------------------------------------------------------------- //
             // CTor, DTor
@@ -64,14 +57,13 @@ namespace RetrogameBase
             // VisualEffect interface
 
             virtual std::function<void (void*)> getRenderer() = 0;
-            virtual void prepareInstance(UserData& userData);
-            virtual void tidyUpInstance (UserData& userData);
+            virtual void prepareInstance();
+            virtual void tidyUpInstance ();
 
         public:
             virtual void apply(Window& win);
 
-            void renderStoredState();
-            virtual void progress();
+            virtual void advanceFrame();
 
             static bool eventhandler_default(SDL_Event& event, void* userData);
 
@@ -92,19 +84,10 @@ namespace RetrogameBase
             // -------------------------------------------------------------- //
             // Helper Functions
 
-            static VisualEffect::UserData& castToUserData(void* userData);
-
             template <class T>
-            static std::tuple<VisualEffect::UserData&, Window&, T&> unpackUserdataPointer(void* userData)
+            static T& castToVisualEffect(void* userData)
             {
-                auto& userDataStruct = castToUserData(userData);
-
-                auto& win = *userDataStruct.window;
-                auto& self = *reinterpret_cast<T*>(userDataStruct.effectInstanceData);
-
-                return std::make_tuple(std::reference_wrapper(userDataStruct),
-                                       std::reference_wrapper(win),
-                                       std::reference_wrapper(self));
+                return *reinterpret_cast<T*>(userData);
             }
     };
 }
