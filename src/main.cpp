@@ -40,7 +40,7 @@ int main()
 //    showcase_AnimationLayer(win);
 //    showcase_screenshot(win);
 
-//    showcase_SimpleFadeout(win);
+    showcase_SimpleFadeout(win);
 //    showcase_StripesFadeout(win);
 }
 
@@ -135,7 +135,7 @@ void showcase_screenshot(RetrogameBase::Window& win)
     win.saveScreenshotPNG("../shot.png", {25, 25, 600, 300});
 }
 
-/*
+
 void showcase_SimpleFadeout(RetrogameBase::Window& win)
 {
     install_TestImage(win);
@@ -146,6 +146,7 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
     win.render();
     timeAndApplyEffect(effect, win, "Desaturate");
 
+    /*
     effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Pixelate);
     win.render();
     timeAndApplyEffect(effect, win, "Pixelate");
@@ -153,8 +154,16 @@ void showcase_SimpleFadeout(RetrogameBase::Window& win)
     effect.setFadeoutType(RetrogameBase::SimpleFadeout::FadeoutType::Blur);
     win.render();
     timeAndApplyEffect(effect, win, "Blur");
+    */
+
+
+    effect.setEffectWidth(400);
+    effect.setEffectX(50);
+    win.render();
+    timeAndApplyEffect(effect, win, "Desaturate");
 }
 
+/*
 void showcase_StripesFadeout(RetrogameBase::Window& win)
 {
     install_TestImage(win);

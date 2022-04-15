@@ -1,4 +1,3 @@
-/*
 // ========================================================================== //
 // Depenencies
 
@@ -84,40 +83,13 @@ namespace RetrogameBase
 
 // -------------------------------------------------------------------------- //
 
-    void SimpleFadeout::prepareInstance(UserData& userData)
+    void SimpleFadeout::prepareInstance()
     {
         switch (fadeoutType)
         {
             case FadeoutType::Blur:
-            {
-                // extract metadata
-                auto& win = *userData.window;
-                const auto [width, height] = win.getDimension();
-
-                const auto surface = userData.windowSurface;
-                const auto surfaceData = reinterpret_cast<Uint8*>(surface->pixels);
-
-                const auto bytesPerPixel = surface->format->BytesPerPixel;
-                const auto pitch = surface->pitch;
-
-                // construct buffer and bufferViews
-                buffer.resize(height * width * bytesPerPixel);
-                const auto bufferData = buffer.begin();
-
-                for (auto row = 0; row < height; ++row)
-                {
-                    bufferViews.emplace_back(bufferData +  row      * width * bytesPerPixel,
-                                             bufferData + (row + 1) * width * bytesPerPixel);
-                }
-
-                // construct surfaceViews
-                for (auto row = 0; row < height; ++row)
-                {
-                    surfaceViews.emplace_back(surfaceData + row * pitch,
-                                              width * bytesPerPixel);
-                }
-            }
-            break;
+                prepareInstanceBlur();
+                break;
             case FadeoutType::Pixelate:
                 break;
             case FadeoutType::Desaturate:
@@ -127,14 +99,12 @@ namespace RetrogameBase
 
 // .......................................................................... //
 
-    void SimpleFadeout::tidyUpInstance(UserData& userData)
+    void SimpleFadeout::tidyUpInstance()
     {
         switch (fadeoutType)
         {
             case FadeoutType::Blur:
-                buffer      .resize(0);
-                bufferViews .resize(0);
-                surfaceViews.resize(0);
+                tidyUpInstanceBlur();
                 break;
 
             case FadeoutType::Pixelate:
@@ -146,6 +116,39 @@ namespace RetrogameBase
 
 // ========================================================================== //
 // renderers
+
+    void SimpleFadeout::prepareInstanceBlur()
+    {
+        // extract metadata
+        const auto surfaceData   = reinterpret_cast<Uint8*>(windowSurface->pixels);
+        const auto bytesPerPixel = windowSurface->format->BytesPerPixel;
+        const auto pitch         = windowSurface->pitch;
+
+        // construct buffer and bufferViews
+        buffer.resize(effectHeight * effectWidth * bytesPerPixel);
+        const auto bufferData = buffer.begin();
+
+        for (auto row = 0; row < effectHeight; ++row)
+        {
+            bufferViews.emplace_back(bufferData +  row      * effectWidth * bytesPerPixel,
+                                     bufferData + (row + 1) * effectWidth * bytesPerPixel);
+        }
+
+        // construct surfaceViews
+        for (auto row = 0; row < effectHeight; ++row)
+        {
+            surfaceViews.emplace_back(surfaceData + row * pitch,            // TODO: offset effectX, effectY
+                                      effectWidth * bytesPerPixel);
+        }
+    }
+
+    void SimpleFadeout::tidyUpInstanceBlur()
+    {
+        buffer      .resize(0);
+        bufferViews .resize(0);
+        surfaceViews.resize(0);
+    }
+
 
     void accumulatePixelValuesForBlur(std::span<Uint16>& buffer, const std::span<Uint8>& surfacePixels, const Uint8 bpp, const int offsetX)
     {
@@ -186,167 +189,180 @@ namespace RetrogameBase
         }
     }
 
-    void SimpleFadeout::renderBlur(void* userDataPointer)
+    void SimpleFadeout::renderBlur(void* instanceData)
     {
-        auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
-
-        auto& surface = *userData.windowSurface;
-        const auto bytesPerPixel = surface.format->BytesPerPixel;
-
-        // if last frame: simply show final colour
-        if (userData.frameID + 1 == self.totalFrames)
-        {
-            SDL_Color color = self.getColor();
-            win.fbox(0, 0, width, height, color);
-            self.progress();
-            return;
-        }
-
-        // actual blur code
-        const auto repeats = std::max(1ul, std::min(height, width) / (10 * self.totalFrames));
-        for (auto i = 0u; i < repeats; ++i)
-        {
-            std::fill(self.buffer.begin(), self.buffer.end(), 0);
-
-            // sum up pixels in buffer
-            for (auto row = 0; row < height; ++row)
-            {
-                // same row blur
-                accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
-                accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
-                accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
-
-                // blur to above
-                if (row)
-                {
-                    accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel, -1);
-                }
-                else
-                {
-                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
-                }
-
-                // blur to below
-                if (row < height - 1)
-                {
-                    accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel, -1);
-                }
-                else
-                {
-                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
-                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
-                    accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
-                }
-            }
-
-            // rescale
-            std::transform(self.buffer.begin(), self.buffer.end(),
-                           self.buffer.begin(),
-                           [] (const auto& input)
-            {
-                return input / 9;
-            });
-
-            // copy back into SDL buffer
-            // std::copy won't do, as we need conversion back from Uint16 -> Uint8
-            for (auto row = 0; row < height; ++row)
-            {
-                std::transform(self.bufferViews [row].begin(), self.bufferViews[row].end(),
-                               self.surfaceViews[row].begin(),
-                               [] (const auto& x)
-                {
-                    return x;
-                });
-            }
-        }
-
-        userData.updateTexture();
-        self.renderStoredState();
-
-        self.progress();
+        auto& self = castToVisualEffect<SimpleFadeout>(instanceData);
+        self.advanceFrame();
     }
 
-// .......................................................................... //
-
-    void SimpleFadeout::renderPixelate(void* userDataPointer)
-    {
-        auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
-
-        const auto [width, height]  = win.getDimension();
-        const int pixelWidth  = width  * userData.progress + 1;
-        const int pixelHeight = height * userData.progress + 1;
-
-        // if last frame: simply show final colour
-        if (userData.frameID + 1 == self.totalFrames)
-        {
-            SDL_Color color = self.getColor();
-            win.fbox(0, 0, width, height, color);
-            self.progress();
-            return;
-        }
-
-        // acutal pixelate code
-        auto getAverageColor = [](SDL_Surface* surface, const int startX, const int startY, const int width, const int height)
-        {
-            long long r = 0, g = 0, b = 0;
-            const long long area = width * height;
-
-            for     (auto x=startX; x < startX+width ; ++x)
+    /*
+            void SimpleFadeout::renderBlur(void* userDataPointer)
             {
-                for (auto y=startY; y < startY+height; ++y)
-                {
-                    const auto thisPixel = getPixelFromSurface(surface, x, y);
+                auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
+                const auto [width, height] = win.getDimension();
 
-                    r += thisPixel.r;
-                    g += thisPixel.g;
-                    b += thisPixel.b;
+                auto& surface = *userData.windowSurface;
+                const auto bytesPerPixel = surface.format->BytesPerPixel;
+
+                // if last frame: simply show final colour
+                if (userData.frameID + 1 == self.totalFrames)
+                {
+                    SDL_Color color = self.getColor();
+                    win.fbox(0, 0, width, height, color);
+                    self.progress();
+                    return;
+                }
+
+                // actual blur code
+                const auto repeats = std::max(1ul, std::min(height, width) / (10 * self.totalFrames));
+                for (auto i = 0u; i < repeats; ++i)
+                {
+                    std::fill(self.buffer.begin(), self.buffer.end(), 0);
+
+                    // sum up pixels in buffer
+                    for (auto row = 0; row < height; ++row)
+                    {
+                        // same row blur
+                        accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
+                        accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
+                        accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
+
+                        // blur to above
+                        if (row)
+                        {
+                            accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel,  0);
+                            accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel,  1);
+                            accumulatePixelValuesForBlur(self.bufferViews[row - 1], self.surfaceViews[row], bytesPerPixel, -1);
+                        }
+                        else
+                        {
+                            accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
+                            accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
+                            accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
+                        }
+
+                        // blur to below
+                        if (row < height - 1)
+                        {
+                            accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel,  0);
+                            accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel,  1);
+                            accumulatePixelValuesForBlur(self.bufferViews[row + 1], self.surfaceViews[row], bytesPerPixel, -1);
+                        }
+                        else
+                        {
+                            accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  0);
+                            accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel,  1);
+                            accumulatePixelValuesForBlur(self.bufferViews[row], self.surfaceViews[row], bytesPerPixel, -1);
+                        }
+                    }
+
+                    // rescale
+                    std::transform(self.buffer.begin(), self.buffer.end(),
+                                   self.buffer.begin(),
+                                   [] (const auto& input)
+                    {
+                        return input / 9;
+                    });
+
+                    // copy back into SDL buffer
+                    // std::copy won't do, as we need conversion back from Uint16 -> Uint8
+                    for (auto row = 0; row < height; ++row)
+                    {
+                        std::transform(self.bufferViews [row].begin(), self.bufferViews[row].end(),
+                                       self.surfaceViews[row].begin(),
+                                       [] (const auto& x)
+                        {
+                            return x;
+                        });
+                    }
+                }
+
+                userData.updateTexture();
+                self.renderStoredState();
+
+                self.progress();
+            }
+    */
+
+    // .......................................................................... //
+
+    void SimpleFadeout::renderPixelate(void* instanceData)
+    {
+        auto& self = castToVisualEffect<SimpleFadeout>(instanceData);
+        self.advanceFrame();
+    }
+    /*
+        void SimpleFadeout::renderPixelate(void* userDataPointer)
+        {
+            auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
+
+            const auto [width, height]  = win.getDimension();
+            const int pixelWidth  = width  * userData.progress + 1;
+            const int pixelHeight = height * userData.progress + 1;
+
+            // if last frame: simply show final colour
+            if (userData.frameID + 1 == self.totalFrames)
+            {
+                SDL_Color color = self.getColor();
+                win.fbox(0, 0, width, height, color);
+                self.progress();
+                return;
+            }
+
+            // acutal pixelate code
+            auto getAverageColor = [](SDL_Surface* surface, const int startX, const int startY, const int width, const int height)
+            {
+                long long r = 0, g = 0, b = 0;
+                const long long area = width * height;
+
+                for     (auto x=startX; x < startX+width ; ++x)
+                {
+                    for (auto y=startY; y < startY+height; ++y)
+                    {
+                        const auto thisPixel = getPixelFromSurface(surface, x, y);
+
+                        r += thisPixel.r;
+                        g += thisPixel.g;
+                        b += thisPixel.b;
+                    }
+                }
+
+                SDL_Color reVal;
+                reVal.r = r / area;
+                reVal.g = g / area;
+                reVal.b = b / area;
+                reVal.a = 255;
+
+                return reVal;
+            };
+
+            self.renderStoredState();
+
+            for     (auto x=0u; x < width ; x+= pixelWidth)
+            {
+                for (auto y=0u; y < height; y+= pixelHeight)
+                {
+                    auto color = getAverageColor(userData.windowSurface, x, y, pixelWidth, pixelHeight);
+                    win.fbox(x, y, pixelWidth, pixelHeight, color);
                 }
             }
 
-            SDL_Color reVal;
-            reVal.r = r / area;
-            reVal.g = g / area;
-            reVal.b = b / area;
-            reVal.a = 255;
-
-            return reVal;
-        };
-
-        self.renderStoredState();
-
-        for     (auto x=0u; x < width ; x+= pixelWidth)
-        {
-            for (auto y=0u; y < height; y+= pixelHeight)
-            {
-                auto color = getAverageColor(userData.windowSurface, x, y, pixelWidth, pixelHeight);
-                win.fbox(x, y, pixelWidth, pixelHeight, color);
-            }
+            self.progress();
         }
+    */
+    // .......................................................................... //
 
-        self.progress();
-    }
-
-// .......................................................................... //
-
-    void SimpleFadeout::renderDesaturate(void* userDataPointer)
+    void SimpleFadeout::renderDesaturate(void* instanceData)
     {
-        auto [userData, win, self] = unpackUserdataPointer<SimpleFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
+        auto& self = castToVisualEffect<SimpleFadeout>(instanceData);
+        auto& win = *self.window;
 
         SDL_Color color = self.getColor();
-        color.a = userData.progress * 255;
+        color.a = self.progress * 255;
 
         self.renderStoredState();
-        win.fbox(0, 0, width, height, color);
+        win.fbox(self.effectX, self.effectY, self.effectWidth, self.effectHeight, color);
 
-        self.progress();
+        self.advanceFrame();
     }
 }
-*/

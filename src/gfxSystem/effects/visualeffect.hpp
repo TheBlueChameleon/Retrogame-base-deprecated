@@ -42,7 +42,8 @@ namespace RetrogameBase
             size_t        frameID;
             double        progress;
 
-            int    x, y, w, h;
+            int effectX, effectY,
+                effectWidth, effectHeight;
 
             Window*       window;
             SDL_Window*   sdlWindow;
@@ -86,20 +87,20 @@ namespace RetrogameBase
 
             double getProgressPerFrame() const;
 
-            int  getX() const;
-            void setX(int newX);
+            int  getEffectX() const;
+            void setEffectX(int newX);
 
-            int  getY() const;
-            void setY(int newY);
+            int  getEffectY() const;
+            void setEffectY(int newY);
 
             std::pair<int, int> getEffectCoordinates() const;
             void setEffectCoordinates(std::pair<int, int> coords);
 
-            size_t getW() const;
-            void   setW(size_t newW);
+            size_t getEffectWidth() const;
+            void   setEffectWidth(size_t newW);
 
-            size_t getH() const;
-            void   setH(size_t newH);
+            size_t getEffectHeight() const;
+            void   setEffectHeight(size_t newH);
 
             std::pair<int, int> getEffectDimension() const;
             void setEffectDimension(std::pair<int, int> dimension);

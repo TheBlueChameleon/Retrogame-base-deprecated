@@ -1,4 +1,3 @@
-/*
 #ifndef SIMPLEFADEOUT_HPP
 #define SIMPLEFADEOUT_HPP
 
@@ -40,10 +39,13 @@ namespace RetrogameBase
             std::vector<std::span<Uint16>> bufferViews;
             std::vector<std::span<Uint8>>  surfaceViews;
 
+            void prepareInstanceBlur();
+            void tidyUpInstanceBlur ();
+
         protected:
             virtual std::function<void (void*)> getRenderer();
-            virtual void prepareInstance(UserData& userData);
-            virtual void tidyUpInstance (UserData& userData);
+            virtual void prepareInstance();
+            virtual void tidyUpInstance ();
 
         public:
             // -------------------------------------------------------------- //
@@ -64,11 +66,10 @@ namespace RetrogameBase
             // -------------------------------------------------------------- //
             // renderers
 
-            static void renderBlur(void* userData);
-            static void renderPixelate(void* userData);
-            static void renderDesaturate(void* userData);
+            static void renderBlur(void* instanceData);
+            static void renderPixelate(void* instanceData);
+            static void renderDesaturate(void* instanceData);
     };
 }
 
 #endif // SIMPLEFADEOUT_HPP
-*/

@@ -34,9 +34,9 @@ namespace RetrogameBase
         progressPerFrame(1. / totalFrames),
         frameID(0), progress(0),
 
-        x(0), y(0),
-        w(USE_FULL_WINDOW),
-        h(USE_FULL_WINDOW),
+        effectX(0), effectY(0),
+        effectWidth(USE_FULL_WINDOW),
+        effectHeight(USE_FULL_WINDOW),
         resetW(false), resetH(false),
 
         window(nullptr),
@@ -61,25 +61,25 @@ namespace RetrogameBase
         frameID           = 0 ;
         progress          = 0.;
 
-        if (w == USE_FULL_WINDOW)
+        if (effectWidth == USE_FULL_WINDOW)
         {
-            w = win.getWidth();
+            effectWidth = win.getWidth();
             resetW = true;
         }
-        if (h == USE_FULL_WINDOW)
+        if (effectHeight == USE_FULL_WINDOW)
         {
-            h = win.getHeight();
+            effectHeight = win.getHeight();
             resetH = true;
         }
 
-        const SDL_Rect coordinates = {x, y, w, h};
+        const SDL_Rect coordinates = {effectX, effectY, effectWidth, effectHeight};
         const auto format = SDL_GetWindowPixelFormat(sdlWindow);
 
         // deliberately, make a copy instead of using the existing window surface (https://wiki.libsdl.org/SDL_GetWindowSurface)
         // blur and other mem-poking effects wouldn't work otherwise.
         windowSurface = SDL_CreateRGBSurfaceWithFormat(
                             0,                          // flags (unused)
-                            w, h,                       // width and height of effect on screen
+                            effectWidth, effectHeight,  // dimension in pixels
                             SDL_BITSPERPIXEL(format),   // color depth
                             format
                         );
@@ -144,10 +144,11 @@ namespace RetrogameBase
 
     void VisualEffect::renderStoredState()
     {
+        SDL_Rect coords = {effectX, effectY, effectWidth, effectHeight};
         SDL_RenderCopy(windowRenderer,
                        windowTexture,
                        nullptr,     // source rect
-                       nullptr      // dest rect
+                       &coords      // dest rect
                       );
     }
 
@@ -205,63 +206,63 @@ namespace RetrogameBase
         this->setTotalFrames(fps * milliseconds / 1000.);
     }
 
-    int VisualEffect::getX() const
+    int VisualEffect::getEffectX() const
     {
-        return x;
+        return effectX;
     }
 
-    void VisualEffect::setX(int newX)
+    void VisualEffect::setEffectX(int newX)
     {
-        x = newX;
+        effectX = newX;
     }
 
-    int VisualEffect::getY() const
+    int VisualEffect::getEffectY() const
     {
-        return y;
+        return effectY;
     }
 
-    void VisualEffect::setY(int newY)
+    void VisualEffect::setEffectY(int newY)
     {
-        y = newY;
+        effectY = newY;
     }
 
     std::pair<int, int> VisualEffect::getEffectCoordinates() const
     {
-        return std::make_pair(x, y);
+        return std::make_pair(effectX, effectY);
     }
 
     void VisualEffect::setEffectCoordinates(std::pair<int, int> coords)
     {
-        std::tie(x, y) = coords;
+        std::tie(effectX, effectY) = coords;
     }
 
-    size_t VisualEffect::getW() const
+    size_t VisualEffect::getEffectWidth() const
     {
-        return w;
+        return effectWidth;
     }
 
-    void VisualEffect::setW(size_t newW)
+    void VisualEffect::setEffectWidth(size_t newW)
     {
-        w = newW;
+        effectWidth = newW;
     }
 
-    size_t VisualEffect::getH() const
+    size_t VisualEffect::getEffectHeight() const
     {
-        return h;
+        return effectHeight;
     }
 
-    void VisualEffect::setH(size_t newH)
+    void VisualEffect::setEffectHeight(size_t newH)
     {
-        h = newH;
+        effectHeight = newH;
     }
 
     std::pair<int, int> VisualEffect::getEffectDimension() const
     {
-        return std::make_pair(w, h);
+        return std::make_pair(effectWidth, effectHeight);
     }
 
     void VisualEffect::setEffectDimension(std::pair<int, int> dimension)
     {
-        std::tie(w, h) = dimension;
+        std::tie(effectWidth, effectHeight) = dimension;
     }
 }

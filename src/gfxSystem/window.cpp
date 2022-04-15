@@ -377,8 +377,6 @@ namespace RetrogameBase
 
         while (continueToLoop)
         {
-            SDL_RenderClear(win_renderer);
-
             render();
             continueToLoop = distributeEvents();
             update();
