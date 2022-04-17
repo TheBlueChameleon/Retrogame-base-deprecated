@@ -56,6 +56,10 @@ namespace RetrogameBase
         return (a <= x) && (x <= b);
     }
 
+    inline bool operator==(const SDL_Rect& a, const SDL_Rect& b)
+    {
+        return a.x==b.x && a.y==b.y && a.w==b.w && a.h==b.h;
+    }
 // ========================================================================== //
 // colors
 
@@ -78,6 +82,7 @@ namespace RetrogameBase
     color_transparent = {  0,   0,   0,   0};
 
     SDL_Color getColorFromHSL(double hue, double saturation, double lightness);
+    SDL_Color blendColors(SDL_Color A, SDL_Color B, double lambda);
 
 // ========================================================================== //
 // trigonometry

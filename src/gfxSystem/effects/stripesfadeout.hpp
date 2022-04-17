@@ -1,4 +1,3 @@
-/*
 #ifndef STRIPESFADEOUT_HPP
 #define STRIPESFADEOUT_HPP
 
@@ -46,11 +45,14 @@ namespace RetrogameBase
             std::vector<int> splitPointsX;
             std::vector<int> splitPointsY;
 
-            void computeSplitPoints (const UserData& userData);
-            void computeRandomPoints(const UserData& userData);
+            void computeSplitPoints ();
+            void computeRandomPoints();
+
+            std::tuple<int, int, int, int, int, int> getOrientedMeasures() const;
 
         protected:
-            virtual void prepareInstance(UserData& userData);
+            virtual void prepareInstance();
+            virtual void tidyUpInstance ();
             virtual std::function<void (void*)> getRenderer();
 
         public:
@@ -81,11 +83,10 @@ namespace RetrogameBase
             // -------------------------------------------------------------- //
             // renderers
 
-            static void renderStripesContra(void* userDataPointer);
-            static void renderStripesCloseCenter(void* userDataPointer);
-            static void renderStripesRandom(void* userDataPointer);
+            static void renderStripesContra     (void* instanceData);
+            static void renderStripesCloseCenter(void* instanceData);
+            static void renderStripesRandom     (void* instanceData);
     };
 }
 
 #endif // STRIPESFADEOUT_HPP
-*/

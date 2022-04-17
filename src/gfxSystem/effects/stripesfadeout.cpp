@@ -1,4 +1,3 @@
-/*
 // ========================================================================== //
 // Depenencies
 
@@ -100,32 +99,78 @@ namespace RetrogameBase
         nStripes = newNStripes;
     }
 
-// -------------------------------------------------------------------------- //
+// ========================================================================== //
+// visualEffect interface
 
-    void insertSplitPoints(std::vector<int>& splitPoints, std::vector<int>& basePoints, size_t nStripes, int length, int coLength)
+    void StripesFadeout::prepareInstance()
     {
-        for (auto i = 0u; i <= nStripes; ++i)
+
+        switch (fadeoutType)
         {
-            splitPoints.push_back( static_cast<double>(length) * i / nStripes );
-            basePoints .push_back( (i&1) * coLength );                                    // even/odd determines from where to come in
+            case FadeoutType::Contra:
+            case FadeoutType::CloseCenter:
+                computeSplitPoints();
+                break;
+
+            case FadeoutType::Random:
+                computeRandomPoints();
+                break;
         }
     }
 
-    void StripesFadeout::computeSplitPoints(const UserData& userData)
+    void StripesFadeout::tidyUpInstance()
+    {}
+// .......................................................................... //
+
+    std::function<void (void*)> StripesFadeout::getRenderer()
+    {
+        switch (fadeoutType)
+        {
+            case FadeoutType::Contra:
+                return renderStripesContra;
+            case FadeoutType::CloseCenter:
+                return renderStripesCloseCenter;
+            case FadeoutType::Random:
+                return renderStripesRandom;
+        }
+
+        // cannot happen, appeases compiler
+        return nullptr;
+    }
+
+// ========================================================================== //
+// Helper Funcs
+
+    void insertSplitPoints(std::vector<int>& splitPoints,
+                           std::vector<int>& basePoints,
+                           size_t nStripes,
+                           int offset, int coOffset,
+                           int length, int coLength)
+    {
+        for (auto i = 0u; i <= nStripes; ++i)
+        {
+            splitPoints.push_back(   offset + static_cast<double>(length) * i / nStripes );
+            basePoints .push_back( coOffset + (i&1) * coLength );                                    // even/odd determines from where to come in
+        }
+    }
+
+    void StripesFadeout::computeSplitPoints()
     {
         splitPointsX.clear();
         splitPointsY.clear();
 
-        auto [width, height] = userData.window->getDimension();
-
         switch (orientation)
         {
             case Orientation::Horizontal :
-                insertSplitPoints(splitPointsY, splitPointsX, nStripes, height, width);
+                insertSplitPoints(splitPointsY, splitPointsX, nStripes,
+                                  effectY, effectX,
+                                  effectHeight, effectWidth);
                 break;
 
             case Orientation::Vertical :
-                insertSplitPoints(splitPointsX, splitPointsY, nStripes, width, height);
+                insertSplitPoints(splitPointsX, splitPointsY, nStripes,
+                                  effectX, effectY,
+                                  effectWidth, effectHeight);
                 break;
         }
     }
@@ -146,12 +191,12 @@ namespace RetrogameBase
     }
 
 
-    void StripesFadeout::computeRandomPoints(const UserData& userData)
+    void StripesFadeout::computeRandomPoints()
     {
         splitPointsX.clear();
         splitPointsY.clear();
 
-        auto [width, height] = userData.window->getDimension();
+        auto [width, height] = window->getDimension();
 
         switch (orientation)
         {
@@ -165,87 +210,36 @@ namespace RetrogameBase
         }
     }
 
-// ========================================================================== //
-// visualEffect interface
-
-    void StripesFadeout::prepareInstance(UserData& userData)
-    {
-        switch (fadeoutType)
-        {
-            case FadeoutType::Contra:
-            case FadeoutType::CloseCenter:
-                computeSplitPoints(userData);
-                break;
-
-            case FadeoutType::Random:
-                computeRandomPoints(userData);
-                break;
-        }
-    }
-
 // .......................................................................... //
 
-    std::function<void (void*)> StripesFadeout::getRenderer()
+    std::tuple<int, int, int, int, int, int> StripesFadeout::getOrientedMeasures() const
     {
-        switch (fadeoutType)
+        // returns offset, coOffset, length, coLength, dx, dy
+
+        switch (orientation)
         {
-            case FadeoutType::Contra:
-                return renderStripesContra;
-            case FadeoutType::CloseCenter:
-                return renderStripesCloseCenter;
-            case FadeoutType::Random:
-                return renderStripesRandom;
+            case StripesFadeout::Orientation::Horizontal :
+                return std::make_tuple(effectX, effectY, effectWidth, effectHeight, 1, 0);
+
+            case StripesFadeout::Orientation::Vertical :
+                return std::make_tuple(effectY, effectX, effectHeight, effectWidth, 0, 1);
         }
 
-        // cannot happen, appeases compiler
-        return nullptr;
+        // this never happens but appeases the compiler:
+        return std::make_tuple(0, 0, 0, 0, 0, 0);
     }
 
 // ========================================================================== //
 // renderers
 
-    SDL_Color blendColors(SDL_Color A, SDL_Color B, double lambda)
+    void StripesFadeout::renderStripesContra(void* instanceData)
     {
-        SDL_Color reVal;
-
-        reVal.r = B.r * lambda + (1-lambda) * A.r;
-        reVal.g = B.g * lambda + (1-lambda) * A.g;
-        reVal.b = B.b * lambda + (1-lambda) * A.b;
-        reVal.a = B.a * lambda + (1-lambda) * A.a;
-
-        return reVal;
-    }
-
-// .......................................................................... //
-
-    std::tuple<int, int, int, int> getOrientedMeasures (const StripesFadeout::Orientation& orientation, const int width, const int height)
-    {
-        // returns length, coLength, dx, dy
-
-        switch (orientation)
-        {
-            case StripesFadeout::Orientation::Horizontal :
-                return std::make_tuple(width, height, 1, 0);
-
-            case StripesFadeout::Orientation::Vertical :
-                return std::make_tuple(height, width, 0, 1);
-        }
-
-        // this never happens but appeases the compiler:
-        return std::make_tuple(0, 0, 0, 0);
-    }
-
-// -------------------------------------------------------------------------- //
-
-    void StripesFadeout::renderStripesContra(void* userDataPointer)
-    {
-        auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
+        auto [self, win] = unpackSelfAndWin<StripesFadeout>(instanceData);
 
         self.renderStoredState();
 
-        const auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
-        const auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+        const auto color = blendColors(self.colorInitial, self.colorFinal, self.progress);
+        const auto [offset, coOffset, length, coLength, dx, dy] = self.getOrientedMeasures();
 
         const int  sign[2] = {1, -1};
         const auto stripeWidth = coLength / self.nStripes;
@@ -255,13 +249,13 @@ namespace RetrogameBase
             const auto x = self.splitPointsX[i];
             const auto y = self.splitPointsY[i];
 
-//             if (even stripe) :
-//                  endCoordinate =  animationProgress * length
-//             else :
-//                  endCoordinate = -animationProgress * length
+            // if (even stripe) :
+            //      endCoordinate =  animationProgress * length
+            // else :
+            //      endCoordinate = -animationProgress * length
 
             const auto parity = i & 1;
-            const auto factor = sign[parity] * userData.progress;
+            const auto factor = sign[parity] * self.progress;
 
             const int endCoordinate = factor * length;
 
@@ -271,35 +265,34 @@ namespace RetrogameBase
             win.fbox(x, y, w, h, color);
         }
 
-        self.progress();
+        self.advanceFrame();
     }
 
 // .......................................................................... //
 
-    void StripesFadeout::renderStripesCloseCenter(void* userDataPointer)
+    void StripesFadeout::renderStripesCloseCenter(void* instanceData)
     {
-        auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
+        auto [self, win] = unpackSelfAndWin<StripesFadeout>(instanceData);
 
         self.renderStoredState();
 
-        const auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
-        const auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+        const auto color = blendColors(self.colorInitial, self.colorFinal, self.progress);
+        const auto [offset, coOffset, length, coLength, dx, dy] = self.getOrientedMeasures();
 
         const int  sign[2] = {1, -1};
-        const auto offset = (self.nStripes > 1) * length * 0.2;
+        const auto centerOffset = (self.nStripes > 1) * length * 0.2;
         const auto stripeWidth = coLength / self.nStripes;
 
         for (auto i = 0u; i < self.nStripes; ++i)
         {
             const auto parity = i & 1;
-            const auto factor = sign[parity] * userData.progress;
-            const auto center = (length >> 1) - offset;
+            const auto factor = sign[parity] * self.progress;
+            const auto center = (length >> 1) - centerOffset;
 
             const auto x1 = self.splitPointsX[i];
             const auto y1 = self.splitPointsY[i];
-            const auto x2 = dy * x1   +   dx * length * !parity;
-            const auto y2 = dx * y1   +   dy * length * !parity;
+            const auto x2 = dy * x1   +   dx * (length * !parity +   offset);
+            const auto y2 = dx * y1   +   dy * (length * !parity + coOffset);
 
             const int w1 =  dx * factor *  center             +   dy * stripeWidth;
             const int w2 = -dx * factor * (length - center)   +   dy * stripeWidth;
@@ -310,34 +303,58 @@ namespace RetrogameBase
             win.fbox(x2, y2, w2, h2, color);
         }
 
-        self.progress();
+        self.advanceFrame();
     }
 
-    // .......................................................................... //
+// .......................................................................... //
 
-    void StripesFadeout::renderStripesRandom(void* userDataPointer)
+    void StripesFadeout::renderStripesRandom(void* instanceData)
     {
-        auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
-        const auto [width, height] = win.getDimension();
+        auto [self, win] = unpackSelfAndWin<StripesFadeout>(instanceData);
 
         self.renderStoredState();
 
-        const auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
-        const auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+        const auto color = blendColors(self.colorInitial, self.colorFinal, self.progress);
+        const auto [offset, coOffset, length, coLength, dx, dy] = self.getOrientedMeasures();
         const auto stripeWidth = coLength / self.nStripes;
 
         for (auto i = 0u; i < self.nStripes; ++i)
         {
-            const int x = self.splitPointsX[i] - dx * userData.progress * length;
-            const int y = self.splitPointsY[i] - dy * userData.progress * length;
+            const int x = self.splitPointsX[i] - dx * self.progress * length;
+            const int y = self.splitPointsY[i] - dy * self.progress * length;
 
-            const int w = dx * 2 * length * userData.progress   +   dy * stripeWidth;
-            const int h = dy * 2 * length * userData.progress   +   dx * stripeWidth;
+            const int w = dx * 2 * length * self.progress   +   dy * stripeWidth;
+            const int h = dy * 2 * length * self.progress   +   dx * stripeWidth;
 
             win.fbox(x, y, w, h, color);
         }
 
-        self.progress();
+        self.advanceFrame();
     }
+    /*
+            void StripesFadeout::renderStripesRandom(void* userDataPointer)
+            {
+                auto [userData, win, self] = unpackUserdataPointer<StripesFadeout>(userDataPointer);
+                const auto [width, height] = win.getDimension();
+
+                self.renderStoredState();
+
+                const auto color = blendColors(self.colorInitial, self.colorFinal, userData.progress);
+                const auto [length, coLength, dx, dy] = getOrientedMeasures(self.orientation, width, height);
+                const auto stripeWidth = coLength / self.nStripes;
+
+                for (auto i = 0u; i < self.nStripes; ++i)
+                {
+                    const int x = self.splitPointsX[i] - dx * userData.progress * length;
+                    const int y = self.splitPointsY[i] - dy * userData.progress * length;
+
+                    const int w = dx * 2 * length * userData.progress   +   dy * stripeWidth;
+                    const int h = dy * 2 * length * userData.progress   +   dx * stripeWidth;
+
+                    win.fbox(x, y, w, h, color);
+                }
+
+                self.progress();
+            }
+            */
 }
-*/

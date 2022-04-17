@@ -92,7 +92,6 @@ namespace RetrogameBase
                 break;
 
             case FadeoutType::Pixelate:
-                prepareInstancePixelate();
                 break;
 
             case FadeoutType::Desaturate:
@@ -111,7 +110,6 @@ namespace RetrogameBase
                 break;
 
             case FadeoutType::Pixelate:
-                tidyUpInstancePixelate();
                 break;
 
             case FadeoutType::Desaturate:
@@ -131,38 +129,34 @@ namespace RetrogameBase
         auto winWidth  = window->getWidth();
         auto winHeight = window->getHeight();
 
-        if (effectX < 0)
-        {
+        // *INDENT-OFF*
+        if (effectX < 0) {
             effectWidth += effectX;
             effectX = 0;
         }
-        if (effectX > winWidth)
-        {
+        if (effectX > winWidth) {
             effectX = winWidth - 1;
             effectWidth = 0;
         }
 
-        if (effectY < 0)
-        {
+        if (effectY < 0) {
             effectHeight += effectY;
             effectY = 0;
         }
-        if (effectY > winHeight)
-        {
+        if (effectY > winHeight) {
             effectY = winHeight - 1;
             effectHeight = 0;
         }
 
-        if (effectWidth <= 0)
-        {
+        if (effectWidth <= 0) {
             effectWidth = 0;
             return;
         }
-        if (effectHeight <= 0)
-        {
+        if (effectHeight <= 0) {
             effectHeight = 0;
             return;
         }
+        // *INDENT-ON*
 
         // extract metadata
         const auto surfaceData   = reinterpret_cast<Uint8*>(windowSurface->pixels);
@@ -182,9 +176,7 @@ namespace RetrogameBase
         // construct surfaceViews
         for (auto row = 0; row < effectHeight; ++row)
         {
-            surfaceViews.emplace_back(surfaceData
-                                      + (row + effectY) * pitch
-                                      +        effectX  * bytesPerPixel,
+            surfaceViews.emplace_back(surfaceData + row * pitch,
                                       effectWidth * bytesPerPixel);
         }
     }
@@ -327,30 +319,11 @@ namespace RetrogameBase
 
         self.updateStoredTexture();
         self.renderStoredState();
-
         self.advanceFrame();
     }
 
     // ...................................................................... //
     // Pixelate
-
-    void SimpleFadeout::prepareInstancePixelate()
-    {
-        const SDL_Rect rgn = {effectX, effectY, effectWidth, effectHeight};
-        SDL_RenderSetClipRect(
-            windowRenderer,
-            &rgn
-        );
-    }
-
-    void SimpleFadeout::tidyUpInstancePixelate()
-    {
-        const SDL_Rect rgn = {0, 0, window->getWidth(), window->getHeight()};
-        SDL_RenderSetClipRect(
-            windowRenderer,
-            &rgn
-        );
-    }
 
     SDL_Color getAverageColor  (SDL_Surface* surface,
                                 const int startX, const int startY,
@@ -409,7 +382,6 @@ namespace RetrogameBase
                 win.fbox(x, y, pixelWidth, pixelHeight, color);
             }
         }
-        // SDL_RenderSetClipRect()
 
         self.advanceFrame();
     }

@@ -227,6 +227,24 @@ namespace RetrogameBase
         return reVal;
     }
 
+    SDL_Color blendColors(SDL_Color A, SDL_Color B, double lambda)
+    {
+        if (!isBetween(lambda, 0., 1.))
+        {
+            throw InvalidRangeError(THROWTEXT("Mixing ratio must be in the interval [0.0, 1.0], but was "s + std::to_string(lambda)));
+        }
+
+        SDL_Color reVal;
+        auto coLambda = 1-lambda;
+
+        reVal.r = B.r * lambda + coLambda * A.r;
+        reVal.g = B.g * lambda + coLambda * A.g;
+        reVal.b = B.b * lambda + coLambda * A.b;
+        reVal.a = B.a * lambda + coLambda * A.a;
+
+        return reVal;
+    }
+
 // ========================================================================== //
 // trigonometry
 

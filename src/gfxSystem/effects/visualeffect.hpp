@@ -29,6 +29,7 @@ namespace RetrogameBase
             std::function<bool (SDL_Event& event, void* userData)>  oldEventHandler;
             std::function<void (void* userData)>                    oldIdleHandler;
             void*                                                   oldUserData;
+            SDL_Rect                                                oldClippingRegion;
 
             void install(Window& win);
             void restore(Window& win);
@@ -66,9 +67,7 @@ namespace RetrogameBase
 
         public:
             virtual void apply(Window& win);
-
             virtual void advanceFrame();
-
             static bool eventhandler_default(SDL_Event& event, void* userData);
 
             // -------------------------------------------------------------- //

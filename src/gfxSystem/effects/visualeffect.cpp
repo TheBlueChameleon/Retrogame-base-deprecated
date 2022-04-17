@@ -8,6 +8,7 @@
 using namespace std::string_literals;
 
 // own
+#include "../../base/globals.hpp"
 #include "../window.hpp"
 #include "visualeffect.hpp"
 
@@ -48,73 +49,6 @@ namespace RetrogameBase
 // ========================================================================== //
 // VisualEffect interface
 
-    void VisualEffect::install(Window& win)
-    {
-        oldEventHandler = win.getEventHandler();
-        oldIdleHandler  = win.getIdleHandler();
-        oldUserData     = win.getUserData();
-
-        window            = &win;
-        sdlWindow         = win.getSdlWindow();
-        windowRenderer    = win.getRenderer();
-        frameID           = 0 ;
-        progress          = 0.;
-
-        // *INDENT-OFF*
-        if (effectWidth  == USE_FULL_WINDOW) {effectWidth  = win.getWidth ();}
-        if (effectHeight == USE_FULL_WINDOW) {effectHeight = win.getHeight();}
-        // *INDENT-ON*
-
-        const SDL_Rect coordinates = {effectX, effectY, effectWidth, effectHeight};
-        const auto format = SDL_GetWindowPixelFormat(sdlWindow);
-
-        // deliberately, make a copy instead of using the existing window surface (https://wiki.libsdl.org/SDL_GetWindowSurface)
-        // blur and other mem-poking effects wouldn't work otherwise.
-        windowSurface = SDL_CreateRGBSurfaceWithFormat(
-                            0,                          // flags (unused)
-                            effectWidth, effectHeight,  // dimension in pixels
-                            SDL_BITSPERPIXEL(format),   // color depth
-                            format
-                        );
-        SDL_RenderReadPixels(
-            windowRenderer,
-            &coordinates,
-            format,
-            windowSurface->pixels,
-            windowSurface->pitch
-        );
-
-        windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
-
-        win.setUserData    (this);
-        win.setEventHandler(VisualEffect::eventhandler_default);
-    }
-
-    void VisualEffect::prepareInstance() {}
-    void VisualEffect::tidyUpInstance () {}
-
-    void VisualEffect::restore(Window& win)
-    {
-        win.setEventHandler(oldEventHandler);
-        win.setIdleHandler (oldIdleHandler );
-        win.setUserData    (oldUserData    );
-
-        SDL_FreeSurface    (windowSurface);
-        SDL_DestroyTexture (windowTexture);
-
-        frameID        = 0;
-        progress       = 0;
-
-        windowSurface  = nullptr;
-        windowTexture  = nullptr;
-
-        window         = nullptr;
-        sdlWindow      = nullptr;
-        windowRenderer = nullptr;
-    }
-
-// .......................................................................... //
-
     void VisualEffect::apply(Window& win)
     {
         install(win);
@@ -127,6 +61,76 @@ namespace RetrogameBase
         restore(win);
     }
 
+// .......................................................................... //
+
+    void VisualEffect::install(Window& win)
+    {
+        window            = &win;
+        sdlWindow         = win.getSdlWindow();
+        windowRenderer    = win.getRenderer();
+        frameID           = 0 ;
+        progress          = 0.;
+
+        oldEventHandler   = win.getEventHandler();
+        oldIdleHandler    = win.getIdleHandler();
+        oldUserData       = win.getUserData();
+
+        SDL_RenderGetClipRect(windowRenderer, &oldClippingRegion);
+
+        // *INDENT-OFF*
+        if (effectWidth  == USE_FULL_WINDOW) {effectWidth  = win.getWidth ();}
+        if (effectHeight == USE_FULL_WINDOW) {effectHeight = win.getHeight();}
+        // *INDENT-ON*
+
+        const SDL_Rect effectRegion = {effectX, effectY, effectWidth, effectHeight};
+        const auto format = SDL_GetWindowPixelFormat(sdlWindow);
+
+        // deliberately, make a copy instead of using the existing window surface (https://wiki.libsdl.org/SDL_GetWindowSurface)
+        // blur and other mem-poking effects wouldn't work otherwise.
+        windowSurface = SDL_CreateRGBSurfaceWithFormat(
+                            0,                          // flags (unused)
+                            effectWidth, effectHeight,  // dimension in pixels
+                            SDL_BITSPERPIXEL(format),   // color depth
+                            format
+                        );
+        SDL_RenderReadPixels(
+            windowRenderer,
+            &effectRegion,
+            format,
+            windowSurface->pixels,
+            windowSurface->pitch
+        );
+
+        windowTexture = SDL_CreateTextureFromSurface( windowRenderer, windowSurface );
+
+        win.setUserData    (this);
+        win.setEventHandler(VisualEffect::eventhandler_default);
+
+        SDL_RenderSetClipRect(windowRenderer, &effectRegion);
+    }
+
+    void VisualEffect::prepareInstance() {}
+    void VisualEffect::tidyUpInstance () {}
+
+    void VisualEffect::restore(Window& win)
+    {
+        // *INDENT-OFF*
+        constexpr SDL_Rect nullRect = {0,0,0,0};
+        if (oldClippingRegion == nullRect) {SDL_RenderSetClipRect(windowRenderer, nullptr);}
+        else                               {SDL_RenderSetClipRect(windowRenderer, &oldClippingRegion);}
+        // *INDENT-ON*
+
+        win.setEventHandler(oldEventHandler);
+        win.setIdleHandler (oldIdleHandler );
+        win.setUserData    (oldUserData    );
+
+
+        SDL_FreeSurface    (windowSurface);
+        SDL_DestroyTexture (windowTexture);
+
+        windowSurface = nullptr;
+    }
+
 // -------------------------------------------------------------------------- //
 
     void VisualEffect::updateStoredTexture()
@@ -137,7 +141,7 @@ namespace RetrogameBase
 
     void VisualEffect::renderStoredState()
     {
-        SDL_Rect coords = {effectX, effectY, effectWidth, effectHeight};
+        const SDL_Rect coords = {effectX, effectY, effectWidth, effectHeight};
         SDL_RenderCopy(windowRenderer,
                        windowTexture,
                        nullptr,     // source rect
